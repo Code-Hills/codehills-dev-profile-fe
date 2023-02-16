@@ -21,7 +21,7 @@ yarn install
 Copy `.env_example` and rename it to `.env.local`:
 
 ```bash 
-cp .env_example .env
+cp .env_example .env.local
 ```
 
 Update the environment variables in `.env.local` with your own values

@@ -4,6 +4,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: auto auto;
+    background-color: #F8FAFC;
 }
 
 .loginLeft {
@@ -16,9 +17,24 @@
 }
 
 .loginRight {
-    background-color: grey;
-    width: 100%;
+    background-image:
+        url("../../../img/right.svg");
+    background-size: 100% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
 
+}
+
+.righDdata{
+    position: absolute;
+    width: 80%;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .loginHeader {
@@ -44,7 +60,7 @@
     line-height: 40px;
     color: #475569;
     text-transform: uppercase;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
 }
 
 .loginHeader p {
@@ -53,4 +69,24 @@
     line-height: 28px;
     color: #475569;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.imgContainer{
+    max-width: 10rem;
+    max-height: 10rem;
+}
+
+.imgContainer img{
+    border-radius: 50%;
+    filter: opacity(0.5) drop-shadow(0 0 rgba(71, 85, 105, 0.21));
+}
+
+
+.loginwelcome h2{
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 40px;
+    color: #475569;
+    text-transform: uppercase;
+    padding: 2rem 2rem;
 }

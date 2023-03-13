@@ -1,5 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import {
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import axios from 'axios';
 
 interface LoginState {
   token: string | null;
@@ -19,7 +23,7 @@ const initialState: LoginState = {
 };
 
 const loginSlice = createSlice({
-  name: "login",
+  name: 'login',
   initialState,
   reducers: {
     loginStart(state) {
@@ -35,7 +39,7 @@ const loginSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    logoutSuccess: (state) => {
+    logoutSuccess(state) {
       state.loading = false;
       state.token = null;
       state.error = null;
@@ -43,51 +47,59 @@ const loginSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logoutSuccess } = loginSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logoutSuccess,
+} = loginSlice.actions;
 
-export const loginUser = <T>(token: string) => async (dispatch: any) => {
-  dispatch(loginStart());
-  try {
-    localStorage.setItem('pulseToken',token);
-    dispatch(loginSuccess(token));
-  } catch (error :any) {
-    dispatch(loginFailure(error.message));
-  }
-};
-
-
+export const loginUser =
+  <T>(token: string) =>
+  async (dispatch: any) => {
+    dispatch(loginStart());
+    try {
+      localStorage.setItem('pulseToken', token);
+      dispatch(loginSuccess(token));
+    } catch (error: any) {
+      dispatch(loginFailure(error.message));
+    }
+  };
 
 export const logoutFromMicrosoft = createAsyncThunk(
-  "auth/logoutFromMicrosoft",
+  'auth/logoutFromMicrosoft',
   async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_PUBLIC_DEFAULT_API}/api/v1/auth/logout`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("pulseToken")}`,
+      await axios.get(
+        `${
+          import.meta.env.VITE_PUBLIC_DEFAULT_API
+        }/api/v1/auth/logout`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem(
+              'pulseToken',
+            )}`,
+          },
         },
-      });
+      );
       // call the backend API to logout the user from the Google session
       // const response = await axios.post("/auth/logout/gmail");
       // return response.data;
-      console.log(response,"From logout")
-    } catch (error :any) {
-      console.log(error)
+    } catch (error: any) {
       throw error.response.data;
     }
-  }
+  },
 );
 
 export const logoutUser = () => async (dispatch: any) => {
   try {
-    localStorage.setItem('pulseToken', " ");
+    localStorage.setItem('pulseToken', ' ');
     dispatch(logoutSuccess());
-  } catch (error :any) {
+  } catch (error: any) {
     dispatch(loginFailure(error.message));
   }
 };
-
-
 
 // export const { setUser, setError, logout, setLoading } = loginSlice.actions;
 export default loginSlice.reducer;

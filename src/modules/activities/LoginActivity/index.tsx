@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import logo from "../../../img/logo.png";
-import './LoginActivity.css';
-import mslogo from "../../../img/mslogo.svg"
 import { useLocation } from 'react-router-dom';
-import { loginUser } from '@/redux/features/auth/loginSlice';
+import './LoginActivity.css';
 import { Dispatch } from 'redux';
-
 import { useDispatch } from 'react-redux';
+
+import logo from '../../../img/logo.png';
+import mslogo from '../../../img/mslogo.svg';
+
+import { loginUser } from '@/redux/features/auth/loginSlice';
 
 const apiUrl = import.meta.env.VITE_PUBLIC_DEFAULT_API;
 
@@ -15,8 +16,8 @@ const LoginActivity: React.FC = () => {
   const dispatch: Dispatch<any> = useDispatch();
 
   const handleClick = () => {
-    window.location.href = `${apiUrl}/api/v1/auth/microsoft`
-  }
+    window.location.href = `${apiUrl}/api/v1/auth/microsoft`;
+  };
 
   useEffect(() => {
     const pulseToken = localStorage.getItem('pulseToken');
@@ -29,21 +30,21 @@ const LoginActivity: React.FC = () => {
       .split('?code=')[1];
     if (base64encoded) {
       const decoded: any = JSON.parse(atob(base64encoded));
-      console.log(decoded);
       if (decoded.status === 200) {
-        let token: string = decoded.data.token;
+        const { token } = decoded.data;
         dispatch(loginUser(token));
       }
-
-
     }
-  }, [])
+  }, []);
   return (
     <section className="login">
       <div className="loginLeft">
         <div className="loginHeader">
           <h2>You will never regret to join Codehills</h2>
-          <p>We're glad you're here! Please log in to explore all of our features</p>
+          <p>
+            We&apos;re glad you&apos;re here! Please log in to explore
+            all of our features
+          </p>
         </div>
       </div>
       <div className="loginRight">
@@ -55,11 +56,14 @@ const LoginActivity: React.FC = () => {
             <h2>Welcome</h2>
           </div>
           <div>
-
-
-            <button className="microsoftBtn" onClick={handleClick}>
+            <button
+              type="button"
+              className="microsoftBtn"
+              onClick={handleClick}
+            >
               <img src={mslogo} alt="Microsoft Logo" />
-              &nbsp; &nbsp;Sign in with Microsoft</button>
+              &nbsp; &nbsp;Sign in with Microsoft
+            </button>
           </div>
         </div>
       </div>

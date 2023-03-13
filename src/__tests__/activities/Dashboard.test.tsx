@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
+
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardActivity from '@/modules/activities/DashboardActivity';
 
@@ -23,7 +24,7 @@ describe('DashboardActivity component', () => {
         <BrowserRouter>
           <DashboardActivity />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     fireEvent.click(getByText('Sign Out'));
@@ -40,7 +41,7 @@ describe('DashboardActivity component', () => {
         <BrowserRouter>
           <DashboardActivity />
         </BrowserRouter>
-      </Provider>
+      </Provider>,
     );
 
     fireEvent.click(getByText('Logout'));

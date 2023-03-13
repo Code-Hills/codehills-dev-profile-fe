@@ -1,8 +1,6 @@
-
 const isAuth: any = () => {
   try {
-    const pulseToken = localStorage.getItem('pulseToken');
-    return pulseToken;
+    return localStorage.getItem('pulseToken');
   } catch (error) {
     return false;
   }

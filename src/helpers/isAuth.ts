@@ -1,16 +1,8 @@
-import jwtDecode from 'jwt-decode';
 
-import Secure from '@/utils/secureLs';
-
-const isAuth: any = (token: string = Secure.getToken()) => {
+const isAuth: any = () => {
   try {
-    const jwt: { exp: number } = jwtDecode(token);
-    const now = new Date();
-    if (now.getTime() > jwt.exp * 1000) {
-      Secure.removeToken();
-      return false;
-    }
-    return jwtDecode(token);
+    const pulseToken = localStorage.getItem('pulseToken');
+    return pulseToken;
   } catch (error) {
     return false;
   }

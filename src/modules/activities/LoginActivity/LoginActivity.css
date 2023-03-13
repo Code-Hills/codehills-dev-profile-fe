@@ -1,0 +1,129 @@
+.login {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: auto auto;
+  background-color: #f8fafc;
+}
+
+.loginLeft {
+  background-image: linear-gradient(
+      rgba(71, 85, 105, 0.21),
+      rgba(71, 85, 105, 0.21)
+    ),
+    url('../../../img/login.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.loginRight {
+  background-image: url('../../../img/right.svg');
+  background-size: 100% 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.righDdata {
+  position: absolute;
+  width: 80%;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginHeader {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 1.2rem;
+  width: 90%;
+  font-family: 'Inter';
+  font-style: normal;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.loginHeader h2 {
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 40px;
+  color: #475569;
+  text-transform: uppercase;
+  padding-bottom: 2rem;
+}
+
+.loginHeader p {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: #475569;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.imgContainer {
+  max-width: 10rem;
+  max-height: 10rem;
+}
+
+.imgContainer img {
+  border-radius: 50%;
+  filter: opacity(0.5) drop-shadow(0 0 rgba(71, 85, 105, 0.21));
+}
+
+.loginwelcome h2 {
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 40px;
+  color: #475569;
+  text-transform: uppercase;
+  padding: 2rem 2rem;
+}
+
+.microsoftBtn {
+  display: flex;
+  background: #f8fafc;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.micon {
+  height: 1em;
+  width: 1em;
+  top: 0.125em;
+  position: relative;
+}
+
+@media (max-width: 750px) {
+  .loginHeader {
+    top: 20%;
+  }
+}
+
+@media (max-width: 552px) {
+  .login {
+    display: grid;
+    grid-template-columns: auto;
+  }
+  .loginLeft {
+    display: none;
+  }
+}
+
+@media (max-width: 278px) {
+  .righDdata {
+    width: 90%;
+  }
+}

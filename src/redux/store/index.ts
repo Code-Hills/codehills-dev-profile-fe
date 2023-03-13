@@ -5,10 +5,11 @@ import {
 } from '@reduxjs/toolkit';
 
 import counterReducer from '../features/counter/counterSlice';
+import authReducer from '../features/auth/loginSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { counter: counterReducer },
+    reducer: { counter: counterReducer, auth: authReducer },
   });
 }
 

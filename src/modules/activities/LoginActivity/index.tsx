@@ -11,7 +11,7 @@ import { loginUser } from '@/redux/features/auth/loginSlice';
 
 const apiUrl = import.meta.env.VITE_PUBLIC_DEFAULT_API;
 
-const LoginActivity: React.FC = () => {
+const LoginActivity = () => {
   const location = useLocation();
   const dispatch: Dispatch<any> = useDispatch();
 
@@ -35,6 +35,7 @@ const LoginActivity: React.FC = () => {
         dispatch(loginUser(token));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <section className="login">

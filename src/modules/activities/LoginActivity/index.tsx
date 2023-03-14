@@ -8,6 +8,7 @@ import logo from '../../../img/logo.png';
 import mslogo from '../../../img/mslogo.svg';
 
 import { loginUser } from '@/redux/features/auth/loginSlice';
+import Secure from '@/utils/secureLs';
 
 const apiUrl = import.meta.env.VITE_PUBLIC_DEFAULT_API;
 
@@ -32,6 +33,7 @@ const LoginActivity = () => {
       const decoded: any = JSON.parse(atob(base64encoded));
       if (decoded.status === 200) {
         const { token } = decoded.data;
+        Secure.setToken(token);
         dispatch(loginUser(token));
       }
     }

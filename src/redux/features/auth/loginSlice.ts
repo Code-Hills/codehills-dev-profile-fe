@@ -83,23 +83,10 @@ export const logoutFromMicrosoft = createAsyncThunk(
           },
         },
       );
-      // call the backend API to logout the user from the Google session
-      // const response = await axios.post("/auth/logout/gmail");
-      // return response.data;
     } catch (error: any) {
       throw error.response.data;
     }
   },
 );
 
-export const logoutUser = () => async (dispatch: any) => {
-  try {
-    localStorage.setItem('pulseToken', ' ');
-    dispatch(logoutSuccess());
-  } catch (error: any) {
-    dispatch(loginFailure(error.message));
-  }
-};
-
-// export const { setUser, setError, logout, setLoading } = loginSlice.actions;
 export default loginSlice.reducer;

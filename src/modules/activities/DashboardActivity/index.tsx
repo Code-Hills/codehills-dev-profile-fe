@@ -3,16 +3,23 @@ import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
 import {
-  logoutFromMicrosoft,
-  logoutSuccess,
+  logoutFromMicrosoft
 } from '@/redux/features/auth/loginSlice';
+import { fetchProfile } from '@/redux/features/auth/fetchProfileSlie';
+import Secure from '@/utils/secureLs';
 
 const DashboardActivity = () => {
   const dispatch: Dispatch<any> = useDispatch();
   const handleLogout = () => {
-    dispatch(logoutFromMicrosoft());
-    localStorage.removeItem('pulseToken');
+    Secure.removeToken();
+    window.location.href = "/login";
+    // dispatch(logoutFromMicrosoft());
+    // localStorage.removeItem('pulseToken');
   };
+
+  const handleGetProfile =()=>{
+    dispatch(fetchProfile());
+  }
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-center text-2xl md:text-4xl text-blue-800">
@@ -21,8 +28,8 @@ const DashboardActivity = () => {
       <Link onClick={() => handleLogout()} to="/">
         Sign Out
       </Link>
-      <button type="button" onClick={handleLogout}>
-        Logout
+      <button type="button" onClick={handleGetProfile}>
+        Profile
       </button>
     </div>
   );

@@ -14,7 +14,7 @@ const defaultRoute: IRoute = {
 };
 
 const AppElement = ({ route = defaultRoute }: { route: IRoute }) => {
-  const excludes = ['/', '/login'];
+  const excludes = ['/', '/login'];``
   const navigate = useNavigate();
   const changePage = useRef(() => {});
 
@@ -23,7 +23,8 @@ const AppElement = ({ route = defaultRoute }: { route: IRoute }) => {
   }
 
   changePage.current = async () => {
-    const user = await isAuth();
+    const user = isAuth();
+    console.log(user,"((((((")
     if (route.guestOnly && user) {
       navigate('/');
     }

@@ -7,23 +7,22 @@ import { useDispatch } from 'react-redux';
 import logo from '../../../img/logo.png';
 import mslogo from '../../../img/mslogo.svg';
 
-import { loginUser } from '@/redux/features/auth/loginSlice';
+// import { loginUser } from '@/redux/features/auth/loginSlice';
 import Secure from '@/utils/secureLs';
 
 const apiUrl = import.meta.env.VITE_PUBLIC_DEFAULT_API;
 
 const LoginActivity = () => {
   const location = useLocation();
-  const dispatch: Dispatch<any> = useDispatch();
 
   const handleClick = () => {
     window.location.href = `${apiUrl}/api/v1/auth/microsoft`;
   };
 
   useEffect(() => {
-    const pulseToken = localStorage.getItem('pulseToken');
+    const pulseToken = Secure.getToken();
     if (pulseToken) {
-      // getProfile();
+      window.location.href = "/dashboard";
     }
 
     const base64encoded = location.search
@@ -34,7 +33,6 @@ const LoginActivity = () => {
       if (decoded.status === 200) {
         const { token } = decoded.data;
         Secure.setToken(token);
-        dispatch(loginUser(token));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

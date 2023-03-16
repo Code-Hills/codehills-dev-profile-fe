@@ -1,7 +1,7 @@
+import Secure from '@/utils/secureLs';
 import {
   createAsyncThunk,
   createSlice,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -11,10 +11,6 @@ interface LoginState {
   error: string | null;
 }
 
-interface AuthError {
-  message: string;
-  code?: string;
-}
 
 const initialState: LoginState = {
   token: null,
@@ -26,19 +22,6 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    loginStart(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    loginSuccess(state, action: PayloadAction<string>) {
-      state.loading = false;
-      state.error = null;
-      state.token = action.payload;
-    },
-    loginFailure(state, action: PayloadAction<string>) {
-      state.loading = false;
-      state.error = action.payload;
-    },
     logoutSuccess(state) {
       state.loading = false;
       state.token = null;
@@ -48,38 +31,22 @@ const loginSlice = createSlice({
 });
 
 export const {
-  loginStart,
-  loginSuccess,
-  loginFailure,
   logoutSuccess,
 } = loginSlice.actions;
 
-export const loginUser =
-  <T>(token: string) =>
-  async (dispatch: any) => {
-    dispatch(loginStart());
-    try {
-      localStorage.setItem('pulseToken', token);
-      dispatch(loginSuccess(token));
-    } catch (error: any) {
-      dispatch(loginFailure(error.message));
-    }
-  };
 
 export const logoutFromMicrosoft = createAsyncThunk(
   'auth/logoutFromMicrosoft',
   async () => {
     try {
-      await axios.get(
+      await axios.post(
         `${
           import.meta.env.VITE_PUBLIC_DEFAULT_API
         }/api/v1/auth/logout`,
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem(
-              'pulseToken',
-            )}`,
+            Authorization: Secure.getToken(),
           },
         },
       );

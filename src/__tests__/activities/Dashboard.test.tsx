@@ -4,8 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
 
-import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardActivity from '@/modules/activities/DashboardActivity';
+import Secure from '@/utils/secureLs';
 
 const mockStore = configureMockStore([thunk]);
 
@@ -28,9 +28,6 @@ describe('DashboardActivity component', () => {
     );
 
     fireEvent.click(getByText('Sign Out'));
-
-    // expect(store.getActions()).toEqual([logoutFromMicrosoft()]);
-    // expect(store.getActions()).toEqual(expect.arrayContaining([logoutFromMicrosoft]));
   });
 
   it('should remove pulseToken from localStorage when Logout button is clicked', () => {
@@ -44,8 +41,8 @@ describe('DashboardActivity component', () => {
       </Provider>,
     );
 
-    fireEvent.click(getByText('Logout'));
+    fireEvent.click(getByText('Sign Out'));
 
-    expect(localStorage.getItem('pulseToken')).toBeNull();
+    expect(Secure.getToken()).toBeNull();
   });
 });

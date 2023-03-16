@@ -1,24 +1,19 @@
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Dispatch } from 'redux';
-
-import {
-  logoutFromMicrosoft
-} from '@/redux/features/auth/loginSlice';
-import { fetchProfile } from '@/redux/features/auth/fetchProfileSlie';
 import Secure from '@/utils/secureLs';
+import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
+import { Dispatch } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 
 const DashboardActivity = () => {
   const dispatch: Dispatch<any> = useDispatch();
   const handleLogout = () => {
     Secure.removeToken();
-    window.location.href = "/login";
-    // dispatch(logoutFromMicrosoft());
-    // localStorage.removeItem('pulseToken');
+    dispatch(logoutFromMicrosoft);
+    window.location.href = "/";
   };
 
   const handleGetProfile =()=>{
-    dispatch(fetchProfile());
+    // dispatch(fetchProfile());
   }
   return (
     <div className="flex flex-col items-center">

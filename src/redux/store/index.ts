@@ -8,7 +8,7 @@ import authReducer from '../features/auth/loginSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { auth: authReducer},
+    reducer: { auth: authReducer },
   });
 }
 

@@ -1,16 +1,14 @@
-import Secure from '@/utils/secureLs';
-import {
-  createAsyncThunk,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+
+import Secure from '@/utils/secureLs';
+import Keys from '@/utils/keys';
 
 interface LoginState {
   token: string | null;
   loading: boolean;
   error: string | null;
 }
-
 
 const initialState: LoginState = {
   token: null,
@@ -30,26 +28,18 @@ const loginSlice = createSlice({
   },
 });
 
-export const {
-  logoutSuccess,
-} = loginSlice.actions;
-
+export const { logoutSuccess } = loginSlice.actions;
 
 export const logoutFromMicrosoft = createAsyncThunk(
   'auth/logoutFromMicrosoft',
   async () => {
     try {
-      await axios.post(
-        `${
-          import.meta.env.VITE_PUBLIC_DEFAULT_API
-        }/api/v1/auth/logout`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: Secure.getToken(),
-          },
+      await axios.post(`${Keys.DEFAULT_API}/api/v1/auth/logout`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: Secure.getToken(),
         },
-      );
+      });
     } catch (error: any) {
       throw error.response.data;
     }

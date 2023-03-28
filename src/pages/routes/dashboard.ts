@@ -3,7 +3,7 @@ import DashboardActivity from '@/modules/activities/DashboardActivity';
 
 const dashboardRoute: IRoute = {
   title: 'Dashboard - Codehills',
-  protected: true,
+  protected: false,
   guestOnly: false,
   path: '/dashboard',
   component: DashboardActivity,

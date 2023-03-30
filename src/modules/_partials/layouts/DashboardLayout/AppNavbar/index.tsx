@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
-import { HiOutlineUserCircle } from 'react-icons/hi';
+import { HiOutlineUserCircle, HiMenu } from 'react-icons/hi';
 
 import AppSidebar from '../AppSidebar';
 
@@ -14,7 +14,16 @@ const AppNavbar = () => {
   return (
     <Navbar fluid rounded>
       <div className="flex items-center">
-        <Dropdown arrowIcon={false} inline label={<Navbar.Toggle />}>
+        <Dropdown
+          arrowIcon={false}
+          inline
+          label={
+            <HiMenu
+              size={32}
+              className="text-gray-800 dark:text-gray-400 mr-2 md:hidden"
+            />
+          }
+        >
           <AppSidebar />
         </Dropdown>
         <NavLink

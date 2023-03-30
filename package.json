@@ -12,11 +12,11 @@
     "prepare": "husky install",
     "pre-commit": "lint-staged",
     "lint": "eslint . --ignore-path .eslintignore",
-    "lint:fix": "npm run lint --fix"
+    "lint:fix": "yarn lint --fix"
   },
   "lint-staged": {
     "src/**/*.{css,md,html,json,js,jsx,ts,tsx}": [
-      "npm run lint:fix",
+      "yarn lint:fix",
       "git add"
     ]
   },

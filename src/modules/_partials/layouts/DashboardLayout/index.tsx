@@ -15,10 +15,22 @@ const theme: CustomFlowbiteTheme = {
       inner:
         'w-full h-full top-0 sticky overflow-y-auto overflow-x-hidden rounded bg-brand-blue-light py-4 px-3 dark:bg-gray-800',
     },
+    item: {
+      base: 'text-gray-500 dark:text-gray-400 flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700',
+    },
   },
   navbar: {
     root: {
       base: 'border-gray-200 bg-brand-blue-light px-2 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-4',
+    },
+  },
+  modal: {
+    header: {
+      title:
+        'text-xl font-medium text-gray-900 dark:text-white flex-grow flex-grow',
+      close: {
+        base: 'ml-auto text-white bg-red-500 flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white',
+      },
     },
   },
 };

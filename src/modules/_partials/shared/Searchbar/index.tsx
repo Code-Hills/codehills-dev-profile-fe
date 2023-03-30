@@ -3,7 +3,7 @@ import React from 'react';
 
 const Searchbar = () => {
   return (
-    <form className="flex items-center flex-grow max-w-md">
+    <form className="flex items-center flex-grow">
       <label htmlFor="simple-search" className="sr-only">
         Search
       </label>

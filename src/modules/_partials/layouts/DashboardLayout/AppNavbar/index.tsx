@@ -1,13 +1,14 @@
 import React from 'react';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
 import { NavLink } from 'react-router-dom';
+import { HiOutlineUserCircle } from 'react-icons/hi';
 
 import AppSidebar from '../AppSidebar';
 
-import logo from '@/assets/images/logos/logo.svg';
+import logo from '@/assets/images/logos/orginal.png';
 import NotificationButton from '@/modules/_partials/shared/Notifications/NotificationButton';
 import Notifications from '@/modules/_partials/shared/Notifications';
-import Searchbar from '@/modules/_partials/shared/Searchbar';
+import SearchPopupModal from '@/modules/_partials/shared/SearchPopupModal';
 
 const AppNavbar = () => {
   return (
@@ -22,18 +23,16 @@ const AppNavbar = () => {
         >
           <img
             src={logo}
-            className="mr-3 h-6 sm:h-9"
+            className="mr-3 h-8 sm:h-9"
             alt="CodeHills Logo"
           />
-          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+          <span className="hidden md:block self-center whitespace-nowrap text-xl font-semibold dark:text-white">
             CodeHills
           </span>
         </NavLink>
       </div>
-      <div className="hidden md:flex flex-grow">
-        <Searchbar />
-      </div>
-      <div className="flex md:order-2 space-x-2 md:space-x-4">
+      <div className="flex md:order-2 space-x-2 md:space-x-4 items-center">
+        <SearchPopupModal />
         <Dropdown
           arrowIcon={false}
           inline
@@ -45,10 +44,9 @@ const AppNavbar = () => {
           arrowIcon={false}
           inline
           label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbiteFlowbitee.com/docs/images/people/profile-picture-5.jpg"
-              rounded
+            <HiOutlineUserCircle
+              size={32}
+              className="text-gray-800 dark:text-gray-400"
             />
           }
         >

@@ -6,7 +6,7 @@ import { HiOutlineUserCircle, HiMenu } from 'react-icons/hi';
 import AppSidebar from '../AppSidebar';
 
 import logo from '@/assets/images/logos/orginal.png';
-import NotificationButton from '@/modules/_partials/shared/Notifications/NotificationButton';
+import NotificationIcon from '@/modules/_partials/shared/Notifications/NotificationIcon';
 import Notifications from '@/modules/_partials/shared/Notifications';
 import SearchPopupModal from '@/modules/_partials/shared/SearchPopupModal';
 
@@ -45,7 +45,7 @@ const AppNavbar = () => {
         <Dropdown
           arrowIcon={false}
           inline
-          label={<NotificationButton />}
+          label={<NotificationIcon />}
         >
           <Notifications />
         </Dropdown>
@@ -54,7 +54,7 @@ const AppNavbar = () => {
           inline
           label={
             <HiOutlineUserCircle
-              size={32}
+              size={48}
               className="text-gray-800 dark:text-gray-400"
             />
           }

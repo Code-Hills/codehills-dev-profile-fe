@@ -1,3 +1,4 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/afc0e46f-a6e0-4d4c-ad52-2a329d9daae6/deploy-status?branch=develop)](https://app.netlify.com/sites/codehills-hr-app/deploys)
 # React Vite CodeHills - HR App
 
 This is an HR app designed for managing developers by providing tools for conducting reviews and addressing other development concerns.

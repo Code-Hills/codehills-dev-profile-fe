@@ -29,8 +29,14 @@ const theme: CustomFlowbiteTheme = {
       title:
         'text-xl font-medium text-gray-900 dark:text-white flex-grow flex-grow',
       close: {
-        base: 'ml-auto text-white bg-red-500 flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white',
+        base: 'ml-auto text-white bg-red-500 flex items-center rounded-lg p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white',
       },
+    },
+  },
+  dropdown: {
+    content: 'py-0',
+    floating: {
+      content: 'text-sm text-gray-700 dark:text-gray-200',
     },
   },
 };

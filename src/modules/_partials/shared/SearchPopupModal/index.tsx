@@ -11,9 +11,17 @@ const SearchPopupModal = () => {
   };
   return (
     <>
-      <Button outline pill onClick={() => setShow(!show)}>
+      <Button
+        outline
+        pill
+        onClick={() => setShow(!show)}
+        className="md:hidden"
+      >
         <HiSearch className="h-6 w-6" />
       </Button>
+      <div className="hidden md:flex flex-grow max-w-2xl w-full">
+        <Searchbar />
+      </div>
       <Modal
         show={show}
         size="4xl"

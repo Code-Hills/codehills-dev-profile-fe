@@ -23,7 +23,7 @@ const AppElement = ({ route = defaultRoute }: { route: IRoute }) => {
   }
 
   changePage.current = async () => {
-    const user = await isAuth();
+    const user = isAuth();
     if (route.guestOnly && user) {
       navigate('/');
     }

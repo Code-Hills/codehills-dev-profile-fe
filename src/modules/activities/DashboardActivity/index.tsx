@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
+import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
 
 const DashboardActivity = () => {
   const navigate = useNavigate();
@@ -19,17 +20,11 @@ const DashboardActivity = () => {
     // dispatch(fetchProfile());
   };
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-center text-2xl md:text-4xl text-blue-800">
+    <DashboardLayout>
+      <h1 className="text-center p-4 text-2xl md:text-4xl text-blue-800 dark:text-brand-blue-light">
         Codehills
       </h1>
-      <Link onClick={e => handleLogout(e)} to="/">
-        Sign Out
-      </Link>
-      <button type="button" onClick={handleGetProfile}>
-        Profile
-      </button>
-    </div>
+    </DashboardLayout>
   );
 };
 

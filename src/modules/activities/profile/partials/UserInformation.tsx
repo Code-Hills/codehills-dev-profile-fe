@@ -1,6 +1,7 @@
 import { Avatar } from 'flowbite-react';
 
 import ProfileForm from './ProfileForm';
+import ChangeAvatar from './ChangeAvatar';
 
 import cover from '@/assets/images/profile/cover.png';
 
@@ -17,16 +18,21 @@ const UserInformation = ({
       >
         <div className="rounded-t-[30px] w-full flex flex-col bg-gradient-to-t from-gray-900 px-4 md:px-8">
           <div className="flex items-end justify-between space-x-3 translate-y-10 w-full">
-            {profile.avatar ? (
-              <Avatar
-                img={profile.avatar}
-                alt={profile.firstName}
-                rounded
-                size="xl"
-              />
-            ) : (
-              <Avatar rounded size="xl" />
-            )}
+            <div className="flex relative">
+              {profile.avatar ? (
+                <Avatar
+                  img={profile.avatar}
+                  alt={profile.firstName}
+                  rounded
+                  size="xl"
+                />
+              ) : (
+                <Avatar rounded size="xl" />
+              )}
+              <div className="top-4 -right-16 absolute">
+                <ChangeAvatar />
+              </div>
+            </div>
             <div className="translate-y-2 md:translate-y-4">
               <ProfileForm />
             </div>

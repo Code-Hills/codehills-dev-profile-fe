@@ -3,6 +3,7 @@ import profileRoute from './routes/profile';
 import loginRoute from './routes/login';
 import notFoundRoute from './routes/notFoundPage';
 import logoutRoute from './routes/logout';
+import usersRoute from './routes/users';
 
 const routes = [
   dashboardRoute,
@@ -10,6 +11,7 @@ const routes = [
   profileRoute,
   logoutRoute,
   notFoundRoute,
+  usersRoute,
 ];
 
 export default routes;

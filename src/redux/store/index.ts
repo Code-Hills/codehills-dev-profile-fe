@@ -6,10 +6,15 @@ import {
 
 import authReducer from '../features/auth/loginSlice';
 import profileSlice from '../features/profile/profileSlice';
+import usersSlice from '../features/users/userSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { auth: authReducer, profile: profileSlice },
+    reducer: {
+      auth: authReducer,
+      profile: profileSlice,
+      users: usersSlice,
+    },
   });
 }
 

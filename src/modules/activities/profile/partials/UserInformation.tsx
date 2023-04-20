@@ -40,13 +40,18 @@ const UserInformation = ({
         </div>
       </div>
       <div className="rounded-b-[30px] mt-8 flex flex-col p-4 md:p-8">
-        <h1 className="text-2xl font-bold">{profile.displayName}</h1>
+        <h1 className="text-2xl font-bold">
+          {profile.displayName}
+          <sub className="text-sm ml-2 font-semibold">
+            {profile.role}
+          </sub>
+        </h1>
         {profile.address && (
           <p className="text-sm capitalize mt-2 text-gray-400 dark:text-gray-200">
             {profile.address.city}, {profile.address.country}
           </p>
         )}
-        <p className="text-sm capitalize mt-2">{profile.role}</p>
+        <p className="text-sm capitalize mt-2">{profile.email}</p>
       </div>
     </div>
   );

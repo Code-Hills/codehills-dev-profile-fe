@@ -57,6 +57,7 @@ const ChangeAvatar = () => {
       formData.append('avatar', image);
     } else {
       toast.warn('Please select an image to upload');
+      return;
     }
     await dispatch(updateProfile(formData));
     if (!updateError) {

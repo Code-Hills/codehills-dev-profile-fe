@@ -1,7 +1,6 @@
-import React from 'react';
 import { Navbar, Dropdown, Avatar } from 'flowbite-react';
-import { NavLink } from 'react-router-dom';
-import { HiOutlineUserCircle, HiMenu } from 'react-icons/hi';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { HiMenu } from 'react-icons/hi';
 
 import AppSidebar from '../AppSidebar';
 
@@ -9,8 +8,13 @@ import logo from '@/assets/images/logos/orginal.png';
 import NotificationIcon from '@/modules/_partials/shared/Notifications/NotificationIcon';
 import Notifications from '@/modules/_partials/shared/Notifications';
 import SearchPopupModal from '@/modules/_partials/shared/SearchPopupModal';
+import { useAppSelector } from '@/modules/_partials/hooks/useRedux';
 
 const AppNavbar = () => {
+  const { tokenData, user } = useAppSelector(state => state.profile);
+  const { avatar, firstName, email, displayName } =
+    user || tokenData || {};
+  const navigate = useNavigate();
   return (
     <Navbar fluid rounded>
       <div className="flex items-center">
@@ -53,21 +57,24 @@ const AppNavbar = () => {
           arrowIcon={false}
           inline
           label={
-            <HiOutlineUserCircle
-              size={48}
-              className="text-gray-800 dark:text-gray-400"
-            />
+            avatar ? (
+              <Avatar rounded img={avatar} alt={firstName} />
+            ) : (
+              <Avatar rounded />
+            )
           }
         >
           <Dropdown.Header>
             <span className="block text-sm">
-              Celestin Niyindagiriye
+              {displayName || firstName}
             </span>
             <span className="block truncate text-sm font-medium">
-              nicele08@gmail.com
+              {email}
             </span>
           </Dropdown.Header>
-          <Dropdown.Item>Profile</Dropdown.Item>
+          <Dropdown.Item onClick={() => navigate('/profile')}>
+            Profile
+          </Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Ratings</Dropdown.Item>
           <Dropdown.Divider />

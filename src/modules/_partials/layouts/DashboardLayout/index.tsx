@@ -1,5 +1,11 @@
 import React from 'react';
-import { CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import {
+  CustomFlowbiteTheme,
+  Flowbite,
+  useTheme,
+} from 'flowbite-react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import AppSidebar from './AppSidebar';
 import AppNavbar from './AppNavbar';
@@ -46,9 +52,10 @@ const DashboardLayout = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { mode } = useTheme();
   return (
     <Flowbite theme={{ theme }}>
-      <div className="relative flex w-full overflow-x-hidden bg-brand-blue-light dark:bg-gray-900 h-screen overflow-y-auto">
+      <div className="relative flex w-full overflow-x-hidden bg-brand-blue-light dark:text-gray-50 dark:bg-gray-900 h-screen overflow-y-auto">
         <AppSidebar className="hidden md:block md:w-fit" />
 
         <div
@@ -58,6 +65,9 @@ const DashboardLayout = ({
           <AppNavbar />
           <main className="flex flex-col w-full overflow-x-hidden bg-white flex-grow dark:bg-gray-900">
             {children}
+            <ToastContainer
+              theme={mode === 'dark' ? 'dark' : 'light'}
+            />
           </main>
         </div>
       </div>

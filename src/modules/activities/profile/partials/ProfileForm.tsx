@@ -1,7 +1,7 @@
 import { Button, Modal, Spinner } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
-import { useState, memo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   HiPencil,
   HiChevronRight,
@@ -222,4 +222,4 @@ const ProfileForm = () => {
   );
 };
 
-export default memo(ProfileForm);
+export default ProfileForm;

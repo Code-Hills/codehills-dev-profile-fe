@@ -58,7 +58,13 @@ const AppNavbar = () => {
           inline
           label={
             avatar ? (
-              <Avatar rounded img={avatar} alt={firstName} />
+              <Avatar
+                rounded
+                img={avatar}
+                alt={firstName}
+                size="md"
+                className="shrink-0"
+              />
             ) : (
               <Avatar rounded />
             )

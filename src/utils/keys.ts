@@ -7,6 +7,9 @@ const Keys = {
 
   APP_THEME_KEY:
     import.meta.env.VITE_APP_THEME_KEY || 'lskdlklkuOisd',
+
+  REDIRECT_URL_KEY:
+    import.meta.env.VITE_REDIRECT_URL_KEY || 'KLKLSKI839283',
 };
 
 export default Keys;

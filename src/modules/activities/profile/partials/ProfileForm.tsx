@@ -61,17 +61,11 @@ const ProfileForm = () => {
   const renderSteps = () => {
     switch (step) {
       case 1:
-        return (
-          <PersonalInformation register={register} errors={errors} />
-        );
+        return <PersonalInformation {...{ register, errors }} />;
       case 2:
-        return (
-          <AddressInformation register={register} errors={errors} />
-        );
+        return <AddressInformation {...{ register, errors }} />;
       case 3:
-        return (
-          <BankInformation register={register} errors={errors} />
-        );
+        return <BankInformation {...{ register, errors }} />;
       default:
         return null;
     }
@@ -88,7 +82,7 @@ const ProfileForm = () => {
     }
   };
 
-  const onSubmit = (query: any) => {
+  const submitHandler = handleSubmit(data => {
     if (step < 3) {
       setStep(step + 1);
     }
@@ -97,7 +91,7 @@ const ProfileForm = () => {
       case 1:
         setProfileData({
           ...profileData,
-          ...query,
+          ...data,
         });
         break;
       case 2:
@@ -105,7 +99,7 @@ const ProfileForm = () => {
           ...profileData,
           address: {
             ...profileData.address,
-            ...query,
+            ...data,
           },
         });
         break;
@@ -115,7 +109,7 @@ const ProfileForm = () => {
             ...prev,
             bank: {
               ...prev.bank,
-              ...query,
+              ...data,
             },
           };
           updateUserProfile(payload);
@@ -126,7 +120,7 @@ const ProfileForm = () => {
       default:
         break;
     }
-  };
+  });
 
   const handleBack = () => {
     if (step > 1) {
@@ -170,11 +164,7 @@ const ProfileForm = () => {
         onClose={onClose}
       >
         <Modal.Header>Edit Profile</Modal.Header>
-        <form
-          onSubmit={event => {
-            handleSubmit(onSubmit)(event);
-          }}
-        >
+        <form onSubmit={submitHandler}>
           <Modal.Body>{renderSteps()}</Modal.Body>
           <Modal.Footer className="justify-end">
             <Button color="gray" type="button" onClick={handleBack}>

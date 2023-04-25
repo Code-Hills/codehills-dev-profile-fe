@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import { Button, Modal, Spinner } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
@@ -72,7 +73,17 @@ const ProfileForm = () => {
   };
 
   const updateUserProfile = async (payload: any) => {
-    await dispatch(updateProfile(payload));
+    const formData = new FormData();
+    Object.keys(payload).forEach(key => {
+      if (typeof payload[key] === 'object') {
+        Object.keys(payload[key]).forEach(subKey => {
+          formData.append(`${key}.${subKey}`, payload[key][subKey]);
+        });
+      } else {
+        formData.append(key, payload[key]);
+      }
+    });
+    await dispatch(updateProfile(formData));
     if (!updateError) {
       onClose();
       toast('Profile updated successfully');

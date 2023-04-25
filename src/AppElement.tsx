@@ -27,10 +27,10 @@ const AppElement = ({ route = defaultRoute }: { route: IRoute }) => {
     const redirectUrl = Secure.get(Keys.REDIRECT_URL_KEY);
     if (redirectUrl) {
       Secure.remove(Keys.REDIRECT_URL_KEY);
-      return <Navigate to={redirectUrl} />;
+      return <Navigate to={redirectUrl} replace />;
     }
 
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (route.title) {

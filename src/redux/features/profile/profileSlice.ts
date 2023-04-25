@@ -16,7 +16,7 @@ export const updateProfile = createAsyncThunk(
   async (data: Record<string, any>) => {
     const { data: updatedData } = await API.put('/profile', data, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
       },
     });
     return updatedData;

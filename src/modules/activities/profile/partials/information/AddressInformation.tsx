@@ -65,7 +65,7 @@ const AddressInformation = ({
             htmlFor="street"
             color={errors.street ? 'failure' : 'gray'}
           >
-            street
+            Street
           </Label>
           <TextInput
             type="text"

@@ -5,10 +5,14 @@ import {
 } from '@reduxjs/toolkit';
 
 import authReducer from '../features/auth/loginSlice';
+import userReducer from '../features/users/userSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { auth: authReducer },
+    reducer: {
+      auth: authReducer,
+      users: userReducer,
+    },
   });
 }
 

@@ -5,15 +5,18 @@ import UserInformation from './UserInformation';
 import ProfileProjects from './ProfileProjects';
 
 import SomethigWrong from '@/modules/_partials/shared/SomethigWrong';
+import { IProject } from '@/interfaces/project.interface';
 
 const ProfileWrapper = ({
   isLoading = false,
   error,
-  data,
+  profile,
+  projects,
 }: {
   isLoading?: boolean;
   error?: string | null;
-  data: any;
+  profile: Record<string, any>;
+  projects: IProject[];
 }) => {
   if (isLoading) {
     return (
@@ -28,8 +31,8 @@ const ProfileWrapper = ({
   }
   return (
     <>
-      <UserInformation profile={data || {}} />
-      <ProfileProjects />
+      <UserInformation profile={profile} />
+      <ProfileProjects projects={projects} />
     </>
   );
 };

@@ -84,7 +84,9 @@ const AppNavbar = () => {
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Ratings</Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
+          <Dropdown.Item onClick={() => navigate('/logout')}>
+            Sign out
+          </Dropdown.Item>
         </Dropdown>
       </div>
     </Navbar>

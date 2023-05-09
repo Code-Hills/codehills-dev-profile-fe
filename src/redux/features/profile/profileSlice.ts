@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
 import isAuth from '@/helpers/isAuth';
+import { IProject } from '@/interfaces/project.interface';
 
 export const getMyProfile = createAsyncThunk(
   'profile/fetch',
@@ -23,6 +24,14 @@ export const updateProfile = createAsyncThunk(
   },
 );
 
+export const getMyProjects = createAsyncThunk(
+  'profile/projects',
+  async (userId: string) => {
+    const { data } = await API.get(`/users/${userId}/projects`);
+    return data;
+  },
+);
+
 interface InitialState {
   tokenData: Record<string, any> | null;
   user: Record<string, any> | null;
@@ -32,6 +41,9 @@ interface InitialState {
   // update
   isUpdating: boolean;
   updateError: string | null;
+
+  // projects
+  projects: IProject[];
 }
 
 const isAuthData = isAuth();
@@ -45,6 +57,9 @@ const initialState: InitialState = {
   // update
   isUpdating: false,
   updateError: null,
+
+  // projects
+  projects: [],
 };
 
 const profileSlice = createSlice({
@@ -81,6 +96,17 @@ const profileSlice = createSlice({
       .addCase(updateProfile.rejected, (state, action) => {
         state.isUpdating = false;
         state.updateError = action.error.message as string;
+      })
+      .addCase(getMyProjects.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getMyProjects.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.projects = action.payload.projects;
+      })
+      .addCase(getMyProjects.rejected, (state, action) => {
+        state.isLoading = false;
       });
   },
 });

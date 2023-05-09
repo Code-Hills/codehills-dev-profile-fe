@@ -51,7 +51,7 @@ const UserInformation = ({
             {profile.address.city}, {profile.address.country}
           </p>
         )}
-        <p className="text-sm capitalize mt-2">{profile.email}</p>
+        <p className="text-sm mt-2">{profile.email}</p>
       </div>
     </div>
   );

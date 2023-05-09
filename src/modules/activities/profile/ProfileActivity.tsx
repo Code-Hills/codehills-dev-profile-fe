@@ -7,24 +7,34 @@ import {
   useAppSelector,
   useAppDispatch,
 } from '@/modules/_partials/hooks/useRedux';
-import { getMyProfile } from '@/redux/features/profile/profileSlice';
+import {
+  getMyProfile,
+  getMyProjects,
+} from '@/redux/features/profile/profileSlice';
 
 const ProfileActivity = () => {
   const dispatch = useAppDispatch();
-  const { user, isLoading, error } = useAppSelector(
+  const { user, isLoading, error, projects } = useAppSelector(
     state => state.profile,
   );
 
   useEffect(() => {
     dispatch(getMyProfile());
-  }, [dispatch]);
+  }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getMyProjects(user.id));
+    }
+  }, [user]);
   return (
     <DashboardLayout>
       <div className="flex flex-col p-4 md:px-8 bg-brand-blue-light/70 dark:bg-transparent flex-grow">
         <ProfileWrapper
           isLoading={isLoading}
           error={error}
-          data={user}
+          profile={user || {}}
+          projects={projects}
         />
       </div>
     </DashboardLayout>

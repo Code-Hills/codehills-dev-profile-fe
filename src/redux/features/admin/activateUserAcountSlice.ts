@@ -34,7 +34,6 @@ export const deactivateUserAcount = createAsyncThunk(
     const { data: deactivateUser } = await API.patch('/users/deactivate',body, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": `Bearer ${Secure.getToken}`,
       },
     });
     return deactivateUser;

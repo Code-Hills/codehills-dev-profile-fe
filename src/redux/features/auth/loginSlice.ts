@@ -1,8 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { NavigateFunction } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
+import API from '@/api/api';
 import Secure from '@/utils/secureLs';
-import Keys from '@/utils/keys';
+
+export const logoutFromMicrosoft = createAsyncThunk(
+  'auth/logoutFromMicrosoft',
+  async (navigate: NavigateFunction) => {
+    try {
+      const { data } = await API.post(`/auth/logout`);
+      toast.success('You have been logged out successfully');
+      return data;
+    } catch (error: any) {
+      throw error?.response?.data;
+    } finally {
+      navigate('/');
+      Secure.removeToken();
+    }
+  },
+);
 
 interface LoginState {
   token: string | null;
@@ -26,24 +43,24 @@ const loginSlice = createSlice({
       state.error = null;
     },
   },
+  extraReducers(builder) {
+    builder
+      .addCase(logoutFromMicrosoft.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutFromMicrosoft.fulfilled, state => {
+        state.loading = false;
+        state.token = null;
+        state.error = null;
+      })
+      .addCase(logoutFromMicrosoft.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || null;
+      });
+  },
 });
 
 export const { logoutSuccess } = loginSlice.actions;
-
-export const logoutFromMicrosoft = createAsyncThunk(
-  'auth/logoutFromMicrosoft',
-  async () => {
-    try {
-      await axios.post(`${Keys.DEFAULT_API}/api/v1/auth/logout`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: Secure.getToken(),
-        },
-      });
-    } catch (error: any) {
-      throw error.response.data;
-    }
-  },
-);
 
 export default loginSlice.reducer;

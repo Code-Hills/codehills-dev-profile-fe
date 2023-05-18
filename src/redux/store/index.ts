@@ -5,10 +5,11 @@ import {
 } from '@reduxjs/toolkit';
 
 import authReducer from '../features/auth/loginSlice';
+import profileSlice from '../features/profile/profileSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { auth: authReducer },
+    reducer: { auth: authReducer, profile: profileSlice },
   });
 }
 

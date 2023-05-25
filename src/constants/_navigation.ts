@@ -7,6 +7,7 @@ import {
   HiChartBar,
   HiCheckCircle,
 } from 'react-icons/hi';
+import { GiStarFormation } from 'react-icons/gi';
 
 export const sidebarNavLinks = [
   {
@@ -20,8 +21,13 @@ export const sidebarNavLinks = [
     icon: HiUsers,
   },
   {
+    name: 'Reviews',
+    href: '/reviews',
+    icon: GiStarFormation,
+  },
+  {
     name: 'Performance',
-    href: '/dashboard/performance',
+    href: '/performance',
     icon: HiChartBar,
   },
   {
@@ -41,7 +47,7 @@ export const sidebarNavLinks = [
   },
   {
     name: 'Reports',
-    href: '/dashboard/reports',
+    href: '/reports',
     icon: HiDocumentReport,
   },
 ];

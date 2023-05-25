@@ -7,10 +7,7 @@ import {
   useAppSelector,
   useAppDispatch,
 } from '@/modules/_partials/hooks/useRedux';
-import {
-  getMyProfile,
-  getMyProjects,
-} from '@/redux/features/profile/profileSlice';
+import { getMyProfile, getMyProjects } from '@/pages/profileSlice';
 
 const ProfileActivity = () => {
   const dispatch = useAppDispatch();

@@ -19,6 +19,8 @@ import isAuth from '@/helpers/isAuth';
 import { deactivateUserAcount } from '@/redux/features/admin/deactivateUserAcountSlice';
 import { activateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
 import { toast } from 'react-toastify';
+import UsersSkeleton from './UsersSkeleton';
+
 
 const UsersActivity = () => {
 
@@ -31,7 +33,7 @@ const UsersActivity = () => {
     };
   }
 
-  
+
   const [showMenuIcon, setHideMonuIcon] = useState(false);
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
@@ -77,22 +79,14 @@ const UsersActivity = () => {
     e.preventDefault();
     if (!item.isActivated) {
       dispatch(activateUserAcount(item.email))
-      .then(() => {
-          toast('User activated successfully');
-          dispatch(getAllUsers());
-          setHideMonuIcon(prev => !prev);
-        }).catch(() => {
-          toast.error('Try again');
-        });
+      toast('User activated successfully');
+      dispatch(getAllUsers());
+      setHideMonuIcon(prev => !prev);
     } else {
       dispatch(deactivateUserAcount(item.email))
-        .then(() => {
-          toast('User deactivated successfully');
-          setHideMonuIcon(prev => !prev);
-          dispatch(getAllUsers());
-        }).catch(() => {
-          toast.error('Try again');
-        });
+      toast('User deactivated successfully');
+      setHideMonuIcon(prev => !prev);
+      dispatch(getAllUsers());
     }
 
   }
@@ -169,7 +163,9 @@ const UsersActivity = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.isLoading === false && data.user !== null && data.user.map((item: { displayName: string |User| number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any; }, index: number) => {
+                  {data.isLoading === false && data.user !== null && data.user.map((item: {
+                    id: string | undefined; displayName: string | User | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any;
+                  }, index: number) => {
                     return <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <td className="w-4 p-4">
                         <div className="flex items-center">
@@ -230,7 +226,56 @@ const UsersActivity = () => {
                     </tr>
                   })}
 
+                  
                 </tbody>
+                {data.isLoading === true && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                  <tr className='animate-pulse bg-gray-200 border-t border-white border-4 transition-all duration-300 dark:bg-gray-700'>
+                    <th scope="col" className="p-4 mt-2 mb-2" />
+                    <th scope="col" className="px-6 py-3 " />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                  </tr>
+
+                  <tr className='border-t border-white animate-pulse border-4 bg-gray-200 mt-5  transition-all duration-300 dark:bg-gray-700'>
+                    <th scope="col" className="p-4 mt-2 mb-2" />
+                    <th scope="col" className="px-6 py-3 " />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                  </tr>
+                  <tr className='border-t border-white animate-pulse border-4 bg-gray-200 mt-5  transition-all duration-300 dark:bg-gray-700'>
+                    <th scope="col" className="p-4 mt-2 mb-2" />
+                    <th scope="col" className="px-6 py-3 " />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                  </tr>
+                  <tr className='border-t border-white animate-pulse border-4 bg-gray-200 mt-5  transition-all duration-300 dark:bg-gray-700'>
+                    <th scope="col" className="p-4 mt-2 mb-2" />
+                    <th scope="col" className="px-6 py-3 " />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                  </tr> <tr className='border-t border-white border-4 animate-pulse bg-gray-200 mt-5  transition-all duration-300 dark:bg-gray-700'>
+                    <th scope="col" className="p-4 mt-2 mb-2" />
+                    <th scope="col" className="px-6 py-3 " />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                    <th scope="col" className="px-6 py-3" />
+                  </tr>
+                </thead>
+                }
               </table>
             </div>
             <nav aria-label="Page navigation example ">

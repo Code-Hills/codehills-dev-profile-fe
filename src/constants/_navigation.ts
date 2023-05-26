@@ -16,7 +16,7 @@ export const sidebarNavLinks = [
   },
   {
     name: 'Users',
-    href: '/dashboard/users',
+    href: '/users',
     icon: HiUsers,
   },
   {

@@ -20,6 +20,7 @@ import { deactivateUserAcount } from '@/redux/features/admin/deactivateUserAcoun
 import { activateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
 import { toast } from 'react-toastify';
 import UsersSkeleton from './UsersSkeleton';
+import { User } from '@/interfaces/user.interface';
 
 
 const UsersActivity = () => {
@@ -37,8 +38,8 @@ const UsersActivity = () => {
   const [showMenuIcon, setHideMonuIcon] = useState(false);
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
-  const isLoading = useSelector((state: RootState) => state.activate.isLoading);
-  const isLoadingdeactivate = useSelector((state: RootState) => state.deactivate.isLoading);
+  const isActivating = useSelector((state: RootState) => state.activate.isLoading);
+  const isDeactivating = useSelector((state: RootState) => state.deactivate.isLoading);
 
 
   const navigate = useNavigate();
@@ -54,21 +55,15 @@ const UsersActivity = () => {
     setClickedUserId(e);
   }
 
-  interface User {
-    id: any;
-    displayName: string;
-    role: string;
-    email: string;
-    isActivated: boolean;
-  };
-
   useEffect(() => {
     dispatch(getAllUsers());
   }, [dispatch]);
 
-  const data = useAppSelector(
+  const {users, isLoading } = useAppSelector(
     state => state.users,
   );
+
+
   const handleUserClick = (e: User) => {
     setClickedUserId(e.id);
     setIsActivated(e.isActivated);
@@ -163,9 +158,7 @@ const UsersActivity = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.isLoading === false && data.user !== null && data.user.map((item: {
-                    id: string | undefined; displayName: string | User | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any;
-                  }, index: number) => {
+                  {users?.map((item, index: number) => {
                     return <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <td className="w-4 p-4">
                         <div className="flex items-center">
@@ -215,7 +208,7 @@ const UsersActivity = () => {
                               <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
 
                                 <li>
-                                  <Link to="/activate" onClick={(e) => handleCurrentUser(e, item)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated ? <span className='text-red-500'>{isLoading ? "Deactivating ..." : "Deactivate"}</span> : <span> {isLoading ? "Activating ..." : "Activate"}</span>}</Link>
+                                  <Link to="/activate" onClick={(e) => handleCurrentUser(e, item)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated ? <span className='text-red-500'>{isDeactivating ? "Deactivating ..." : "Deactivate"}</span> : <span> { isActivating ? "Activating ..." : "Activate"}</span>}</Link>
                                 </li>
                               </ul>
                               <div className="py-2" />
@@ -228,7 +221,7 @@ const UsersActivity = () => {
 
                   
                 </tbody>
-                {data.isLoading === true && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                {isLoading && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                   <tr className='animate-pulse bg-gray-200 border-t border-white border-4 transition-all duration-300 dark:bg-gray-700'>
                     <th scope="col" className="p-4 mt-2 mb-2" />
                     <th scope="col" className="px-6 py-3 " />
@@ -281,7 +274,7 @@ const UsersActivity = () => {
             <nav aria-label="Page navigation example ">
               <ul className="flex items-center justify-center -space-x-px w-full mb-10 mt-8">
                 <li>
-                  <Link to="dashboard/users" className="block flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                  <Link to="/users" className="block flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                     <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>

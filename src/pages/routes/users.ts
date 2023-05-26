@@ -5,7 +5,7 @@ const usersRoute: IRoute = {
   title: 'Admin - users',
   protected: false,
   guestOnly: true,
-  path: 'dashboard/users',
+  path: '/users',
   component: UsersActivity,
 };
 

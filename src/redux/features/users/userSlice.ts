@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
 import isAuth from '@/helpers/isAuth';
+import { User } from '@/interfaces/user.interface';
 
 export const getAllUsers = createAsyncThunk(
   'users/fetch',
@@ -14,7 +15,7 @@ export const getAllUsers = createAsyncThunk(
 
 interface InitialState {
   // tokenData: Record<string, any> | null;
-  user: any | null;
+  users: User[];
   isLoading: boolean;
   error: string | null;
 }
@@ -23,7 +24,7 @@ const isAuthData = isAuth();
 
 const initialState: InitialState = {
   // tokenData: isAuthData || null,
-  user: null,
+  users: [],
   isLoading: false,
   error: null,
 };
@@ -44,7 +45,7 @@ const userSlice = createSlice({
       })
       .addCase(getAllUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.users;
+        state.users = action.payload.users;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
         state.isLoading = false;

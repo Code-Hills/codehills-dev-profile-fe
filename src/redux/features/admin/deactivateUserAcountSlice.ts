@@ -6,7 +6,7 @@ import isAuth from '@/helpers/isAuth';
 
 export const deactivateUserAcount = createAsyncThunk(
   'disable/user',
-  async (data) => {
+  async (data: string) => {
     const body={
       email:data,
     }

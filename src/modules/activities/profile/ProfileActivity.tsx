@@ -14,7 +14,7 @@ const ProfileActivity = () => {
   const { user, isLoading, error, projects } = useAppSelector(
     state => state.profile,
   );
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     dispatch(getMyProfile());
   }, []);

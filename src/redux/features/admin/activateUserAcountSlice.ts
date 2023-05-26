@@ -6,7 +6,7 @@ import isAuth from '@/helpers/isAuth';
 
 export const activateUserAcount = createAsyncThunk(
   'activate/user',
-  async (data) => {
+  async (data: string) => {
     const body={
       email:data,
     }

@@ -7,7 +7,7 @@ import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 const LogoutPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     dispatch(logoutFromMicrosoft(navigate));
   }, []);

@@ -1,17 +1,29 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/order */
 import { Link, useNavigate } from 'react-router-dom';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import { FiUsers } from 'react-icons/fi';
 import { GoPlus } from 'react-icons/go';
-import { BsThreeDots } from 'react-icons/bs';
 import { AiOutlineFilter } from 'react-icons/ai';
 
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
 import DropdownMenu from '@/modules/_partials/Dropdowns';
+import { useAppSelector } from '@/modules/_partials/hooks/useRedux';
+import { SetStateAction, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from 'react';
+import { getAllUsers } from '@/redux/features/users/userSlice';
+import isAuth from '@/helpers/isAuth';
+import { deactivateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
+
 
 const UsersActivity = () => {
+  const [showMenuIcon, setHideMonuIcon] = useState(false);
+  const [clickedUserId, setClickedUserId] = useState(null);
+  const [isActivated, setIsActivated] = useState(false);
+
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
   const handleLogout = (e: any) => {
@@ -21,6 +33,36 @@ const UsersActivity = () => {
     navigate('/');
   };
 
+  const handleclickedUserId = (e: SetStateAction<null>) => {
+    setClickedUserId(e);
+  }
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
+
+  const data = useAppSelector(
+    state => state.users,
+  );
+  const handleUserClick = (e) => {
+    setClickedUserId(e.id);
+    setIsActivated(e.isActivated);
+    setHideMonuIcon(prev => !prev);
+  }
+
+  const handleCurrentUser=(e,email)=>{
+    e.preventDefault();
+    console.log(clickedUserId,"you are going to dis able me");
+    console.log(isAuth().role);
+   console.log(email)
+    dispatch(deactivateUserAcount(email))
+    .then(res=>{
+      console.log(res,"___________+JHHJJHHHHHHHHHHHHHH");
+    }).catch(error=>{
+      console.log(error,"error___________+JHHJJHHHHHHHHHHHHHH");
+
+    });
+  }
   return (
     <DashboardLayout>
       <section className="bg-gray-100 dark:bg-gray-900 dark:text-white">
@@ -92,86 +134,107 @@ const UsersActivity = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="w-4 p-4">
-                      <div className="flex items-center">
-                        <input
-                          id="checkbox-table-search-1"
-                          type="checkbox"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  {data.isLoading === false && data.user !== null && data.user.map((item: { displayName: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any; }, index: number) => {
+                    return <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td className="w-4 p-4">
+                        <div className="flex items-center">
+                          <input
+                            id="checkbox-table-search-1"
+                            type="checkbox"
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <label
+                            htmlFor="checkbox-table-search-1"
+                            className="sr-only"
+                          >
+                            checkbox
+                          </label>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">{index + 1}</td>
+                      <th
+                        scope="row"
+                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        <img
+                          className="w-10 h-10 rounded-full"
+                          src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+                          // src={item.avatar===null? item.avatar :"https://pbs.twimg.com/media/FjU2lkcWYAgNG6d.jpg"}
+                          alt="Jese"
                         />
-                        <label
-                          htmlFor="checkbox-table-search-1"
-                          className="sr-only"
-                        >
-                          checkbox
-                        </label>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">01</td>
-                    <th
-                      scope="row"
-                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src="https://pbs.twimg.com/media/FjU2lkcWYAgNG6d.jpg"
-                        alt="Jese"
-                      />
-                      <div className="pl-3">
-                        <div className="text-base font-semibold">
-                          Neil Sims
+                        <div className="pl-3">
+                          <div className="text-base font-semibold">
+                            {item.displayName}
+                          </div>
                         </div>
-                        <div className="font-normal text-gray-500">
-                          neil.sims@flowbite.com
-                        </div>
-                      </div>
-                    </th>
-                    <td className="px-6 py-4">React Developer</td>
-                    <td className="px-6 py-4">bizip04@gmail.com</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">Online</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button type="button">
-                        <BsThreeDots className="text-xl" />
-                      </button>
-                    </td>
-                  </tr>
+                      </th>
+                      <td className="px-6 py-4">{item.role}</td>
+                      <td className="px-6 py-4">{item.email}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">{item.isActivated ? "Activated" : "Disabled"}</div>
+                      </td>
+                      <td className="px-6 py-4">
+
+                        <button onClick={() => handleUserClick(item)} className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                          <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" /></svg>
+                        </button>
+
+                        {
+                          clickedUserId === item.id && (
+                            <div className={`z-10 ${showMenuIcon ? "" : "hidden"} absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}>
+                              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+          
+                                <li>
+                                <Link  to="/activate" onClick={(e)=>handleCurrentUser(e,item.email)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated? <span className='text-red-500'>Disable</span>:"Activate"}</Link>
+                                </li>
+                              </ul>
+                              <div className="py-2" />
+                            </div>
+                          )
+                        }
+                      </td>
+                    </tr>
+                  })}
+
                 </tbody>
               </table>
             </div>
-          <nav aria-label="Page navigation example ">
-            <ul class="flex items-center justify-center -space-x-px w-full mb-10 mt-8">
-              <li>
-                <a href="#" class="block flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                  <span>Previous</span>
-                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                </a>
-              </li>
-              <li>
-                <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-              </li>
-              <li>
-                <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-              </li>
-              <li>
-                <a href="#" aria-current="page" class="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-              </li>
-              <li>
-                <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-              </li>
-              <li>
-                <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-              </li>
-              <li>
-                <a href="#" class="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white flex">
-                  <span>Next</span>
-                  <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                </a>
-              </li>
-            </ul>
-          </nav>
+            <nav aria-label="Page navigation example ">
+              <ul className="flex items-center justify-center -space-x-px w-full mb-10 mt-8">
+                <li>
+                  <Link to="dashboard/users" className="block flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    <span>Previous</span>
+                  </Link>
+
+                </li>
+                <li>
+                  <Link to="1" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    1
+                  </Link>
+                </li>
+                <li>
+                  <Link to="2" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</Link>
+                </li>
+                <li>
+                  <Link to="2" aria-current="page" className="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</Link>
+                </li>
+                <li>
+                  <Link to="3" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</Link>
+                </li>
+                <li>
+                  <Link to="4" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</Link>
+                </li>
+                <li>
+                  <Link to="5" className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white flex">
+                    <span>Next</span>
+                    <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </section>

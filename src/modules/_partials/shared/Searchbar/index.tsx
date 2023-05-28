@@ -4,7 +4,7 @@ import React from 'react';
 const Searchbar = () => {
   return (
     <form className="flex items-center flex-grow">
-      <label htmlFor="simple-search" className="sr-only">
+      <label htmlhtmlFor="simple-search" className="sr-only">
         Search
       </label>
       <div className="relative w-full">

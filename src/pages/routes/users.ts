@@ -3,8 +3,8 @@ import UsersActivity from '@/modules/activities/AdminDashboard/UsersActivity';
 
 const usersRoute: IRoute = {
   title: 'Admin - users',
-  protected: true,
-  guestOnly: false,
+  protected: false,
+  guestOnly: true,
   path: 'dashboard/users',
   component: UsersActivity,
 };

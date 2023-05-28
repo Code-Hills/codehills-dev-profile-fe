@@ -6,26 +6,14 @@ import {
 } from '@reduxjs/toolkit';
 
 import authReducer from '../features/auth/loginSlice';
-<<<<<<< HEAD
-import profileSlice from '../features/profile/profileSlice';
-import usersSlice from '../features/users/userSlice';
-
-export function makeStore() {
-  return configureStore({
-    reducer: {
-      auth: authReducer,
-      profile: profileSlice,
-      users: usersSlice,
-    },
-=======
 import profileSlice from '../../pages/profileSlice';
 import userSlice from '../features/users/userSlice';
-import deactivateReducer from '../features/admin/activateUserAcountSlice';
+import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
+import activateUserReducer from '../features/admin/activateUserAcountSlice';
 
 export function makeStore() {
   return configureStore({
-    reducer: { auth: authReducer, profile: profileSlice, users:userSlice, deactivate:deactivateReducer },
->>>>>>> e2e2cdd (Fix conflict from src/modules/activities/profile/ProfileActivity.tsx")
+    reducer: { auth: authReducer, profile: profileSlice, users:userSlice, deactivate:deactivateReducer, activate:activateUserReducer },
   });
 }
 

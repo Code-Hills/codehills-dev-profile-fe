@@ -13,7 +13,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { updateProfile } from '@/redux/features/profile/profileSlice';
+import { updateProfile } from '@/pages/profileSlice';
 
 const ChangeAvatar = () => {
   const dispatch = useAppDispatch();

@@ -22,7 +22,7 @@ const ProjectsSkeleton = () => {
               </Timeline.Body>
               <SkeletonElement className="w-48 h-8 rounded" />
             </Timeline.Content>
-          </Timeline.Item>
+          </Timeline.Item>  
         ))}
       </Timeline>
     </div>

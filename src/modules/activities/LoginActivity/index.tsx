@@ -19,15 +19,15 @@ const LoginActivity = () => {
 
   useEffect(() => {
     const pulseToken = Secure.getToken();
-    if (pulseToken) {
+    if (pulseToken) { 
       window.location.href = '/dashboard';
     }
 
     const base64encoded = location.search
       .split('&')[0]
       .split('?code=')[1];
-    if (base64encoded) {
-      const decoded: any = JSON.parse(atob(base64encoded));
+      if (base64encoded) {
+        const decoded: any = JSON.parse(atob(base64encoded));
       if (decoded.status === 200) {
         const { token } = decoded.data;
         Secure.setToken(token);

@@ -3,7 +3,7 @@
 /* eslint-disable import/order */
 import { Link, useNavigate } from 'react-router-dom';
 import { Dispatch } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiUsers } from 'react-icons/fi';
 import { GoPlus } from 'react-icons/go';
 import { AiOutlineFilter } from 'react-icons/ai';
@@ -16,13 +16,28 @@ import { useAppSelector } from '@/modules/_partials/hooks/useRedux';
 import { SetStateAction, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from 'react';
 import { getAllUsers } from '@/redux/features/users/userSlice';
 import isAuth from '@/helpers/isAuth';
-import { deactivateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
-
+import { deactivateUserAcount } from '@/redux/features/admin/deactivateUserAcountSlice';
+import { activateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
+import { toast } from 'react-toastify';
 
 const UsersActivity = () => {
+
+  interface RootState {
+    activate: {
+      isLoading: boolean;
+    };
+    deactivate: {
+      isLoading: boolean;
+    };
+  }
+
+  
   const [showMenuIcon, setHideMonuIcon] = useState(false);
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
+  const isLoading = useSelector((state: RootState) => state.activate.isLoading);
+  const isLoadingdeactivate = useSelector((state: RootState) => state.deactivate.isLoading);
+
 
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
@@ -37,6 +52,14 @@ const UsersActivity = () => {
     setClickedUserId(e);
   }
 
+  interface User {
+    id: any;
+    displayName: string;
+    role: string;
+    email: string;
+    isActivated: boolean;
+  };
+
   useEffect(() => {
     dispatch(getAllUsers());
   }, [dispatch]);
@@ -44,24 +67,34 @@ const UsersActivity = () => {
   const data = useAppSelector(
     state => state.users,
   );
-  const handleUserClick = (e) => {
+  const handleUserClick = (e: User) => {
     setClickedUserId(e.id);
     setIsActivated(e.isActivated);
     setHideMonuIcon(prev => !prev);
   }
 
-  const handleCurrentUser=(e,email)=>{
+  const handleCurrentUser = (e: React.MouseEvent, item: User) => {
     e.preventDefault();
-    console.log(clickedUserId,"you are going to dis able me");
-    console.log(isAuth().role);
-   console.log(email)
-    dispatch(deactivateUserAcount(email))
-    .then(res=>{
-      console.log(res,"___________+JHHJJHHHHHHHHHHHHHH");
-    }).catch(error=>{
-      console.log(error,"error___________+JHHJJHHHHHHHHHHHHHH");
+    if (!item.isActivated) {
+      dispatch(activateUserAcount(item.email))
+      .then(() => {
+          toast('User activated successfully');
+          dispatch(getAllUsers());
+          setHideMonuIcon(prev => !prev);
+        }).catch(() => {
+          toast.error('Try again');
+        });
+    } else {
+      dispatch(deactivateUserAcount(item.email))
+        .then(() => {
+          toast('User deactivated successfully');
+          setHideMonuIcon(prev => !prev);
+          dispatch(getAllUsers());
+        }).catch(() => {
+          toast.error('Try again');
+        });
+    }
 
-    });
   }
   return (
     <DashboardLayout>
@@ -79,11 +112,11 @@ const UsersActivity = () => {
             <span className="pl-1">Add</span>
           </button>
         </div>
-        <div className="relative bg-white dark:bg-gray-900 m-4 p-2 rounded-xl flex justfy-center flex-col">
-          <div className="flex justify-between bg-gray-100 rounded-xl p-2">
+        <div className="relative bg-white bg-gray-900 dark:bg-gray-900 m-4 p-2 rounded-xl flex justfy-center flex-col">
+          <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
             <p className="text-xl flex items-center dark:text-gray-700">
-              <AiOutlineFilter />
-              <span className="pl-2">Filter by keyword...</span>
+              <AiOutlineFilter className='dark:text-gray-400 text-gray-400' />
+              <input type="text" className="block w-full h-full p-2 text-gray-900  rounded-lg bg-gray-100 border-none sm:text-lg dark:bg-gray-700 dark:border-none dark:placeholder-gray-400 dark:text-gray-900 dark:focus:ring-blue-500" placeholder='Filter by keyword...' />
             </p>
 
             <div className="flex justify-between">
@@ -93,9 +126,11 @@ const UsersActivity = () => {
             </div>
           </div>
 
+
+
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-2 z-10">
-            <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-10">
-              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 z-10">
+            <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-10 overflow-x-auto">
+              <table className="w-full text-sm min-w-max text-left text-gray-500 dark:text-gray-400 z-10">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="p-4">
@@ -134,7 +169,7 @@ const UsersActivity = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.isLoading === false && data.user !== null && data.user.map((item: { displayName: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any; }, index: number) => {
+                  {data.isLoading === false && data.user !== null && data.user.map((item: { displayName: string |User| number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; role: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; email: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; isActivated: any; }, index: number) => {
                     return <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <td className="w-4 p-4">
                         <div className="flex items-center">
@@ -159,23 +194,22 @@ const UsersActivity = () => {
                         <img
                           className="w-10 h-10 rounded-full"
                           src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
-                          // src={item.avatar===null? item.avatar :"https://pbs.twimg.com/media/FjU2lkcWYAgNG6d.jpg"}
                           alt="Jese"
                         />
                         <div className="pl-3">
                           <div className="text-base font-semibold">
-                            {item.displayName}
+                            {String(item.displayName)}
                           </div>
                         </div>
                       </th>
                       <td className="px-6 py-4">{item.role}</td>
                       <td className="px-6 py-4">{item.email}</td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center">{item.isActivated ? "Activated" : "Disabled"}</div>
+                        <div className="flex items-center">{item.isActivated ? <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full">Activated</span> : <span className="bg-red-700 hover:bg-red-700 text-white text-sm py-1 px-2 rounded-full">Deactivated</span>}</div>
                       </td>
                       <td className="px-6 py-4">
 
-                        <button onClick={() => handleUserClick(item)} className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                        <button onClick={() => handleUserClick(item)} className="inline-flex items-center p-2 font-medium text-center text- gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
                           <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" /></svg>
                         </button>
 
@@ -183,9 +217,9 @@ const UsersActivity = () => {
                           clickedUserId === item.id && (
                             <div className={`z-10 ${showMenuIcon ? "" : "hidden"} absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}>
                               <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
-          
+
                                 <li>
-                                <Link  to="/activate" onClick={(e)=>handleCurrentUser(e,item.email)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated? <span className='text-red-500'>Disable</span>:"Activate"}</Link>
+                                  <Link to="/activate" onClick={(e) => handleCurrentUser(e, item)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated ? <span className='text-red-500'>{isLoading ? "Deactivating ..." : "Deactivate"}</span> : <span> {isLoading ? "Activating ..." : "Activate"}</span>}</Link>
                                 </li>
                               </ul>
                               <div className="py-2" />

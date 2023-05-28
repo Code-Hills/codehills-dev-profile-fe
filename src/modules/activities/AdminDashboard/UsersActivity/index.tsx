@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FiUsers } from 'react-icons/fi';
 import { GoPlus } from 'react-icons/go';
 import { AiOutlineFilter } from 'react-icons/ai';
-
+import { Button, Dropdown, Modal, Spinner } from 'flowbite-react';
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
@@ -21,6 +21,9 @@ import { activateUserAcount } from '@/redux/features/admin/activateUserAcountSli
 import { toast } from 'react-toastify';
 import UsersSkeleton from './UsersSkeleton';
 import { User } from '@/interfaces/user.interface';
+import { HiCheck, HiX } from 'react-icons/hi';
+import axios from 'axios';
+import Keys from '@/utils/keys';
 
 
 const UsersActivity = () => {
@@ -40,10 +43,21 @@ const UsersActivity = () => {
   const [isActivated, setIsActivated] = useState(false);
   const isActivating = useSelector((state: RootState) => state.activate.isLoading);
   const isDeactivating = useSelector((state: RootState) => state.deactivate.isLoading);
-
+  const [role, setRole] = useState('');
 
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => {
+    // if (isUpdating) return;
+    setIsOpen(false);
+  };
+  const [isSaving, setIsSaving] = useState(false);
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+  const [selectedUser, setSelectedUser] = useState<any>({});
+
   const handleLogout = (e: any) => {
     e.preventDefault();
     Secure.removeToken();
@@ -59,7 +73,7 @@ const UsersActivity = () => {
     dispatch(getAllUsers());
   }, [dispatch]);
 
-  const {users, isLoading } = useAppSelector(
+  const { users, isLoading } = useAppSelector(
     state => state.users,
   );
 
@@ -70,21 +84,45 @@ const UsersActivity = () => {
     setHideMonuIcon(prev => !prev);
   }
 
-  const handleCurrentUser = (e: React.MouseEvent, item: User) => {
+  const handleCurrentUser = async (e: React.MouseEvent, item: User) => {
     e.preventDefault();
     if (!item.isActivated) {
-      dispatch(activateUserAcount(item.email))
-      toast('User activated successfully');
-      dispatch(getAllUsers());
+      await dispatch(activateUserAcount(item.email))
+      await dispatch(getAllUsers());
       setHideMonuIcon(prev => !prev);
     } else {
-      dispatch(deactivateUserAcount(item.email))
-      toast('User deactivated successfully');
-      setHideMonuIcon(prev => !prev);
+      await dispatch(deactivateUserAcount(item.email))
+      await dispatch(getAllUsers());
       dispatch(getAllUsers());
+      setHideMonuIcon(prev => !prev);
     }
 
   }
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const { data } = await axios.patch(
+        `${Keys.DEFAULT_API}/api/v1/users/roles`,
+        {
+          role,
+          email: selectedUser.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Secure.getToken()}`,
+          },
+        },
+      );
+      setIsSaving(false);
+      dispatch(getAllUsers());
+      onClose();
+      setHideMonuIcon(prev => !prev);
+    } catch (error) {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <section className="bg-gray-100 dark:bg-gray-900 dark:text-white">
@@ -208,10 +246,20 @@ const UsersActivity = () => {
                               <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
 
                                 <li>
-                                  <Link to="/activate" onClick={(e) => handleCurrentUser(e, item)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated ? <span className='text-red-500'>{isDeactivating ? "Deactivating ..." : "Deactivate"}</span> : <span> { isActivating ? "Activating ..." : "Activate"}</span>}</Link>
+                                  <Link to="/activate" onClick={(e) => handleCurrentUser(e, item)} className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{isActivated ? <span className='text-red-500'>{isDeactivating ? "Deactivating ..." : "Deactivate"}</span> : <span> {isActivating ? "Activating ..." : "Activate"}</span>}</Link>
+                                </li>
+                                <li>
+                                  <Link to="/role"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setSelectedUser(item);
+                                      setRole(item.role);
+                                      setIsOpen(true);
+                                    }}
+
+                                    className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Change Role</Link>
                                 </li>
                               </ul>
-                              <div className="py-2" />
                             </div>
                           )
                         }
@@ -219,7 +267,7 @@ const UsersActivity = () => {
                     </tr>
                   })}
 
-                  
+
                 </tbody>
                 {isLoading && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                   <tr className='animate-pulse bg-gray-200 border-t border-white border-4 transition-all duration-300 dark:bg-gray-700'>
@@ -310,6 +358,56 @@ const UsersActivity = () => {
           </div>
         </div>
       </section>
+      <Modal
+        size="2xl"
+        show={isOpen}
+        position="top-center"
+        onClose={onClose}
+      >
+        <Modal.Header>Change User Role</Modal.Header>
+        <Modal.Body>
+          <div className="flex flex-col space-y-6 items-center">
+            <div className="mt-8 flex items-center space-x-8 md:space-x-10">
+              {/* change user role  */}
+              <div className="flex flex-row items-center">
+                <p className="text-gray-600 mr-4 dark:text-white">
+                  Select User Role
+                </p>
+                <select
+                  className="w-64 h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                  name="role"
+                  value={role}
+                  onChange={e => setRole(e.target.value)}
+                >
+                  <option value="developer">Developer</option>
+                  <option value="manager">Manager</option>
+                  <option value="architect">Architect</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer className="justify-end">
+          <Button color="gray" type="button" onClick={onClose}>
+            <HiX className="mr-2 h-5 w-5" />
+            Cancel
+          </Button>
+          <Button
+            gradientDuoTone="cyanToBlue"
+            type="submit"
+            disabled={isSaving}
+            onClick={handleSave}
+          >
+            Save
+            {isSaving ? (
+              <Spinner color="success" size="sm" className="ml-2" />
+            ) : (
+              <HiCheck className="ml-2 h-5 w-5" />
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </DashboardLayout>
   );
 };

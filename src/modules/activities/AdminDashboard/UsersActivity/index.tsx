@@ -125,19 +125,12 @@ const UsersActivity = () => {
 
   return (
     <DashboardLayout>
-      <section className="bg-gray-100 dark:bg-gray-900 dark:text-white">
+      <section className="overflow-x-scroll w-full bg-gray-100 dark:bg-gray-900 dark:text-white">
         <div className="flex justify-between p-4 ">
           <h2 className="text-2xl flex items-center">
             <FiUsers />
             <span className="pl-2">users</span>
           </h2>
-          <button
-            type="button"
-            className="bg-blue-500 flex hover:bg-blue-700 items-center text-white font-bold py-2 px-4 rounded-full"
-          >
-            <GoPlus />
-            <span className="pl-1">Add</span>
-          </button>
         </div>
         <div className="relative bg-white bg-gray-900 dark:bg-gray-900 m-4 p-2 rounded-xl flex justfy-center flex-col">
           <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
@@ -155,7 +148,7 @@ const UsersActivity = () => {
 
 
 
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-2 z-10">
+          <div className="relative overflow-x-scroll shadow-md sm:rounded-lg mt-2 z-10">
             <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-10 overflow-x-auto">
               <table className="w-full text-sm min-w-max text-left text-gray-500 dark:text-gray-400 z-10">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

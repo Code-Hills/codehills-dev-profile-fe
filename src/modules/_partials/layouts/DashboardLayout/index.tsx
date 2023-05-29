@@ -55,7 +55,7 @@ const DashboardLayout = ({
   const { mode } = useTheme();
   return (
     <Flowbite theme={{ theme }}>
-      <div className="relative flex w-screen overflow-x-scroll bg-brand-blue-light dark:text-gray-50 dark:bg-gray-900 h-screen overflow-y-auto">
+      <div className="relative flex w-full overflow-x-hidden bg-brand-blue-light dark:text-gray-50 dark:bg-gray-900 h-screen overflow-y-auto">
         <AppSidebar className="hidden md:block md:w-fit" />
 
         <div id="main-content" className="flex flex-col flex-grow">

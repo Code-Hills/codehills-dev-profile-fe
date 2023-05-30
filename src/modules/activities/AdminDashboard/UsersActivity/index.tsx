@@ -145,7 +145,7 @@ const UsersActivity = () => {
               <input type="text"
                 value={searchTerm}
                 onChange={handleSearch}
-                className="block w-full h-full focus:outline-none focus:border-none p-2 text-gray-900  rounded-lg bg-gray-100 border-none sm:text-lg dark:bg-gray-700 dark:border-none dark:placeholder-gray-400 dark:text-gray-300" placeholder='Filter by keyword...'
+                className="block w-full h-full  p-2 text-gray-900  rounded-lg bg-gray-100 sm:text-lg dark:bg-gray-700  dark:placeholder-gray-400 dark:text-gray-300 border-transparent focus:border-transparent focus:ring-0" placeholder='Filter by keyword...'
               />
             </p>
 
@@ -270,7 +270,7 @@ const UsersActivity = () => {
                       </td>
                     </tr>
                   })}
-                  {!isLoading && filteredUsers.length === 0 && <tr><p className="text-blue-600 bold text-lg p-2">The users list is empty!</p></tr>}
+                  {!isLoading && filteredUsers.length === 0 && <tr><p className="text-blue-600 bold text-lg p-2">User not found!</p></tr>}
 
                 </tbody>
                 {isLoading && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">

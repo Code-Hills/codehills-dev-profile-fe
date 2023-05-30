@@ -5,21 +5,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiUsers } from 'react-icons/fi';
-import { GoPlus } from 'react-icons/go';
 import { AiOutlineFilter } from 'react-icons/ai';
-import { Button, Dropdown, Modal, Spinner } from 'flowbite-react';
+import { Button, Modal, Spinner } from 'flowbite-react';
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
 import DropdownMenu from '@/modules/_partials/Dropdowns';
 import { useAppSelector } from '@/modules/_partials/hooks/useRedux';
-import { SetStateAction, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from 'react';
+import { filter } from 'lodash';
+import { SetStateAction, useEffect, useState, ChangeEvent } from 'react';
 import { getAllUsers } from '@/redux/features/users/userSlice';
-import isAuth from '@/helpers/isAuth';
 import { deactivateUserAccount } from '@/redux/features/admin/deactivateUserAcountSlice';
 import { activateUserAccount } from '@/redux/features/admin/activateUserAcountSlice';
-import { toast } from 'react-toastify';
-import UsersSkeleton from './UsersSkeleton';
 import { User } from '@/interfaces/user.interface';
 import { HiCheck, HiX } from 'react-icons/hi';
 import axios from 'axios';
@@ -45,6 +42,7 @@ const UsersActivity = () => {
   const isActivating = useSelector((state: RootState) => state.activate.isLoading);
   const isDeactivating = useSelector((state: RootState) => state.deactivate.isLoading);
   const [role, setRole] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
@@ -124,6 +122,13 @@ const UsersActivity = () => {
     }
   };
 
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredUsers = filter(users ?? [], (user) =>
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <DashboardLayout>
       <section className="overflow-x-scroll w-full bg-gray-100 dark:bg-gray-900 dark:text-white">
@@ -137,7 +142,11 @@ const UsersActivity = () => {
           <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
             <p className="text-xl flex items-center dark:text-gray-700">
               <AiOutlineFilter className='dark:text-gray-400 text-gray-400' />
-              <input type="text" className="block w-full h-full p-2 text-gray-900  rounded-lg bg-gray-100 border-none sm:text-lg dark:bg-gray-700 dark:border-none dark:placeholder-gray-400 dark:text-gray-900 dark:focus:ring-blue-500" placeholder='Filter by keyword...' />
+              <input type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="block w-full h-full focus:outline-none focus:border-none p-2 text-gray-900  rounded-lg bg-gray-100 border-none sm:text-lg dark:bg-gray-700 dark:border-none dark:placeholder-gray-400 dark:text-gray-300" placeholder='Filter by keyword...'
+              />
             </p>
 
             <div className="flex justify-between">
@@ -159,8 +168,9 @@ const UsersActivity = () => {
                         <input
                           id="checkbox-all-search"
                           type="checkbox"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         />
+
                         <label
                           htmlFor="checkbox-all-search"
                           className="sr-only"
@@ -190,7 +200,7 @@ const UsersActivity = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users?.map((item, index: number) => {
+                  {filteredUsers.length !== 0 && filteredUsers?.map((item, index: number) => {
                     return <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <td className="w-4 p-4">
                         <div className="flex items-center">
@@ -260,7 +270,7 @@ const UsersActivity = () => {
                       </td>
                     </tr>
                   })}
-
+                  {!isLoading && filteredUsers.length === 0 && <tr><p className="text-blue-600 bold text-lg p-2">The users list is empty!</p></tr>}
 
                 </tbody>
                 {isLoading && <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
@@ -313,7 +323,7 @@ const UsersActivity = () => {
                 }
               </table>
             </div>
-          <Pagination />
+            <Pagination />
           </div>
         </div>
       </section>

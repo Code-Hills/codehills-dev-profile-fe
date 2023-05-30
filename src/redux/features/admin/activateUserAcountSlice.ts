@@ -1,31 +1,35 @@
 /* eslint-disable prettier/prettier */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import API from '@/api/api';
-import isAuth from '@/helpers/isAuth';
+import { User } from '@/interfaces/user.interface';
 
-export const activateUserAcount = createAsyncThunk(
+export const activateUserAccount = createAsyncThunk(
   'activate/user',
-  async (data: string) => {
-    const body={
-      email:data,
+  async (email: string) => {
+    try {
+      const body={
+        email,
+      }
+      const { data: activateUser } = await API.patch('/users/activate',body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return activateUser;
+    } catch (error) {
+      return toast.error('Failed to activate user account');
     }
-    const { data: activateUser } = await API.patch('/users/activate',body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return activateUser;
+    
   },
 );
 
 interface InitialState {
-  user: any | null;
+  user: User | null;
   isLoading: boolean;
   error: string | null;
 }
-
-const isAuthData = isAuth();
 
 const initialState: InitialState = {
   user: null,
@@ -33,7 +37,7 @@ const initialState: InitialState = {
   error: null,
 };
 
-const activateUserAcountSlice = createSlice({
+const activateUserAccountSlice = createSlice({
   name: 'deactivate',
   initialState,
   reducers: {
@@ -43,21 +47,21 @@ const activateUserAcountSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(activateUserAcount.pending, state => {
+      .addCase(activateUserAccount.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(activateUserAcount.fulfilled, (state, action) => {
+      .addCase(activateUserAccount.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.users;
       })
-      .addCase(activateUserAcount.rejected, (state, action) => {
+      .addCase(activateUserAccount.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message as string;
       });
   },
 });
 
-export const { deactivateuserSuccess } = activateUserAcountSlice.actions;
+export const { deactivateuserSuccess } = activateUserAccountSlice.actions;
 
-export default activateUserAcountSlice.reducer;
+export default activateUserAccountSlice.reducer;

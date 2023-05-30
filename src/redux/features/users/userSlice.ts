@@ -2,28 +2,29 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
-import isAuth from '@/helpers/isAuth';
 import { User } from '@/interfaces/user.interface';
 
 export const getAllUsers = createAsyncThunk(
   'users/fetch',
   async () => {
-    const { data } = await API.get('/users');
-    return data;
+    // eslint-disable-next-line no-useless-catch
+    try{
+      const { data } = await API.get('/users');
+      return data;
+    }catch(error: any){
+      throw error?.response?.data;
+    }
+   
   },
 );
 
 interface InitialState {
-  // tokenData: Record<string, any> | null;
   users: User[];
   isLoading: boolean;
   error: string | null;
 }
 
-const isAuthData = isAuth();
-
 const initialState: InitialState = {
-  // tokenData: isAuthData || null,
   users: [],
   isLoading: false,
   error: null,

@@ -16,8 +16,8 @@ import { useAppSelector } from '@/modules/_partials/hooks/useRedux';
 import { SetStateAction, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useEffect, useState } from 'react';
 import { getAllUsers } from '@/redux/features/users/userSlice';
 import isAuth from '@/helpers/isAuth';
-import { deactivateUserAcount } from '@/redux/features/admin/deactivateUserAcountSlice';
-import { activateUserAcount } from '@/redux/features/admin/activateUserAcountSlice';
+import { deactivateUserAccount } from '@/redux/features/admin/deactivateUserAcountSlice';
+import { activateUserAccount } from '@/redux/features/admin/activateUserAcountSlice';
 import { toast } from 'react-toastify';
 import UsersSkeleton from './UsersSkeleton';
 import { User } from '@/interfaces/user.interface';
@@ -88,11 +88,11 @@ const UsersActivity = () => {
   const handleCurrentUser = async (e: React.MouseEvent, item: User) => {
     e.preventDefault();
     if (!item.isActivated) {
-      await dispatch(activateUserAcount(item.email))
+      await dispatch(activateUserAccount(item.email))
       await dispatch(getAllUsers());
       setHideMonuIcon(prev => !prev);
     } else {
-      await dispatch(deactivateUserAcount(item.email))
+      await dispatch(deactivateUserAccount(item.email))
       await dispatch(getAllUsers());
       dispatch(getAllUsers());
       setHideMonuIcon(prev => !prev);

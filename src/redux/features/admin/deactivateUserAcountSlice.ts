@@ -2,13 +2,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
-import isAuth from '@/helpers/isAuth';
+import { User } from '@/interfaces/user.interface';
 
-export const deactivateUserAcount = createAsyncThunk(
+export const deactivateUserAccount = createAsyncThunk(
   'disable/user',
-  async (data: string) => {
+  async (email: string) => {
     const body={
-      email:data,
+      email,
     }
     const { data: deactivateUser } = await API.patch('/users/deactivate',body, {
       headers: {
@@ -20,12 +20,10 @@ export const deactivateUserAcount = createAsyncThunk(
 );
 
 interface InitialState {
-  user: any | null;
+  user: User | null;
   isLoading: boolean;
   error: string | null;
 }
-
-const isAuthData = isAuth();
 
 const initialState: InitialState = {
   user: null,
@@ -33,7 +31,7 @@ const initialState: InitialState = {
   error: null,
 };
 
-const deactivateUserAcountSlice = createSlice({
+const deactivateUserAccountSlice = createSlice({
   name: 'deactivate',
   initialState,
   reducers: {
@@ -43,21 +41,20 @@ const deactivateUserAcountSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(deactivateUserAcount.pending, state => {
+      .addCase(deactivateUserAccount.pending, state => {
         state.isLoading = true;
-        state.error = null;
       })
-      .addCase(deactivateUserAcount.fulfilled, (state, action) => {
+      .addCase(deactivateUserAccount.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.users;
       })
-      .addCase(deactivateUserAcount.rejected, (state, action) => {
+      .addCase(deactivateUserAccount.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message as string;
       });
   },
 });
 
-export const { deactivateuserSuccess } = deactivateUserAcountSlice.actions;
+export const { deactivateuserSuccess } = deactivateUserAccountSlice.actions;
 
-export default deactivateUserAcountSlice.reducer;
+export default deactivateUserAccountSlice.reducer;

@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import API from '@/api/api';
@@ -7,7 +6,7 @@ import Secure from '@/utils/secureLs';
 
 export const logoutFromMicrosoft = createAsyncThunk(
   'auth/logoutFromMicrosoft',
-  async (navigate: NavigateFunction) => {
+  async () => {
     try {
       const { data } = await API.post(`/auth/logout`);
       toast.success('You have been logged out successfully');
@@ -15,8 +14,8 @@ export const logoutFromMicrosoft = createAsyncThunk(
     } catch (error: any) {
       throw error?.response?.data;
     } finally {
-      navigate('/');
       Secure.removeToken();
+      window.location.href = '/login';
     }
   },
 );

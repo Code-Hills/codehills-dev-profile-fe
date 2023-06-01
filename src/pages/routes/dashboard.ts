@@ -5,7 +5,7 @@ const dashboardRoute: IRoute = {
   title: 'Dashboard - Codehills',
   protected: true,
   guestOnly: false,
-  path: '/dashboard',
+  path: '/',
   component: DashboardActivity,
 };
 

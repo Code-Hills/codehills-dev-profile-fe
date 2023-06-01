@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import './LoginActivity.css';
 
 import logo from '../../../img/logo.png';
@@ -7,34 +7,33 @@ import mslogo from '../../../img/mslogo.svg';
 
 import Secure from '@/utils/secureLs';
 import Keys from '@/utils/keys';
+import isAuth from '@/helpers/isAuth';
 
 const apiUrl = Keys.DEFAULT_API;
 
 const LoginActivity = () => {
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const base64encoded = searchParams.get('code');
 
   const handleClick = () => {
     window.location.href = `${apiUrl}/api/v1/auth/microsoft`;
   };
 
   useEffect(() => {
-    const pulseToken = Secure.getToken();
-    if (pulseToken) {
-      window.location.href = '/dashboard';
+    if (isAuth()) {
+      window.location.href = '/';
+      return;
     }
 
-    const base64encoded = location.search
-      .split('&')[0]
-      .split('?code=')[1];
     if (base64encoded) {
-      const decoded: any = JSON.parse(atob(base64encoded));
+      const decoded: any = JSON.parse(window.atob(base64encoded));
       if (decoded.status === 200) {
         const { token } = decoded.data;
         Secure.setToken(token);
+        window.location.href = '/';
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [base64encoded]);
   return (
     <section className="h-screen grid md:grid-cols-2">
       <div className="loginLeft hidden md:block bg-center bg-no-repeat bg-cover relative">

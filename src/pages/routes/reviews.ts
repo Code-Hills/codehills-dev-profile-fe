@@ -3,7 +3,7 @@ import ReviewCycle from '@/modules/activities/review/ReviewCycle';
 
 const reviewsRoute: IRoute = {
   title: 'Performance - Codehills',
-  protected: false,
+  protected: true,
   guestOnly: false,
   path: '/reviews',
   component: ReviewCycle,

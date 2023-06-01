@@ -1,15 +1,17 @@
-import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { useAppDispatch } from '@/modules/_partials/hooks/useRedux';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
+import isAuth from '@/helpers/isAuth';
 
 const LogoutPage = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    dispatch(logoutFromMicrosoft(navigate));
+    if (isAuth()) {
+      dispatch(logoutFromMicrosoft());
+    } else {
+      window.location.href = '/login';
+    }
   }, []);
 
   return (

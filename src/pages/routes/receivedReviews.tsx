@@ -3,7 +3,7 @@ import ReceivedReviews from '@/modules/activities/review/ReceivedReviews';
 
 const receivedReviewsRoute: IRoute = {
   title: 'My Received Reviews - Codehills',
-  protected: false,
+  protected: true,
   guestOnly: false,
   path: '/reviews/received',
   component: ReceivedReviews,

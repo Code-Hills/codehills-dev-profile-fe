@@ -2,8 +2,6 @@
 import { FaFileExcel } from 'react-icons/fa';
 import { Button, Dropdown } from 'flowbite-react';
 
-import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
-
 const developers = [
   {
     id: 1,
@@ -133,130 +131,126 @@ const getStatusClassName = (rating: number) => {
 
 const PerformanceReport = () => {
   return (
-    <DashboardLayout>
-      <div className="flex flex-col p-4 md:px-8 bg-brand-blue-light/70 dark:bg-transparent flex-grow">
-        <div className="flex gap-3 flex-wrap justify-between mb-3">
-          <h1 className="text-2xl font-medium">
-            Performance Ratings
-          </h1>
-          <div className="flex items-center space-x-4">
-            <div className="relative flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Cycle:
-              </span>
-              <Dropdown label="All" size="xs">
-                <Dropdown.Item className="whitespace-nowrap">
-                  2023 Q2
-                </Dropdown.Item>
-                <Dropdown.Item className="whitespace-nowrap">
-                  2022 Q2
-                </Dropdown.Item>
-                <Dropdown.Item className="whitespace-nowrap">
-                  2021 Q2
-                </Dropdown.Item>
-                <Dropdown.Item className="whitespace-nowrap">
-                  2020 Q2
-                </Dropdown.Item>
-              </Dropdown>
-            </div>
-            <Button size="xs" gradientMonochrome="info">
-              <FaFileExcel size={16} className="mr-2" />
-              Export
-            </Button>
+    <>
+      <div className="flex gap-3 flex-wrap justify-between mb-3">
+        <h1 className="text-2xl font-medium">Performance Ratings</h1>
+        <div className="flex items-center space-x-4">
+          <div className="relative flex items-center space-x-2">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Cycle:
+            </span>
+            <Dropdown label="All" size="xs">
+              <Dropdown.Item className="whitespace-nowrap">
+                2023 Q2
+              </Dropdown.Item>
+              <Dropdown.Item className="whitespace-nowrap">
+                2022 Q2
+              </Dropdown.Item>
+              <Dropdown.Item className="whitespace-nowrap">
+                2021 Q2
+              </Dropdown.Item>
+              <Dropdown.Item className="whitespace-nowrap">
+                2020 Q2
+              </Dropdown.Item>
+            </Dropdown>
           </div>
+          <Button size="xs" gradientMonochrome="info">
+            <FaFileExcel size={16} className="mr-2" />
+            Export
+          </Button>
         </div>
-        <div className="overflow-x-auto rounded-lg">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden shadow sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-                <thead className="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Peer Review 1
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Peer Review 2
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Self Review
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Manager Review
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Total Rating
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                    >
-                      Average Rating
-                    </th>
+      </div>
+      <div className="overflow-x-auto rounded-lg">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden shadow sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Peer Review 1
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Peer Review 2
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Self Review
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Manager Review
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Total Rating
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
+                    Average Rating
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800">
+                {developers.map(developer => (
+                  <tr
+                    key={developer.id}
+                    className="even:bg-gray-100 dark:even:bg-gray-700"
+                  >
+                    <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                      {developer.name}
+                    </td>
+                    <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                      {developer.peerRating1}
+                    </td>
+                    <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-white">
+                      {developer.peerRating2}
+                    </td>
+                    <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                      {developer.selfRating}
+                    </td>
+                    <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                      {developer.managerRating}
+                    </td>
+                    <td className="p-4 text-sm font-semibold text-gray-900 whitespace-nowrap dark:text-gray-400">
+                      {getTotalRating(developer)}
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      <span
+                        className={`${getStatusClassName(
+                          getAverageRating(developer),
+                        )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
+                      >
+                        {getAverageRating(developer)}
+                      </span>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800">
-                  {developers.map(developer => (
-                    <tr
-                      key={developer.id}
-                      className="even:bg-gray-100 dark:even:bg-gray-700"
-                    >
-                      <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        {developer.name}
-                      </td>
-                      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {developer.peerRating1}
-                      </td>
-                      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-white">
-                        {developer.peerRating2}
-                      </td>
-                      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {developer.selfRating}
-                      </td>
-                      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {developer.managerRating}
-                      </td>
-                      <td className="p-4 text-sm font-semibold text-gray-900 whitespace-nowrap dark:text-gray-400">
-                        {getTotalRating(developer)}
-                      </td>
-                      <td className="p-4 whitespace-nowrap">
-                        <span
-                          className={`${getStatusClassName(
-                            getAverageRating(developer),
-                          )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
-                        >
-                          {getAverageRating(developer)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </>
   );
 };
 

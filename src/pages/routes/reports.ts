@@ -3,7 +3,7 @@ import PerformanceReport from '@/modules/activities/report/PerformanceReport';
 
 const reportsRoute: IRoute = {
   title: 'Performance Report - Codehills',
-  protected: false,
+  protected: true,
   guestOnly: false,
   path: '/reports',
   component: PerformanceReport,

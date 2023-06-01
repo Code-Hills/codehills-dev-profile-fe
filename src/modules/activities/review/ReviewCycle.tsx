@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import PeerReview from './partials/PeerReview';
 import SelfReview from './partials/SelfReview';
 
-import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
-
 const users = [
   {
     avatar:
@@ -23,54 +21,52 @@ const users = [
 const ReviewCycle = () => {
   const navigate = useNavigate();
   return (
-    <DashboardLayout>
-      <div className="flex flex-col p-4 md:px-8 bg-brand-blue-light/70 dark:bg-transparent flex-grow">
-        <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800 w-full items-start flex flex-wrap gap-3 justify-between">
-          <div className="flex flex-col">
-            <h3 className="text-2xl font-medium">Review Cycle</h3>
-            <p className="text-sm text-gray-500 mt-2 dark:text-gray-400">
-              This cycle will end in 2 days
-            </p>
-            <Button
-              size="xs"
-              outline
-              gradientDuoTone="cyanToBlue"
-              className="mt-3"
-              onClick={() => navigate('/reviews/received')}
-            >
-              Received reviews
-              <HiOutlineArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <PeerReview />
-            <SelfReview
-              title="Self Review"
-              className="py-3 px-4 text-sm font-medium"
-            />
-          </div>
+    <>
+      <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800 w-full items-start flex flex-wrap gap-3 justify-between">
+        <div className="flex flex-col">
+          <h3 className="text-2xl font-medium">Review Cycle</h3>
+          <p className="text-sm text-gray-500 mt-2 dark:text-gray-400">
+            This cycle will end in 2 days
+          </p>
+          <Button
+            size="xs"
+            outline
+            gradientDuoTone="cyanToBlue"
+            className="mt-3"
+            onClick={() => navigate('/reviews/received')}
+          >
+            Received reviews
+            <HiOutlineArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
 
-        {users.map(user => (
-          <div className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center">
-            <div className="shrink-0">
-              <img
-                className="h-5 w-5 rounded-full"
-                src={user.avatar}
-                alt={user.name}
-              />
-            </div>
-            <p className="flex-grow">
-              <span className="text-lg font-medium">{user.name}</span>{' '}
-              requested your review as a peer reviewer for the review
-              cycle.
-            </p>
-            <SelfReview title="Add peer review" />
-          </div>
-        ))}
+        <div className="flex items-center space-x-3">
+          <PeerReview />
+          <SelfReview
+            title="Self Review"
+            className="py-3 px-4 text-sm font-medium"
+          />
+        </div>
       </div>
-    </DashboardLayout>
+
+      {users.map(user => (
+        <div className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center">
+          <div className="shrink-0">
+            <img
+              className="h-5 w-5 rounded-full"
+              src={user.avatar}
+              alt={user.name}
+            />
+          </div>
+          <p className="flex-grow">
+            <span className="text-lg font-medium">{user.name}</span>{' '}
+            requested your review as a peer reviewer for the review
+            cycle.
+          </p>
+          <SelfReview title="Add peer review" />
+        </div>
+      ))}
+    </>
   );
 };
 

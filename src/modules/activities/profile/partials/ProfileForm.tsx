@@ -21,7 +21,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { updateProfile } from '@/pages/profileSlice';
+import { updateProfile } from '@/redux/features/profile/profileSlice';
 
 const ProfileForm = () => {
   const dispatch = useAppDispatch();

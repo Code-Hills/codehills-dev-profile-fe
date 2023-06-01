@@ -2,7 +2,7 @@ import { IRoute } from '@/interfaces/route.interface';
 import UsersActivity from '@/modules/activities/AdminDashboard/UsersActivity';
 
 const usersRoute: IRoute = {
-  title: 'Admin - users',
+  title: 'Users - Codehills',
   protected: true,
   guestOnly: false,
   path: '/users',

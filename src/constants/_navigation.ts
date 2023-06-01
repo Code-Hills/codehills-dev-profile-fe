@@ -12,7 +12,7 @@ import { GiStarFormation } from 'react-icons/gi';
 export const sidebarNavLinks = [
   {
     name: 'Home',
-    href: '/dashboard',
+    href: '/',
     icon: HiHome,
   },
   {

@@ -6,7 +6,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiUsers } from 'react-icons/fi';
 import { AiOutlineFilter } from 'react-icons/ai';
-import { Button, Modal, Spinner } from 'flowbite-react';
+import { Button, Dropdown, Modal, Spinner } from 'flowbite-react';
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
 import DashboardLayout from '@/modules/_partials/layouts/DashboardLayout';
@@ -149,18 +149,33 @@ const UsersActivity = () => {
               />
             </p>
 
-            <div className="flex justify-between">
-              <DropdownMenu />
-              <DropdownMenu />
-              <DropdownMenu />
+            <div className="flex justify-between z-50 text-rgba-22-27-44-70 bg-gray-300 hover:bg-gray-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <DropdownMenu />
+            <Dropdown
+               arrowIcon
+               inline
+               label="Role"
+               
+            >
+           <Dropdown.Header>
+            <span className="block text-sm">
+            Role
+            </span>
+          </Dropdown.Header>
+              
+            <Dropdown.Item>Developer</Dropdown.Item>
+            <Dropdown.Item>Manager</Dropdown.Item>
+            <Dropdown.Item>Admin</Dropdown.Item>
+            </Dropdown>
+            <DropdownMenu />
             </div>
           </div>
 
 
 
-          <div className="relative overflow-x-scroll shadow-md sm:rounded-lg mt-2 z-10">
-            <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-10 overflow-x-auto">
-              <table className="w-full text-sm min-w-max text-left text-gray-500 dark:text-gray-400 z-10">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-2 z-10 scrollbar-thumb-blue">
+            <div className="flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-1 overflow-x-auto w-full">
+              <table className="w-full text-sm min-w-max text-left text-gray-500 dark:text-gray-400 z-1">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="p-4">

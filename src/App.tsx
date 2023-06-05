@@ -3,7 +3,7 @@ import {
   createBrowserRouter,
   redirect,
 } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 import privateRoutes from './pages';
 import { useAppSelector } from './modules/_partials/hooks/useRedux';
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
 const App = () => {
   const { theme } = useAppSelector(state => state.theme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else if (theme === 'system') {

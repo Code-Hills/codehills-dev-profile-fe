@@ -8,7 +8,7 @@ import { User } from '@/interfaces/user.interface';
 export const activateUserAccount = createAsyncThunk(
   'activate/user',
   async (email: string) => {
-    try {
+
       const body={
         email,
       }
@@ -18,9 +18,6 @@ export const activateUserAccount = createAsyncThunk(
         },
       });
       return activateUser;
-    } catch (error) {
-      return toast.error('Failed to activate user account');
-    }
     
   },
 );

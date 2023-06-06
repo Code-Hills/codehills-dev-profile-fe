@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   configureStore,
   ThunkAction,
@@ -11,6 +10,8 @@ import themeSlice from '../features/theme/themeSlice';
 import userSlice from '../features/users/userSlice';
 import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
 import activateUserReducer from '../features/admin/activateUserAcountSlice';
+import cycleSlice from '../slices/cycleSlice';
+import reviewSlice from '../slices/reviewSlice';
 
 export function makeStore() {
   return configureStore({
@@ -21,6 +22,8 @@ export function makeStore() {
       users: userSlice,
       deactivate: deactivateReducer,
       activate: activateUserReducer,
+      cycle: cycleSlice,
+      review: reviewSlice,
     },
   });
 }

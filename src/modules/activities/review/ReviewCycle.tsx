@@ -1,9 +1,17 @@
 import { Button } from 'flowbite-react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import PeerReview from './partials/PeerReview';
 import SelfReview from './partials/SelfReview';
+
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/modules/_partials/hooks/useRedux';
+import { getAllCyles } from '@/api/cyle.api';
+import { calculateCycleEnd } from '@/helpers/cyle.helper';
 
 const users = [
   {
@@ -19,14 +27,23 @@ const users = [
 ];
 
 const ReviewCycle = () => {
+  const { activeCycle } = useAppSelector(state => state.cycle);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getAllCyles());
+  }, []);
+
   return (
     <>
       <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800 w-full items-start flex flex-wrap gap-3 justify-between">
-        <div className="flex flex-col">
-          <h3 className="text-2xl font-medium">Review Cycle</h3>
+        <div className="flex flex-col items-start">
+          <h3 className="text-2xl font-medium">
+            Review Cycle{activeCycle ? `(${activeCycle.name})` : ''}
+          </h3>
           <p className="text-sm text-gray-500 mt-2 dark:text-gray-400">
-            This cycle will end in 2 days
+            {activeCycle ? calculateCycleEnd(activeCycle) : ''}
           </p>
           <Button
             size="xs"

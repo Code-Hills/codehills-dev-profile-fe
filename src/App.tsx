@@ -8,7 +8,7 @@ import { useLayoutEffect } from 'react';
 import privateRoutes from './pages';
 import { useAppSelector } from './modules/_partials/hooks/useRedux';
 import isAuth from './helpers/isAuth';
-import PageNotFound from './modules/activities/PageNotFound';
+import ErrorPage from './modules/activities/ErrorPage';
 import LoginActivity from './modules/activities/LoginActivity';
 import AppLayout from './modules/_partials/layouts/AppLayout';
 
@@ -16,8 +16,18 @@ const user = isAuth();
 
 const router = createBrowserRouter([
   {
+    path: '/login',
+    element: <LoginActivity />,
+    loader() {
+      if (user) {
+        throw redirect('/');
+      }
+      return <div>Loading...</div>;
+    },
+  },
+  {
     path: '/',
-    errorElement: <PageNotFound />,
+    errorElement: <ErrorPage errorCode={500} />,
     element: <AppLayout />,
     loader() {
       if (!user) {
@@ -28,17 +38,17 @@ const router = createBrowserRouter([
     children: privateRoutes.map(route => ({
       path: route.path,
       element: <route.component />,
+      loader() {
+        const { allowedRoles = [] } = route;
+        if (
+          allowedRoles.length &&
+          !allowedRoles?.includes(user.role)
+        ) {
+          throw redirect('/forbidden');
+        }
+        return <div>Loading...</div>;
+      },
     })),
-  },
-  {
-    path: '/login',
-    element: <LoginActivity />,
-    loader() {
-      if (user) {
-        throw redirect('/');
-      }
-      return <div>Loading...</div>;
-    },
   },
 ]);
 

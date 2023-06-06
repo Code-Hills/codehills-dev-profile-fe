@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter as Router } from 'react-router-dom';
 
-import PageNotFound from '@/modules/activities/PageNotFound';
+import PageNotFound from '@/modules/activities/ErrorPage';
 
 test('renders PageNotFound correctly', () => {
   const { getByText } = render(

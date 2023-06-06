@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 const Pagination = () => {
   return (
     <nav aria-label="Page navigation example ">
-      <ul className="flex items-center justify-center -space-x-px w-full mb-10 mt-8">
+      <ul className="flex items-center justify-center -space-x-px w-full">
         <li>
           <Link
             to="/users"
-            className="block flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            className="flex px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           >
             <svg
               aria-hidden="true"

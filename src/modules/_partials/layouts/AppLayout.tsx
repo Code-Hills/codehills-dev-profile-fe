@@ -38,6 +38,20 @@ const AppLayout = () => {
     return () => document.removeEventListener('click', clickHandler);
   }, [toggleSidebar]);
 
+  const navItems = Constants.navigation.sidebarNavLinks.filter(
+    item => {
+      const { allowedRoles = [] } = item;
+      let showLink = true;
+      if (
+        allowedRoles.length &&
+        !allowedRoles.includes(tokenData?.role)
+      ) {
+        showLink = false;
+      }
+      return showLink;
+    },
+  );
+
   return (
     <>
       <nav className="fixed top-0 z-50 w-full bg-brand-blue-light border-b border-gray-300 dark:bg-gray-800 dark:border-gray-700">
@@ -138,7 +152,7 @@ const AppLayout = () => {
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-brand-blue-light dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            {Constants.navigation.sidebarNavLinks.map(link => (
+            {navItems.map(link => (
               <li key={link.name}>
                 <NavLink
                   to={link.href}

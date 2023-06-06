@@ -9,7 +9,9 @@ import {
 } from 'react-icons/hi';
 import { GiStarFormation } from 'react-icons/gi';
 
-export const sidebarNavLinks = [
+import { INavigationLink } from '@/interfaces/naviation.interface';
+
+export const sidebarNavLinks: INavigationLink[] = [
   {
     name: 'Home',
     href: '/',
@@ -19,6 +21,7 @@ export const sidebarNavLinks = [
     name: 'Users',
     href: '/users',
     icon: HiUsers,
+    allowedRoles: ['admin'],
   },
   {
     name: 'Reviews',
@@ -49,5 +52,6 @@ export const sidebarNavLinks = [
     name: 'Reports',
     href: '/reports',
     icon: HiDocumentReport,
+    allowedRoles: ['admin'],
   },
 ];

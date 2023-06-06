@@ -6,6 +6,7 @@ const reportsRoute: IRoute = {
   protected: true,
   guestOnly: false,
   path: '/reports',
+  allowedRoles: ['admin'],
   component: PerformanceReport,
 };
 

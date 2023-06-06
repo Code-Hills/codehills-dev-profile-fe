@@ -1,7 +1,9 @@
+export type Role = 'developer' | 'manager' | 'architect' | 'admin';
+
 export interface User {
   id: any;
   displayName: string;
-  role: string;
+  role: Role;
   email: string;
   isActivated: boolean;
 }

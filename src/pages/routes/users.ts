@@ -6,6 +6,7 @@ const usersRoute: IRoute = {
   protected: true,
   guestOnly: false,
   path: '/users',
+  allowedRoles: ['admin'],
   component: UsersActivity,
 };
 

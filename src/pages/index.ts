@@ -5,6 +5,8 @@ import usersRoute from './routes/users';
 import reviewsRoute from './routes/reviews';
 import reportsRoute from './routes/reports';
 import receivedReviewsRoute from './routes/receivedReviews';
+import forbiddenRoute from './routes/forbidden';
+import notFoundRoute from './routes/notFound';
 
 const privateRoutes = [
   dashboardRoute,
@@ -14,6 +16,8 @@ const privateRoutes = [
   reportsRoute,
   receivedReviewsRoute,
   usersRoute,
+  forbiddenRoute,
+  notFoundRoute,
 ];
 
 export default privateRoutes;

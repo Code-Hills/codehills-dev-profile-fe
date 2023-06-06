@@ -4,6 +4,7 @@ import {
   redirect,
 } from 'react-router-dom';
 import { useLayoutEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import privateRoutes from './pages';
 import { useAppSelector } from './modules/_partials/hooks/useRedux';
@@ -11,6 +12,7 @@ import isAuth from './helpers/isAuth';
 import ErrorPage from './modules/activities/ErrorPage';
 import LoginActivity from './modules/activities/LoginActivity';
 import AppLayout from './modules/_partials/layouts/AppLayout';
+import 'react-toastify/dist/ReactToastify.css';
 
 const user = isAuth();
 
@@ -70,7 +72,12 @@ const App = () => {
     }
   }, [theme]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer theme={theme === 'dark' ? 'dark' : 'light'} />
+    </>
+  );
 };
 
 export default App;

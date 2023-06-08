@@ -1,12 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { IStateWithReviews } from '@/interfaces/review.interface';
-import { getAllReviews, createReview } from '@/api/review.api';
+import {
+  getAllReviews,
+  createReview,
+  getAllDeveloperReviews,
+} from '@/api/review.api';
 
 const initialState: IStateWithReviews = {
   reviews: [],
   loading: false,
   error: null,
+  developerReviews: [],
 };
 
 const reviewSlice = createSlice({
@@ -40,6 +45,18 @@ const reviewSlice = createSlice({
         state.reviews = [...state.reviews, action.payload];
       })
       .addCase(createReview.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message as string;
+      })
+      .addCase(getAllDeveloperReviews.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllDeveloperReviews.fulfilled, (state, action) => {
+        state.loading = false;
+        state.developerReviews = action.payload;
+      })
+      .addCase(getAllDeveloperReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message as string;
       });

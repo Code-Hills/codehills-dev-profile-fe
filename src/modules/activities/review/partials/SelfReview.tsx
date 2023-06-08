@@ -11,6 +11,11 @@ import { createReview } from '@/api/review.api';
 const SelfReview = ({
   title = 'Self Review',
   className = 'px-3 py-1.5 text-xs font-medium',
+  developerId,
+}: {
+  title?: string;
+  className?: string;
+  developerId?: string;
 }) => {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector(state => state.review);
@@ -24,7 +29,7 @@ const SelfReview = ({
     event.preventDefault();
     const userId = tokenData?.id;
 
-    if (userId && activeCycle) {
+    if (activeCycle) {
       const description = writtenReviewRef?.current?.value;
       const ratings = Number(ratingRef?.current?.value);
 
@@ -36,7 +41,7 @@ const SelfReview = ({
           description,
           ratings,
           reviewCycleId: activeCycle.id,
-          revieweeId: userId,
+          revieweeId: developerId || userId,
         }),
       );
 

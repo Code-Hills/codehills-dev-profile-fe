@@ -9,7 +9,7 @@ import {
 } from 'react-icons/hi';
 import { GiStarFormation } from 'react-icons/gi';
 
-import { INavigationLink } from '@/interfaces/naviation.interface';
+import { INavigationLink } from '@/interfaces/navigation.interface';
 
 export const sidebarNavLinks: INavigationLink[] = [
   {

@@ -43,3 +43,24 @@ export const calculateCycleEnd = (cycle: Cycle) => {
   }
   return 'This cycle has already ended';
 };
+
+export function getTimeAgo(dateString: string) {
+  const date = new Date(dateString);
+  const currentTime = new Date();
+  const timeDifference = currentTime.getTime() - date.getTime();
+  const seconds = Math.floor(timeDifference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) {
+    return `${seconds} seconds ago`;
+  }
+  if (minutes < 60) {
+    return `${minutes} minutes ago`;
+  }
+  if (hours < 24) {
+    return `${hours} hours ago`;
+  }
+  return `${days} days ago`;
+}

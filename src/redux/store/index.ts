@@ -12,6 +12,7 @@ import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
 import activateUserReducer from '../features/admin/activateUserAcountSlice';
 import cycleSlice from '../slices/cycleSlice';
 import reviewSlice from '../slices/reviewSlice';
+import reviewerSlice from '../slices/reviewerSlice';
 
 export function makeStore() {
   return configureStore({
@@ -24,6 +25,7 @@ export function makeStore() {
       activate: activateUserReducer,
       cycle: cycleSlice,
       review: reviewSlice,
+      reviewer: reviewerSlice,
     },
   });
 }

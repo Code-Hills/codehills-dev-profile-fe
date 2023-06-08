@@ -1,95 +1,18 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 
 import { Dropdown, Modal } from 'flowbite-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const developers = [
-  {
-    id: 1,
-    name: 'John Doe',
-    cycle: '2021 Q1',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    cycle: '2021 Q1',
-    reviewType: 'Peer Review 2',
-    rating: 3,
-  },
-  {
-    id: 3,
-    name: 'Bob Johnson',
-    cycle: '2021 Q1',
-    reviewType: 'Peer Review 2',
-    rating: 3,
-  },
-  {
-    id: 4,
-    name: 'Kevin Johnson',
-    cycle: '2021 Q1',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-
-  {
-    id: 5,
-    name: 'John Doe',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: 'Jane Smith',
-    cycle: '2021 Q2',
-    reviewType: 'Manager Review',
-    rating: 3,
-  },
-  {
-    id: 7,
-    name: 'Bob Johnson',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-  {
-    id: 8,
-    name: 'Kevin Johnson',
-    cycle: '2021 Q2',
-    reviewType: 'Manager Review',
-    rating: 3,
-  },
-  {
-    id: 9,
-    name: 'John Doe',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-  {
-    id: 10,
-    name: 'Jane Smith',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 2',
-    rating: 3,
-  },
-  {
-    id: 11,
-    name: 'Bob Johnson',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 1',
-    rating: 5,
-  },
-  {
-    id: 12,
-    name: 'Kevin Johnson',
-    cycle: '2021 Q2',
-    reviewType: 'Peer Review 2',
-    rating: 3,
-  },
-];
+import { getAllCyles } from '@/api/cyle.api';
+import { Cycle } from '@/interfaces/cycle.interface';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/modules/_partials/hooks/useRedux';
+import { getAllReviews } from '@/api/review.api';
+import { Review } from '@/interfaces/review.interface';
+import { getTimeAgo } from '@/helpers/cyle.helper';
+import TableDataLoader from '@/modules/_partials/shared/TableDataLoader';
 
 const getStatusClassName = (rating: number) => {
   if (rating >= 4) {
@@ -105,9 +28,33 @@ const getStatusClassName = (rating: number) => {
 };
 
 const ReceivedReviews = () => {
-  const [currentReview, setCurrentReview] = useState<
-    (typeof developers)[0] | null
-  >(null);
+  const [currentCycle, setCurrentCycle] = useState<Cycle | null>(
+    null,
+  );
+  const [currentReview, setCurrentReview] = useState<Review | null>(
+    null,
+  );
+  const { tokenData } = useAppSelector(state => state.profile);
+  const { cycles } = useAppSelector(state => state.cycle);
+  const { reviews, loading } = useAppSelector(state => state.review);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCyles());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getAllReviews());
+  }, []);
+
+  const developerReviews = reviews
+    .filter(review => {
+      if (!currentCycle) return true;
+      return review.reviewCycleId === currentCycle.id;
+    })
+    .filter(review => review.revieweeId === tokenData?.id);
+
   return (
     <>
       <div className="flex gap-3 justify-between mb-3">
@@ -116,19 +63,16 @@ const ReceivedReviews = () => {
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
             Cycle:
           </span>
-          <Dropdown label="All" size="xs">
-            <Dropdown.Item className="whitespace-nowrap">
-              2023 Q2
-            </Dropdown.Item>
-            <Dropdown.Item className="whitespace-nowrap">
-              2022 Q2
-            </Dropdown.Item>
-            <Dropdown.Item className="whitespace-nowrap">
-              2021 Q2
-            </Dropdown.Item>
-            <Dropdown.Item className="whitespace-nowrap">
-              2020 Q2
-            </Dropdown.Item>
+          <Dropdown label={currentCycle?.name ?? 'All'} size="xs">
+            {cycles.map(cycle => (
+              <Dropdown.Item
+                key={cycle.id}
+                onClick={() => setCurrentCycle(cycle)}
+                className="whitespace-nowrap"
+              >
+                {cycle.name}
+              </Dropdown.Item>
+            ))}
           </Dropdown>
         </div>
       </div>
@@ -144,12 +88,7 @@ const ReceivedReviews = () => {
                   >
                     Reviewer
                   </th>
-                  <th
-                    scope="col"
-                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
-                  >
-                    Cycle
-                  </th>
+
                   <th
                     scope="col"
                     className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
@@ -167,47 +106,61 @@ const ReceivedReviews = () => {
                     scope="col"
                     className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
                   >
+                    Reviewed At
+                  </th>
+
+                  <th
+                    scope="col"
+                    className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                  >
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800">
-                {developers.map(developer => (
-                  <tr
-                    key={developer.id}
-                    className="even:bg-gray-100 dark:even:bg-gray-700"
-                  >
-                    <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                      {developer.name}
-                    </td>
-                    <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                      {developer.cycle}
-                    </td>
-                    <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                      {developer.reviewType}
-                    </td>
-                    <td className="p-4 whitespace-nowrap">
-                      <span
-                        className={`${getStatusClassName(
-                          developer.rating,
-                        )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
-                      >
-                        {developer.rating}
-                      </span>
-                    </td>
-                    <td className="p-4 whitespace-nowrap">
-                      <a
-                        href={`#view-${developer.id}`}
-                        onClick={() => {
-                          setCurrentReview(developer);
-                        }}
-                        className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400 border border-blue-100 dark:border-blue-500"
-                      >
-                        See more
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                <TableDataLoader
+                  isLoading={loading}
+                  colSpan={5}
+                  data={developerReviews}
+                >
+                  {developerReviews.map(review => (
+                    <tr
+                      key={review.id}
+                      className="even:bg-gray-100 dark:even:bg-gray-700"
+                    >
+                      <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        {review.reviewer?.displayName}
+                      </td>
+
+                      <td className="capitalize p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                        {review.type}
+                      </td>
+                      <td className="p-4 whitespace-nowrap">
+                        <span
+                          className={`${getStatusClassName(
+                            review.ratings,
+                          )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
+                        >
+                          {review.ratings}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        {getTimeAgo(review.createdAt)}
+                      </td>
+                      <td className="p-4 whitespace-nowrap">
+                        <a
+                          href={`#view-${review.id}`}
+                          onClick={() => {
+                            setCurrentReview(review);
+                          }}
+                          className="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400 border border-blue-100 dark:border-blue-500"
+                        >
+                          See more
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </TableDataLoader>
               </tbody>
             </table>
           </div>
@@ -219,7 +172,7 @@ const ReceivedReviews = () => {
         onClose={() => setCurrentReview(null)}
       >
         <Modal.Header>
-          {`Review From ${currentReview?.name}`}
+          {`Review From ${currentReview?.reviewer?.displayName}`}
         </Modal.Header>
         <Modal.Body>
           <div className="space-y-6">
@@ -227,8 +180,8 @@ const ReceivedReviews = () => {
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Review Type
               </span>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                {currentReview?.reviewType}
+              <span className="capitalize text-sm font-medium text-gray-900 dark:text-white">
+                {currentReview?.type}
               </span>
             </div>
             <div className="flex items-center space-x-4">
@@ -236,7 +189,7 @@ const ReceivedReviews = () => {
                 Rating
               </span>
               <span className="text-sm font-medium text-gray-900 dark:text-white">
-                {currentReview?.rating} / 5
+                {currentReview?.ratings} / 5
               </span>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
@@ -244,12 +197,7 @@ const ReceivedReviews = () => {
                 Written review
               </span>
               <span className="text-sm text-gray-900 dark:text-white">
-                Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Quisquam, voluptatibus. Lorem ipsum dolor sit
-                amet consectetur adipisicing elit. Quisquam,
-                voluptatibus. Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Quisquam, voluptatibus. Lorem ipsum
-                dolor sit amet consectetur adipisicing elit.
+                {currentReview?.description}
               </span>
             </div>
           </div>

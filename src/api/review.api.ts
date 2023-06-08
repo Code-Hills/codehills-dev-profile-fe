@@ -38,3 +38,25 @@ export const createReview = createAsyncThunk(
     }
   },
 );
+
+export const getAllDeveloperReviews = createAsyncThunk(
+  'reviews/getAllDeveloperReviews',
+  async ({
+    revieweeId,
+    cycleId,
+  }: {
+    revieweeId: string;
+    cycleId: string;
+  }) => {
+    try {
+      const { data } = await API.get(
+        `/users/${revieweeId}/reviews/${cycleId}`,
+      );
+      const { reviews } = data;
+      return reviews as Review[];
+    } catch (error: any) {
+      const message = error?.response?.data?.message || error.message;
+      throw new Error(message);
+    }
+  },
+);

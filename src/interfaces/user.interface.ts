@@ -6,5 +6,7 @@ export interface User {
   role: Role;
   email: string;
   isActivated: boolean;
-  users: User[];
+  firstName: string;
+  lastName: string;
+  avatar?: string;
 }

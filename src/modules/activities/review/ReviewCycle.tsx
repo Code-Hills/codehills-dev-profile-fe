@@ -1,9 +1,9 @@
-import { Button } from 'flowbite-react';
+import { Avatar, Button } from 'flowbite-react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import PeerReview from './partials/PeerReview';
+import PeerReviewer from './partials/PeerReviewer';
 import SelfReview from './partials/SelfReview';
 
 import {
@@ -12,28 +12,33 @@ import {
 } from '@/modules/_partials/hooks/useRedux';
 import { getAllCyles } from '@/api/cyle.api';
 import { calculateCycleEnd } from '@/helpers/cyle.helper';
-
-const users = [
-  {
-    avatar:
-      'https://flowbite.com/docs/images/people/profile-picture-1.jpg',
-    name: 'Neil Sims',
-  },
-  {
-    avatar:
-      'https://flowbite.com/docs/images/people/profile-picture-3.jpg',
-    name: 'Bonnie Green',
-  },
-];
+import { getDeveloperReviewers } from '@/api/reviewer.api';
 
 const ReviewCycle = () => {
+  const { tokenData } = useAppSelector(state => state.profile);
   const { activeCycle } = useAppSelector(state => state.cycle);
+  const { reviewers } = useAppSelector(state => state.reviewer);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAllCyles());
   }, []);
+
+  useEffect(() => {
+    if (activeCycle?.id && tokenData?.id) {
+      dispatch(
+        getDeveloperReviewers({
+          reviewCyleId: activeCycle.id,
+          developerId: tokenData.id,
+        }),
+      );
+    }
+  }, [activeCycle]);
+
+  const reviewRequests = reviewers.filter(
+    item => item.reviewerId === tokenData?.id,
+  );
 
   return (
     <>
@@ -58,7 +63,7 @@ const ReviewCycle = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <PeerReview />
+          <PeerReviewer />
           <SelfReview
             title="Self Review"
             className="py-3 px-4 text-sm font-medium"
@@ -66,21 +71,25 @@ const ReviewCycle = () => {
         </div>
       </div>
 
-      {users.map(user => (
-        <div className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center">
+      {reviewRequests.map(({ developer, id }) => (
+        <div
+          key={id}
+          className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center"
+        >
           <div className="shrink-0">
-            <img
-              className="h-5 w-5 rounded-full"
-              src={user.avatar}
-              alt={user.name}
-            />
+            <Avatar size="sm" img={developer?.avatar} rounded />
           </div>
           <p className="flex-grow">
-            <span className="text-lg font-medium">{user.name}</span>{' '}
+            <span className="text-lg font-medium">
+              {developer?.firstName} {developer?.lastName}
+            </span>{' '}
             requested your review as a peer reviewer for the review
             cycle.
           </p>
-          <SelfReview title="Add peer review" />
+          <SelfReview
+            title="Add peer review"
+            developerId={developer?.id}
+          />
         </div>
       ))}
     </>

@@ -19,12 +19,17 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { getAllUsers } from '@/redux/features/users/userSlice';
+import {
+  getAllProjects,
+  getAllUsers,
+} from '@/redux/features/users/userSlice';
 import { deactivateUserAccount } from '@/redux/features/admin/deactivateUserAcountSlice';
 import { activateUserAccount } from '@/redux/features/admin/activateUserAcountSlice';
 import { User } from '@/interfaces/user.interface';
 import Keys from '@/utils/keys';
 import Pagination from '@/modules/_partials/shared/Paginations';
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
+import { removeDuplicates } from '@/helpers/removeDuplicates';
 
 const UsersActivity = () => {
   interface RootState {
@@ -39,6 +44,7 @@ const UsersActivity = () => {
   const [showMenuIcon, setHideMonuIcon] = useState(false);
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
+  const [currentRole, setCurrentRole] = useState('');
   const isActivating = useAppSelector(
     state => state.activate.isLoading,
   );
@@ -74,9 +80,15 @@ const UsersActivity = () => {
 
   useEffect(() => {
     dispatch(getAllUsers());
+    dispatch(getAllProjects());
   }, [dispatch]);
 
   const { users, isLoading } = useAppSelector(state => state.users);
+  const { projects, isLoadingProjects } = useAppSelector(
+    state => state.users,
+  );
+  console.log(projects, isLoadingProjects);
+  // const { projects, isGettingProjects } = useAppSelector(state => state);
 
   const handleUserClick = (e: User) => {
     setClickedUserId(e.id);
@@ -128,10 +140,18 @@ const UsersActivity = () => {
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-
-  const filteredUsers = users.filter(user =>
-    user.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
+  const uniqueRoles = removeDuplicates(
+    users?.map((user: { role: any }) => user.role),
   );
+
+  const filteredUsers = users.filter(
+    (user: { displayName: string; role: string }) =>
+      user.displayName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
+      user.role.toLowerCase().includes(currentRole),
+  );
+  console.log(users);
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -154,14 +174,25 @@ const UsersActivity = () => {
 
         <div className="justify-between z-10 text-rgba-22-27-44-70 bg-gray-300 hover:bg-gray-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           <DropdownMenu />
-          <Dropdown arrowIcon inline label="Role">
-            <Dropdown.Header>
-              <span className="block text-sm">Role</span>
-            </Dropdown.Header>
-
-            <Dropdown.Item>Developer</Dropdown.Item>
-            <Dropdown.Item>Manager</Dropdown.Item>
-            <Dropdown.Item>Admin</Dropdown.Item>
+          <Dropdown
+            arrowIcon
+            inline
+            label={
+              currentRole !== ''
+                ? capitalizeFirstLetter(currentRole)
+                : 'Role'
+            }
+          >
+            {uniqueRoles.map(user => {
+              return (
+                <Dropdown.Item
+                  key={user}
+                  onClick={() => setCurrentRole(user)}
+                >
+                  {capitalizeFirstLetter(user)}
+                </Dropdown.Item>
+              );
+            })}
           </Dropdown>
           <DropdownMenu />
         </div>
@@ -209,7 +240,7 @@ const UsersActivity = () => {
           </thead>
           <tbody>
             {filteredUsers.length !== 0 &&
-              filteredUsers?.map((item, index: number) => {
+              filteredUsers?.map((item: User, index: number) => {
                 return (
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td className="w-4 p-4">

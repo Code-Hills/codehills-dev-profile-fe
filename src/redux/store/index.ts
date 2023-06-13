@@ -13,6 +13,7 @@ import activateUserReducer from '../features/admin/activateUserAcountSlice';
 import cycleSlice from '../slices/cycleSlice';
 import reviewSlice from '../slices/reviewSlice';
 import reviewerSlice from '../slices/reviewerSlice';
+import searchSlice from '../slices/searchSlice';
 
 export function makeStore() {
   return configureStore({
@@ -26,6 +27,7 @@ export function makeStore() {
       cycle: cycleSlice,
       review: reviewSlice,
       reviewer: reviewerSlice,
+      search: searchSlice,
     },
   });
 }

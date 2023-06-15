@@ -21,6 +21,7 @@ import {
 } from '@/modules/_partials/hooks/useRedux';
 import {
   getAllProjects,
+  getAllUserByProjects,
   getAllUsers,
 } from '@/redux/features/users/userSlice';
 import { deactivateUserAccount } from '@/redux/features/admin/deactivateUserAcountSlice';
@@ -45,6 +46,9 @@ const UsersActivity = () => {
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
   const [currentRole, setCurrentRole] = useState('');
+  const [currenProject, setCurrentProject] = useState('');
+  const [getusersByProject, setUserByProject] = useState(null);
+
   const isActivating = useAppSelector(
     state => state.activate.isLoading,
   );
@@ -78,18 +82,31 @@ const UsersActivity = () => {
     setClickedUserId(e);
   };
 
+  const {
+    users,
+    projects,
+    isLoading,
+    isLoadingProjects,
+    usersByProject,
+  } = useAppSelector(state => state.users);
+
   useEffect(() => {
-    dispatch(getAllUsers());
+    dispatch(getAllUsers()).then(() => {
+      setUserByProject(users);
+    });
     dispatch(getAllProjects());
   }, [dispatch]);
 
-  const { users, isLoading } = useAppSelector(state => state.users);
-  const { projects, isLoadingProjects } = useAppSelector(
-    state => state.users,
-  );
-  console.log(projects, isLoadingProjects);
   // const { projects, isGettingProjects } = useAppSelector(state => state);
-
+  const handleUserByProject = async item => {
+    console.log('project id', item);
+    setCurrentProject(item.name);
+    await dispatch(getAllUserByProjects(item.id));
+    if (usersByProject.users) {
+      setUserByProject(usersByProject.users);
+    }
+  };
+  console.log(getusersByProject, 'testing......');
   const handleUserClick = (e: User) => {
     setClickedUserId(e.id);
     setIsActivated(e.isActivated);
@@ -151,7 +168,6 @@ const UsersActivity = () => {
         .includes(searchTerm.toLowerCase()) &&
       user.role.toLowerCase().includes(currentRole),
   );
-  console.log(users);
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -172,7 +188,7 @@ const UsersActivity = () => {
           />
         </p>
 
-        <div className="justify-between z-10 text-rgba-22-27-44-70 bg-gray-300 hover:bg-gray-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        <div className="justify-between z-10 text-rgba-22-27-44-70 hover:bg-gray-200 font-medium rounded-lg text-sm px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-0">
           <DropdownMenu />
           <Dropdown
             arrowIcon
@@ -194,7 +210,26 @@ const UsersActivity = () => {
               );
             })}
           </Dropdown>
-          <DropdownMenu />
+          <Dropdown
+            arrowIcon
+            inline
+            label={
+              currenProject !== ''
+                ? capitalizeFirstLetter(currenProject)
+                : 'Projects'
+            }
+          >
+            {projects?.map(item => {
+              return (
+                <Dropdown.Item
+                  key={item.id}
+                  onClick={() => handleUserByProject(item)}
+                >
+                  {capitalizeFirstLetter(item.name)}
+                </Dropdown.Item>
+              );
+            })}
+          </Dropdown>
         </div>
       </div>
 

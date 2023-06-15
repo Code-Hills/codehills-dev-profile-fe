@@ -32,20 +32,38 @@ export const getAllProjects = createAsyncThunk(
   },
 );
 
+export const getAllUserByProjects = createAsyncThunk(
+  'AllUsers/projects',
+  async (projectId) => {
+    // eslint-disable-next-line no-useless-catch
+    try{
+      const { data } = await API.get(`/projects/${projectId}/users`);
+      return data;
+    }catch(error: any){
+      throw error?.response?.data;
+    }
+   
+  },
+);
+
 interface InitialState {
   users: User[];
+  usersByProject: User[];
   projects:any [],
   isLoading: boolean;
+  isLoadingUserByProjects: boolean,
   isLoadingProjects:boolean;
   error: string | null;
 }
 
 const initialState: InitialState = {
   users: [],
+  usersByProject:[],
   projects:[],
   isLoadingProjects:false,
   isLoading: false,
   error: null,
+  isLoadingUserByProjects:false,
 };
 
 const userSlice = createSlice({
@@ -80,6 +98,18 @@ const userSlice = createSlice({
       })
       .addCase(getAllProjects.rejected, (state, action) => {
         state.isLoadingProjects = false;
+        state.error = action.error.message as string;
+      })
+      .addCase(getAllUserByProjects.pending, state => {
+        state.isLoadingUserByProjects = true;
+        state.error = null;
+      })
+      .addCase(getAllUserByProjects.fulfilled, (state, action) => {
+        state.isLoadingUserByProjects = false;
+        state.usersByProject = action.payload;
+      })
+      .addCase(getAllUserByProjects.rejected, (state, action) => {
+        state.isLoadingUserByProjects = false;
         state.error = action.error.message as string;
       });
     },

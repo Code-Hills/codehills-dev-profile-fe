@@ -48,6 +48,14 @@ const UsersActivity = () => {
   const [currentRole, setCurrentRole] = useState('');
   const [currenProject, setCurrentProject] = useState('');
   const [getusersByProject, setUserByProject] = useState(null);
+  const [selectedFields, setSelectedFields] = useState<string[]>([
+    'ID',
+    'Full Name',
+    'Position',
+    'Email',
+    'Status',
+    'Action',
+  ]);
 
   const isActivating = useAppSelector(
     state => state.activate.isLoading,
@@ -168,6 +176,26 @@ const UsersActivity = () => {
         .includes(searchTerm.toLowerCase()) &&
       user.role.toLowerCase().includes(currentRole),
   );
+
+  const fieldOptions = [
+    { value: 'ID', label: 'ID' },
+    { value: 'Full Name', label: 'Full Name' },
+    { value: 'Position', label: 'Position' },
+    { value: 'Email', label: 'Email' },
+    { value: 'Status', label: 'Status' },
+    { value: 'Action', label: 'Action' },
+  ];
+
+  const handleFieldSelection = (field: string) => {
+    if (selectedFields.includes(field)) {
+      setSelectedFields(prevFields =>
+        prevFields.filter(f => f !== field),
+      );
+    } else {
+      setSelectedFields(prevFields => [...prevFields, field]);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -188,48 +216,91 @@ const UsersActivity = () => {
           />
         </p>
 
-        <div className="justify-between z-10 text-rgba-22-27-44-70 hover:bg-gray-200 font-medium rounded-lg text-sm px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-0">
-          <DropdownMenu />
-          <Dropdown
-            arrowIcon
-            inline
-            label={
-              currentRole !== ''
-                ? capitalizeFirstLetter(currentRole)
-                : 'Role'
-            }
-          >
-            {uniqueRoles.map(user => {
-              return (
-                <Dropdown.Item
-                  key={user}
-                  onClick={() => setCurrentRole(user)}
-                >
-                  {capitalizeFirstLetter(user)}
-                </Dropdown.Item>
-              );
-            })}
-          </Dropdown>
-          <Dropdown
-            arrowIcon
-            inline
-            label={
-              currenProject !== ''
-                ? capitalizeFirstLetter(currenProject)
-                : 'Projects'
-            }
-          >
-            {projects?.map(item => {
-              return (
-                <Dropdown.Item
-                  key={item.id}
-                  onClick={() => handleUserByProject(item)}
-                >
-                  {capitalizeFirstLetter(item.name)}
-                </Dropdown.Item>
-              );
-            })}
-          </Dropdown>
+        <div className="justify-between z-10 text-rgba-22-27-44-70 font-medium rounded-lg text-sm px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-0">
+          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+            <Dropdown
+              arrowIcon
+              label="Fields"
+              inline
+              className="bg-gray-400"
+            >
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('ID')}
+              >
+                ID
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('Full Name')}
+              >
+                Full Name
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('Position')}
+              >
+                Position
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('Email')}
+              >
+                Email
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('Status')}
+              >
+                Status
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => handleFieldSelection('Action')}
+              >
+                Action
+              </Dropdown.Item>
+            </Dropdown>
+          </div>
+
+          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+            <Dropdown
+              arrowIcon
+              inline
+              label={
+                currentRole !== ''
+                  ? capitalizeFirstLetter(currentRole)
+                  : 'Role'
+              }
+            >
+              {uniqueRoles.map(user => {
+                return (
+                  <Dropdown.Item
+                    key={user}
+                    onClick={() => setCurrentRole(user)}
+                  >
+                    {capitalizeFirstLetter(user)}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown>
+          </div>
+          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+            <Dropdown
+              arrowIcon
+              inline
+              label={
+                currenProject !== ''
+                  ? capitalizeFirstLetter(currenProject)
+                  : 'Projects'
+              }
+            >
+              {projects?.map(item => {
+                return (
+                  <Dropdown.Item
+                    key={item.id}
+                    onClick={() => handleUserByProject(item)}
+                  >
+                    {capitalizeFirstLetter(item.name)}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown>
+          </div>
         </div>
       </div>
 
@@ -253,24 +324,37 @@ const UsersActivity = () => {
                   </label>
                 </div>
               </th>
-              <th scope="col" className="px-6 py-3">
-                ID
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Full Name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Position
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
+              {selectedFields.includes('ID') && (
+                <th scope="col" className="px-6 py-3">
+                  ID
+                </th>
+              )}
+              {selectedFields.includes('Full Name') && (
+                <th scope="col" className="px-6 py-3">
+                  Full Name
+                </th>
+              )}
+              {selectedFields.includes('Position') && (
+                <th scope="col" className="px-6 py-3">
+                  Position
+                </th>
+              )}
+              {selectedFields.includes('Email') && (
+                <th scope="col" className="px-6 py-3">
+                  Email
+                </th>
+              )}
+
+              {selectedFields.includes('Status') && (
+                <th scope="col" className="px-6 py-3">
+                  Status
+                </th>
+              )}
+              {selectedFields.includes('Action') && (
+                <th scope="col" className="px-6 py-3">
+                  Action
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -293,106 +377,120 @@ const UsersActivity = () => {
                         </label>
                       </div>
                     </td>
-                    <td className="px-6 py-4">{index + 1}</td>
-                    <th
-                      scope="row"
-                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
-                        alt="Jese"
-                      />
-                      <div className="pl-3">
-                        <div className="text-base font-semibold">
-                          {String(item.displayName)}
-                        </div>
-                      </div>
-                    </th>
-                    <td className="px-6 py-4">{item.role}</td>
-                    <td className="px-6 py-4">{item.email}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        {item.isActivated ? (
-                          <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full">
-                            Activated
-                          </span>
-                        ) : (
-                          <span className="bg-red-700 hover:bg-red-700 text-white text-sm py-1 px-2 rounded-full">
-                            Deactivated
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleUserClick(item)}
-                        className="inline-flex items-center p-2 font-medium text-center text- gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                        type="button"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          aria-hidden="true"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                        </svg>
-                      </button>
+                    {selectedFields.includes('ID') && (
+                      <td className="px-6 py-4">{index + 1}</td>
+                    )}
 
-                      {clickedUserId === item.id && (
-                        <div
-                          className={`z-10 ${
-                            showMenuIcon ? '' : 'hidden'
-                          } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}
-                        >
-                          <ul
-                            className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                            aria-labelledby="dropdownMenuIconHorizontalButton"
-                          >
-                            <li>
-                              <Link
-                                to="/activate"
-                                onClick={e =>
-                                  handleCurrentUser(e, item)
-                                }
-                                className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >
-                                {isActivated ? (
-                                  <span className="text-red-500">
-                                    {isDeactivating
-                                      ? 'Deactivating ...'
-                                      : 'Deactivate'}
-                                  </span>
-                                ) : (
-                                  <span>
-                                    {' '}
-                                    {isActivating
-                                      ? 'Activating ...'
-                                      : 'Activate'}
-                                  </span>
-                                )}
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/role"
-                                onClick={e => {
-                                  e.preventDefault();
-                                  setSelectedUser(item);
-                                  setRole(item.role);
-                                  setIsOpen(true);
-                                }}
-                                className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                              >
-                                Change Role
-                              </Link>
-                            </li>
-                          </ul>
+                    {selectedFields.includes('Full Name') && (
+                      <th
+                        scope="row"
+                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        <img
+                          className="w-10 h-10 rounded-full"
+                          src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+                          alt="Jese"
+                        />
+                        <div className="pl-3">
+                          <div className="text-base font-semibold">
+                            {String(item.displayName)}
+                          </div>
                         </div>
-                      )}
-                    </td>
+                      </th>
+                    )}
+                    {selectedFields.includes('Position') && (
+                      <td className="px-6 py-4">{item.role}</td>
+                    )}
+                    {selectedFields.includes('Email') && (
+                      <td className="px-6 py-4">{item.email}</td>
+                    )}
+                    {selectedFields.includes('Status') && (
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          {item.isActivated ? (
+                            <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full">
+                              Activated
+                            </span>
+                          ) : (
+                            <span className="bg-red-700 hover:bg-red-700 text-white text-sm py-1 px-2 rounded-full">
+                              Deactivated
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    )}
+
+                    {selectedFields.includes('Action') && (
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleUserClick(item)}
+                          className="inline-flex items-center p-2 font-medium text-center text- gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                          type="button"
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            aria-hidden="true"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                        </button>
+
+                        {clickedUserId === item.id && (
+                          <div
+                            className={`z-10 ${
+                              showMenuIcon ? '' : 'hidden'
+                            } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}
+                          >
+                            <ul
+                              className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                              aria-labelledby="dropdownMenuIconHorizontalButton"
+                            >
+                              <li>
+                                <Link
+                                  to="/activate"
+                                  onClick={e =>
+                                    handleCurrentUser(e, item)
+                                  }
+                                  className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                >
+                                  {isActivated ? (
+                                    <span className="text-red-500">
+                                      {isDeactivating
+                                        ? 'Deactivating ...'
+                                        : 'Deactivate'}
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      {' '}
+                                      {isActivating
+                                        ? 'Activating ...'
+                                        : 'Activate'}
+                                    </span>
+                                  )}
+                                </Link>
+                              </li>
+                              <li>
+                                <Link
+                                  to="/role"
+                                  onClick={e => {
+                                    e.preventDefault();
+                                    setSelectedUser(item);
+                                    setRole(item.role);
+                                    setIsOpen(true);
+                                  }}
+                                  className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                >
+                                  Change Role
+                                </Link>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 );
               })}

@@ -111,7 +111,7 @@ const ReceivedReviews = () => {
   return (
     <>
       <div className="flex gap-3 justify-between mb-3">
-        <h1 className="text-2xl font-medium">My Received Reviews</h1>
+        <h1 className="text-2xl font-medium">Received Reviews</h1>
         <div className="relative flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
             Cycle:

@@ -13,6 +13,7 @@ import { getAllReviews } from '@/api/review.api';
 import { Review } from '@/interfaces/review.interface';
 import { getTimeAgo } from '@/helpers/cyle.helper';
 import TableDataLoader from '@/modules/_partials/shared/TableDataLoader';
+import DataLayout from '@/modules/_partials/layouts/DataLayout';
 
 const getStatusClassName = (rating: number) => {
   if (rating >= 4) {
@@ -35,7 +36,9 @@ const ReceivedReviews = () => {
     null,
   );
   const { tokenData } = useAppSelector(state => state.profile);
-  const { cycles } = useAppSelector(state => state.cycle);
+  const { cycles, loading: isLoadingCycles } = useAppSelector(
+    state => state.cycle,
+  );
   const { reviews, loading } = useAppSelector(state => state.review);
 
   const dispatch = useAppDispatch();
@@ -57,25 +60,27 @@ const ReceivedReviews = () => {
 
   return (
     <>
-      <div className="flex gap-3 justify-between flex-wrap mb-3">
-        <h1 className="text-2xl font-medium">My Received Reviews</h1>
-        <div className="relative flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Cycle:
-          </span>
-          <Dropdown label={currentCycle?.name ?? 'All'} size="xs">
-            {cycles.map(cycle => (
-              <Dropdown.Item
-                key={cycle.id}
-                onClick={() => setCurrentCycle(cycle)}
-                className="whitespace-nowrap"
-              >
-                {cycle.name}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
+      <DataLayout isLoading={isLoadingCycles && !cycles.length}>
+        <div className="flex gap-3 justify-between flex-wrap mb-3">
+          <h1 className="text-2xl font-medium">Received Reviews</h1>
+          <div className="relative flex items-center space-x-2">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Cycle:
+            </span>
+            <Dropdown label={currentCycle?.name ?? 'All'} size="xs">
+              {cycles.map(cycle => (
+                <Dropdown.Item
+                  key={cycle.id}
+                  onClick={() => setCurrentCycle(cycle)}
+                  className="whitespace-nowrap"
+                >
+                  {cycle.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+          </div>
         </div>
-      </div>
+      </DataLayout>
       <div className="overflow-x-auto rounded-lg">
         <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden shadow sm:rounded-lg">
@@ -119,7 +124,7 @@ const ReceivedReviews = () => {
               </thead>
               <tbody className="bg-white dark:bg-gray-800">
                 <TableDataLoader
-                  isLoading={loading}
+                  isLoading={loading && !developerReviews.length}
                   colSpan={5}
                   data={developerReviews}
                 >
@@ -136,13 +141,15 @@ const ReceivedReviews = () => {
                         {review.type}
                       </td>
                       <td className="p-4 whitespace-nowrap">
-                        <span
-                          className={`${getStatusClassName(
-                            review.ratings,
-                          )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
-                        >
-                          {review.ratings}
-                        </span>
+                        {review.ratings ? (
+                          <span
+                            className={`${getStatusClassName(
+                              review.ratings,
+                            )} text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border`}
+                          >
+                            {review.ratings}
+                          </span>
+                        ) : null}
                       </td>
                       <td className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                         {getTimeAgo(review.createdAt)}

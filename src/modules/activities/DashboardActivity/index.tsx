@@ -1,6 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { Dispatch } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   FiUsers,
   FiActivity,
@@ -8,28 +6,51 @@ import {
   FiGitPullRequest,
   FiGitCommit,
 } from 'react-icons/fi';
+import { useEffect } from 'react';
 
 import RecentProjectList from './partials/RecentProjectList';
 
 import SmallDetailCard from '@/modules/_partials/shared/SmallDetailCard';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/modules/_partials/hooks/useRedux';
+import { Role } from '@/interfaces/user.interface';
+import DataLayout from '@/modules/_partials/layouts/DataLayout';
+import DataLoader from '@/modules/_partials/shared/DataLoader';
+import { getDashboard } from '@/api/dashboard.api';
 
 const DashboardActivity = () => {
+  const dispatch = useAppDispatch();
+  const { dashboard, loading } = useAppSelector(
+    state => state.dashboard,
+  );
+  const { tokenData } = useAppSelector(state => state.profile);
+
+  const userRole: Role = tokenData?.role;
+
+  useEffect(() => {
+    dispatch(getDashboard());
+  }, []);
+
   return (
-    <>
+    <DataLayout isLoading={loading} loader={<DataLoader count={6} />}>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-5">
-        <SmallDetailCard
-          path="/users"
-          title="Total Developers"
-          count={400}
-        >
-          <div className="rounded-full w-12 h-12 p-2 bg-brand-blue">
-            <FiUsers className="w-full h-full text-white" />
-          </div>
-        </SmallDetailCard>
+        {userRole === 'admin' ? (
+          <SmallDetailCard
+            path="/users"
+            title="Total Developers"
+            count={dashboard.totalDevelopers}
+          >
+            <div className="rounded-full w-12 h-12 p-2 bg-brand-blue">
+              <FiUsers className="w-full h-full text-white" />
+            </div>
+          </SmallDetailCard>
+        ) : null}
         <SmallDetailCard
           path="/projects"
           title="Total Projects"
-          count={10}
+          count={dashboard.totalProjects}
         >
           <div className="rounded-full w-12 h-12 p-2 bg-[#9C4145] dark:bg-[#FFB3B3]">
             <FiActivity className="w-full h-full text-white dark:text-[#5F131B]" />
@@ -39,27 +60,29 @@ const DashboardActivity = () => {
         <SmallDetailCard
           path="/reviews"
           title="Total Review Cycles"
-          count={200}
+          count={dashboard.totalReviewCycle}
         >
           <div className="rounded-full w-12 h-12 p-2 bg-[#9C4145] dark:bg-[#FFB3B3]">
             <FiGitMerge className="w-full h-full text-white dark:text-[#5F131B]" />
           </div>
         </SmallDetailCard>
 
-        <SmallDetailCard
-          path="/reviews/received"
-          title="Received Reviews"
-          count={50000}
-        >
-          <div className="rounded-full w-12 h-12 p-2 bg-[#9C4145] dark:bg-[#FFB3B3]">
-            <FiGitCommit className="w-full h-full text-white dark:text-[#5F131B]" />
-          </div>
-        </SmallDetailCard>
+        {userRole !== 'admin' ? (
+          <SmallDetailCard
+            path="/reviews/received"
+            title="Received Reviews"
+            count={dashboard.totalReceivedReviews}
+          >
+            <div className="rounded-full w-12 h-12 p-2 bg-[#9C4145] dark:bg-[#FFB3B3]">
+              <FiGitCommit className="w-full h-full text-white dark:text-[#5F131B]" />
+            </div>
+          </SmallDetailCard>
+        ) : null}
 
         <SmallDetailCard
           path="/reviews"
           title="Total Request Reviews"
-          count={10}
+          count={dashboard.totalReviews}
         >
           <div className="rounded-full w-12 h-12 p-2 bg-[#9C4145] dark:bg-[#FFB3B3]">
             <FiGitPullRequest className="w-full h-full text-white dark:text-[#5F131B]" />
@@ -79,9 +102,9 @@ const DashboardActivity = () => {
             View All
           </Link>
         </div>
-        <RecentProjectList />
+        <RecentProjectList projects={dashboard.recentProjects} />
       </div>
-    </>
+    </DataLayout>
   );
 };
 

@@ -14,6 +14,7 @@ import cycleSlice from '../slices/cycleSlice';
 import reviewSlice from '../slices/reviewSlice';
 import reviewerSlice from '../slices/reviewerSlice';
 import searchSlice from '../slices/searchSlice';
+import dashboardSlice from '../slices/dashboardSlice';
 
 export function makeStore() {
   return configureStore({
@@ -28,6 +29,7 @@ export function makeStore() {
       review: reviewSlice,
       reviewer: reviewerSlice,
       search: searchSlice,
+      dashboard: dashboardSlice,
     },
   });
 }

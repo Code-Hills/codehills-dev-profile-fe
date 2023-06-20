@@ -47,7 +47,10 @@ const UsersActivity = () => {
   const [isActivated, setIsActivated] = useState(false);
   const [currentRole, setCurrentRole] = useState('');
   const [currenProject, setCurrentProject] = useState('');
-  const [getusersByProject, setUserByProject] = useState(null);
+  const [getusersByProject, setUserByProject] = useState([]);
+  const [userswithProject, setUsersWithProject] = useState(null);
+  const [isThisProjectclicked, setIsThisProjectClicked] =
+    useState(false);
   const [selectedFields, setSelectedFields] = useState<string[]>([
     'ID',
     'Full Name',
@@ -112,6 +115,7 @@ const UsersActivity = () => {
     await dispatch(getAllUserByProjects(item.id));
     if (usersByProject.users) {
       setUserByProject(usersByProject.users);
+      setIsThisProjectClicked(true);
     }
   };
   console.log(getusersByProject, 'testing......');
@@ -196,6 +200,14 @@ const UsersActivity = () => {
     }
   };
 
+  const handleUserWithProject = async item => {
+    setCurrentProject(item.name);
+    const response = await dispatch(getAllUserByProjects(item.id));
+    const userss = response.payload?.users;
+    setUsersWithProject(userss);
+  };
+
+  console.log(getusersByProject, 'KKKKKKKKK');
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -216,14 +228,28 @@ const UsersActivity = () => {
           />
         </p>
 
-        <div className="justify-between z-10 text-rgba-22-27-44-70 font-medium rounded-lg text-sm px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-0">
-          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+        <div className="justify-between z-10 text-rgba-22-27-44-70 font-medium rounded-lg text-sm px-2 text-center inline-flex items-center dark:bg-opacity-0 dark:focus:ring-blue-800 ml-0">
+          <div className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full dark:text-gray-400">
             <Dropdown
               arrowIcon
               label="Fields"
               inline
               className="bg-gray-400"
             >
+              <Dropdown.Item
+                onClick={() =>
+                  setSelectedFields([
+                    'ID',
+                    'Full Name',
+                    'Position',
+                    'Email',
+                    'Status',
+                    'Action',
+                  ])
+                }
+              >
+                Reset
+              </Dropdown.Item>
               <Dropdown.Item
                 onClick={() => handleFieldSelection('ID')}
               >
@@ -257,7 +283,7 @@ const UsersActivity = () => {
             </Dropdown>
           </div>
 
-          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+          <div className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full dark:text-gray-400">
             <Dropdown
               arrowIcon
               inline
@@ -267,6 +293,9 @@ const UsersActivity = () => {
                   : 'Role'
               }
             >
+              <Dropdown.Item onClick={() => setCurrentRole('')}>
+                Reset
+              </Dropdown.Item>
               {uniqueRoles.map(user => {
                 return (
                   <Dropdown.Item
@@ -279,16 +308,21 @@ const UsersActivity = () => {
               })}
             </Dropdown>
           </div>
-          <div className="bg-gray-200 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full">
+          <div className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 pt-2 pb-2 pl-5 pr-5 mr-2 rounded-full dark:text-gray-400">
             <Dropdown
               arrowIcon
               inline
               label={
-                currenProject !== ''
+                currenProject !== '' && isThisProjectclicked === true
                   ? capitalizeFirstLetter(currenProject)
                   : 'Projects'
               }
             >
+              <Dropdown.Item
+                onClick={() => setIsThisProjectClicked(false)}
+              >
+                Reset
+              </Dropdown.Item>
               {projects?.map(item => {
                 return (
                   <Dropdown.Item
@@ -358,7 +392,8 @@ const UsersActivity = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length !== 0 &&
+            {!isThisProjectclicked &&
+              filteredUsers.length !== 0 &&
               filteredUsers?.map((item: User, index: number) => {
                 return (
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -392,7 +427,7 @@ const UsersActivity = () => {
                           alt="Jese"
                         />
                         <div className="pl-3">
-                          <div className="text-base font-semibold">
+                          <div className="text-base font-semibold dark:text-gray-400">
                             {String(item.displayName)}
                           </div>
                         </div>
@@ -408,7 +443,7 @@ const UsersActivity = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           {item.isActivated ? (
-                            <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full">
+                            <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full dark:bg-gray-600">
                               Activated
                             </span>
                           ) : (
@@ -494,13 +529,24 @@ const UsersActivity = () => {
                   </tr>
                 );
               })}
-            {!isLoading && filteredUsers.length === 0 && (
-              <tr>
-                <p className="text-blue-600 bold text-lg p-2">
-                  User not found!
-                </p>
-              </tr>
-            )}
+            {!isThisProjectclicked &&
+              !isLoading &&
+              filteredUsers.length === 0 && (
+                <tr>
+                  <p className="text-blue-600 bold text-lg p-2">
+                    User not found!
+                  </p>
+                </tr>
+              )}
+            {isThisProjectclicked &&
+              !isLoading &&
+              getusersByProject.length === 0 && (
+                <tr>
+                  <p className="text-blue-600 bold text-lg p-2">
+                    Users by this project are not found!
+                  </p>
+                </tr>
+              )}
           </tbody>
           {isLoading && (
             <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">

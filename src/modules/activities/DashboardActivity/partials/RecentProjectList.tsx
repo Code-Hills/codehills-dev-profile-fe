@@ -1,22 +1,13 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
-const projects = [
-  {
-    id: 1,
-    name: 'Project 1',
-    start: '2021-01-01',
-    end: '2021-01-31',
-  },
-  {
-    id: 2,
-    name: 'Project 2',
-    start: '2021-02-01',
-    end: '2021-02-28',
-  },
-];
+import { IProject } from '@/interfaces/project.interface';
+import { formatDate } from '@/helpers/format';
 
-const RecentProjectList = () => {
+const RecentProjectList = ({
+  projects,
+}: {
+  projects: IProject[];
+}) => {
   return (
     <div className="overflow-x-auto rounded-lg">
       <div className="inline-block min-w-full align-middle">
@@ -45,6 +36,16 @@ const RecentProjectList = () => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800">
+              {!projects.length ? (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    No projects found
+                  </td>
+                </tr>
+              ) : null}
               {projects.map(project => (
                 <tr
                   key={project.id}
@@ -59,10 +60,10 @@ const RecentProjectList = () => {
                     </Link>
                   </td>
                   <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                    {project.start}
+                    {formatDate(project.startDate)}
                   </td>
                   <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                    {project.end}
+                    {formatDate(project.endDate)}
                   </td>
                 </tr>
               ))}

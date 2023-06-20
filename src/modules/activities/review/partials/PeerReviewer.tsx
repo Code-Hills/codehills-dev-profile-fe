@@ -28,7 +28,6 @@ const PeerReviewer = () => {
     state => state.reviewer,
   );
   const searchRef = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState('');
   const dispatch = useAppDispatch();
   const { tokenData } = useAppSelector(state => state.profile);
   const { searchUserResults, loading: searching } = useAppSelector(
@@ -59,8 +58,6 @@ const PeerReviewer = () => {
   }, []);
 
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
-
     if (!searching) {
       dispatch(
         searchUsers({

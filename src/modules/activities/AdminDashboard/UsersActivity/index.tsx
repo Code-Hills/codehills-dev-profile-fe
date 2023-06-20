@@ -42,12 +42,20 @@ const UsersActivity = () => {
     };
   }
 
+  interface Item {
+    id: number;
+    name: string;
+  }
+  interface UsersByProject {
+    users: User;
+  }
+
   const [showMenuIcon, setHideMonuIcon] = useState(false);
   const [clickedUserId, setClickedUserId] = useState(null);
   const [isActivated, setIsActivated] = useState(false);
   const [currentRole, setCurrentRole] = useState('');
-  const [currenProject, setCurrentProject] = useState('');
-  const [getusersByProject, setUserByProject] = useState([]);
+  const [currenProject, setCurrentProject] = useState<string>('');
+  const [getusersByProject, setUserByProject] = useState<User[]>([]);
   const [userswithProject, setUsersWithProject] = useState(null);
   const [isThisProjectclicked, setIsThisProjectClicked] =
     useState(false);
@@ -109,11 +117,12 @@ const UsersActivity = () => {
   }, [dispatch]);
 
   // const { projects, isGettingProjects } = useAppSelector(state => state);
-  const handleUserByProject = async item => {
+  const handleUserByProject = async (item: Item) => {
     setCurrentProject(item.name);
     await dispatch(getAllUserByProjects(item.id));
-    if (usersByProject.users) {
-      setUserByProject(usersByProject.users);
+    const usersByProject1: { users?: User[] } = {};
+    if (usersByProject1.users) {
+      setUserByProject(usersByProject1.users);
       setIsThisProjectClicked(true);
     }
   };

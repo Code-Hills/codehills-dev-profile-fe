@@ -34,7 +34,7 @@ export const getAllProjects = createAsyncThunk(
 
 export const getAllUserByProjects = createAsyncThunk(
   'AllUsers/projects',
-  async (projectId) => {
+  async (projectId: number) => {
     // eslint-disable-next-line no-useless-catch
     try{
       const { data } = await API.get(`/projects/${projectId}/users`);

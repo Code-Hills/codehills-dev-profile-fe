@@ -214,7 +214,7 @@ const UsersActivity = () => {
           <span className="pl-2">Users</span>
         </h2>
       </div>
-      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2 overflow-x-auto">
+      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
         <p className="text-xl flex items-center dark:text-gray-700 flex-grow min-[150px]">
           <AiOutlineFilter className="dark:text-gray-400 text-gray-400" />
           <input

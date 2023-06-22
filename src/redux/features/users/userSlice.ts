@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
 import { User } from '@/interfaces/user.interface';
+import { IProject } from '@/interfaces/project.interface';
 
 export const getAllUsers = createAsyncThunk(
   'users/fetch',
@@ -49,7 +50,7 @@ export const getAllUserByProjects = createAsyncThunk(
 interface InitialState {
   users: User[];
   usersByProject: User[];
-  projects:any [],
+  projects: IProject[],
   isLoading: boolean;
   isLoadingUserByProjects: boolean,
   isLoadingProjects:boolean;

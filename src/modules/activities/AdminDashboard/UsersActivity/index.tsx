@@ -31,6 +31,7 @@ import Keys from '@/utils/keys';
 import Pagination from '@/modules/_partials/shared/Paginations';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 import { removeDuplicates } from '@/helpers/removeDuplicates';
+import { IProject } from '@/interfaces/project.interface';
 
 const UsersActivity = () => {
   interface RootState {
@@ -117,9 +118,9 @@ const UsersActivity = () => {
   }, [dispatch]);
 
   // const { projects, isGettingProjects } = useAppSelector(state => state);
-  const handleUserByProject = async (item: Item) => {
+  const handleUserByProject = async (item: IProject) => {
     setCurrentProject(item.name);
-    await dispatch(getAllUserByProjects(item.id));
+    await dispatch(getAllUserByProjects(Number(item.id)));
     if (Array.isArray(usersByProject)) {
       setUserByProject(usersByProject);
       setIsThisProjectClicked(true);
@@ -214,7 +215,7 @@ const UsersActivity = () => {
           <span className="pl-2">Users</span>
         </h2>
       </div>
-      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
+      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2 overflow-x-auto">
         <p className="text-xl flex items-center dark:text-gray-700 flex-grow min-[150px]">
           <AiOutlineFilter className="dark:text-gray-400 text-gray-400" />
           <input
@@ -336,26 +337,10 @@ const UsersActivity = () => {
         </div>
       </div>
 
-      <div className="shadow-md sm:rounded-lg mt-2 mb-8 scrollbar-thumb-blue flex items-center justify-between pb-4 bg-white dark:bg-gray-900 z-1 overflow-x-auto w-full">
-        <table className="w-full text-sm min-w-max text-left text-gray-500 dark:text-gray-400 z-1">
+      <div className="shadow-md sm:rounded-lg mt-2 scrollbar-thumb-blue flex items-center justify-between bg-white dark:bg-gray-900 z-1 overflow-y-auto overflow-x-auto max-h-96">
+        <table className="w-full text-sm min-w-max mt-2 text-left text-gray-500 dark:text-gray-400 z-1">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="p-4">
-                <div className="flex items-center">
-                  <input
-                    id="checkbox-all-search"
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-
-                  <label
-                    htmlFor="checkbox-all-search"
-                    className="sr-only"
-                  >
-                    checkbox
-                  </label>
-                </div>
-              </th>
               {selectedFields.includes('ID') && (
                 <th scope="col" className="px-6 py-3">
                   ID
@@ -394,22 +379,7 @@ const UsersActivity = () => {
               filteredUsers.length !== 0 &&
               filteredUsers?.map((item: User, index: number) => {
                 return (
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="w-4 p-4">
-                      <div className="flex items-center">
-                        <input
-                          id="checkbox-table-search-1"
-                          type="checkbox"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label
-                          htmlFor="checkbox-table-search-1"
-                          className="sr-only"
-                        >
-                          checkbox
-                        </label>
-                      </div>
-                    </td>
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-y-auto">
                     {selectedFields.includes('ID') && (
                       <td className="px-6 py-4">{index + 1}</td>
                     )}
@@ -735,7 +705,6 @@ const UsersActivity = () => {
           )}
         </table>
       </div>
-      <Pagination />
 
       <Modal
         size="2xl"

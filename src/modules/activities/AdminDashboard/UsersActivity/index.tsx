@@ -120,9 +120,8 @@ const UsersActivity = () => {
   const handleUserByProject = async (item: Item) => {
     setCurrentProject(item.name);
     await dispatch(getAllUserByProjects(item.id));
-    const usersByProject1: { users?: User[] } = {};
-    if (usersByProject1.users) {
-      setUserByProject(usersByProject1.users);
+    if (Array.isArray(usersByProject)) {
+      setUserByProject(usersByProject);
       setIsThisProjectClicked(true);
     }
   };
@@ -215,7 +214,7 @@ const UsersActivity = () => {
           <span className="pl-2">Users</span>
         </h2>
       </div>
-      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2">
+      <div className="flex justify-between bg-gray-100 dark:bg-gray-700 rounded-xl p-2 overflow-x-auto">
         <p className="text-xl flex items-center dark:text-gray-700 flex-grow min-[150px]">
           <AiOutlineFilter className="dark:text-gray-400 text-gray-400" />
           <input

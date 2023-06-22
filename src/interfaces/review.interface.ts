@@ -29,6 +29,7 @@ export interface IReviewer {
   reviewer?: Partial<User>;
   developer?: Partial<User>;
   id?: string;
+  status?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface IStateWithReviewers extends IState {

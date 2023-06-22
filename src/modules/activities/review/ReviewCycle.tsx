@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable sonarjs/no-all-duplicated-branches */
 import { Avatar, Button } from 'flowbite-react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +21,9 @@ import DataLoader from '@/modules/_partials/shared/DataLoader';
 
 const ReviewCycle = () => {
   const { tokenData } = useAppSelector(state => state.profile);
+  const isAdminOrArchitect = ['admin', 'architect'].includes(
+    tokenData?.role,
+  );
   const { activeCycle, loading } = useAppSelector(
     state => state.cycle,
   );
@@ -36,15 +42,16 @@ const ReviewCycle = () => {
       dispatch(
         getDeveloperReviewers({
           reviewCyleId: activeCycle.id,
-          developerId: tokenData.id,
+          developerId: isAdminOrArchitect ? null : tokenData.id,
+          status: isAdminOrArchitect ? null : 'approved',
         }),
       );
     }
   }, [activeCycle]);
 
-  const reviewRequests = reviewers.filter(
-    item => item.reviewerId === tokenData?.id,
-  );
+  const reviewRequests = !isAdminOrArchitect
+    ? reviewers.filter(item => item.reviewerId === tokenData?.id)
+    : reviewers;
 
   return (
     <>
@@ -66,19 +73,21 @@ const ReviewCycle = () => {
                 No active review cycle
               </p>
             )}
-            <Button
-              size="xs"
-              outline
-              gradientDuoTone="cyanToBlue"
-              className="mt-3"
-              onClick={() => navigate('/reviews/received')}
-            >
-              Received reviews
-              <HiOutlineArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            {!isAdminOrArchitect ? (
+              <Button
+                size="xs"
+                outline
+                gradientDuoTone="cyanToBlue"
+                className="mt-3"
+                onClick={() => navigate('/reviews/received')}
+              >
+                Received reviews
+                <HiOutlineArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            ) : null}
           </div>
 
-          {activeCycle ? (
+          {activeCycle && !isAdminOrArchitect ? (
             <div className="flex items-center space-x-3">
               <PeerReviewer />
               <SelfReview
@@ -103,7 +112,7 @@ const ReviewCycle = () => {
             </p>
           </div>
         ) : null}
-        {reviewRequests.map(({ developer, id }) => (
+        {reviewRequests.map(({ developer, id, reviewer, status }) => (
           <div
             key={id}
             className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center"
@@ -115,13 +124,48 @@ const ReviewCycle = () => {
               <span className="text-lg font-medium">
                 {developer?.firstName} {developer?.lastName}
               </span>{' '}
-              requested your review as a peer reviewer for the review
-              cycle.
+              {isAdminOrArchitect
+                ? `added ${reviewer?.email} as a reviewer for the review cycle`
+                : `requested your review as a peer reviewer for the review
+              cycle.`}
+              <span className="text-sm text-gray-500 ml-2 dark:text-gray-400">
+                {status === 'pending'
+                  ? 'Pending'
+                  : status === 'approved'
+                  ? 'Approved'
+                  : 'Rejected'}
+              </span>
             </p>
-            <SelfReview
-              title="Add peer review"
-              developerId={developer?.id}
-            />
+            {isAdminOrArchitect ? (
+              <>
+                {['pending', 'rejected'].includes(
+                  status as string,
+                ) ? (
+                  <Button
+                    disabled={loading}
+                    gradientMonochrome="info"
+                    type="submit"
+                    isProcessing={loading}
+                  >
+                    Approve
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={loading}
+                    gradientMonochrome="info"
+                    type="submit"
+                    isProcessing={loading}
+                  >
+                    Revoke
+                  </Button>
+                )}
+              </>
+            ) : (
+              <SelfReview
+                title="Add peer review"
+                developerId={developer?.id}
+              />
+            )}
           </div>
         ))}
       </DataLayout>

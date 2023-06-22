@@ -8,13 +8,21 @@ export const getDeveloperReviewers = createAsyncThunk(
   async ({
     developerId,
     reviewCyleId,
+    status,
   }: {
-    developerId: string;
+    developerId?: string | null;
     reviewCyleId: string;
+    status?: string | null;
   }) => {
     try {
       const { data } = await API.get(
-        `/users/${developerId}/reviewers/${reviewCyleId}`,
+        `/users/reviewers/${reviewCyleId}?${
+          !developerId
+            ? ''
+            : `developerId=${developerId} ${
+                status ? `&status=${status}` : ``
+              }`
+        }}`,
       );
       return data.reviewers;
     } catch (error: any) {

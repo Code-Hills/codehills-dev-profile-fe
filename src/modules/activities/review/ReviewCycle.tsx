@@ -161,7 +161,7 @@ const ReviewCycle = () => {
                   ) : (
                     <Button
                       disabled={isLoadingReviewers}
-                      gradientMonochrome="error"
+                      gradientMonochrome="failure"
                       type="submit"
                       isProcessing={isLoadingReviewers}
                       onClick={() => {

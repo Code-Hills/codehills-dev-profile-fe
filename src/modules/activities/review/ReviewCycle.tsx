@@ -15,7 +15,11 @@ import {
 } from '@/modules/_partials/hooks/useRedux';
 import { getAllCyles } from '@/api/cyle.api';
 import { calculateCycleEnd } from '@/helpers/cyle.helper';
-import { getDeveloperReviewers } from '@/api/reviewer.api';
+import {
+  approveReviewer,
+  getDeveloperReviewers,
+  rejectReviewer,
+} from '@/api/reviewer.api';
 import DataLayout from '@/modules/_partials/layouts/DataLayout';
 import DataLoader from '@/modules/_partials/shared/DataLoader';
 
@@ -112,62 +116,71 @@ const ReviewCycle = () => {
             </p>
           </div>
         ) : null}
-        {reviewRequests.map(({ developer, id, reviewer, status }) => (
-          <div
-            key={id}
-            className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center"
-          >
-            <div className="shrink-0">
-              <Avatar size="sm" img={developer?.avatar} rounded />
-            </div>
-            <p className="flex-grow">
-              <span className="text-lg font-medium">
-                {developer?.firstName} {developer?.lastName}
-              </span>{' '}
-              {isAdminOrArchitect
-                ? `added ${reviewer?.email} as a reviewer for the review cycle`
-                : `requested your review as a peer reviewer for the review
+        {reviewRequests.map(item => {
+          const { developer, id, reviewer, status } = item;
+          return (
+            <div
+              key={id}
+              className="gap-3 mt-4 flex-wrap bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800 flex items-center"
+            >
+              <div className="shrink-0">
+                <Avatar size="sm" img={developer?.avatar} rounded />
+              </div>
+              <p className="flex-grow">
+                <span className="text-lg font-medium">
+                  {developer?.firstName} {developer?.lastName}
+                </span>{' '}
+                {isAdminOrArchitect
+                  ? `added ${reviewer?.email} as a reviewer for the review cycle`
+                  : `requested your review as a peer reviewer for the review
               cycle.`}
-              <span className="text-sm text-gray-500 ml-2 dark:text-gray-400">
-                {status === 'pending'
-                  ? 'Pending'
-                  : status === 'approved'
-                  ? 'Approved'
-                  : 'Rejected'}
-              </span>
-            </p>
-            {isAdminOrArchitect ? (
-              <>
-                {['pending', 'rejected'].includes(
-                  status as string,
-                ) ? (
-                  <Button
-                    disabled={loading}
-                    gradientMonochrome="info"
-                    type="submit"
-                    isProcessing={loading}
-                  >
-                    Approve
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={loading}
-                    gradientMonochrome="info"
-                    type="submit"
-                    isProcessing={loading}
-                  >
-                    Revoke
-                  </Button>
-                )}
-              </>
-            ) : (
-              <SelfReview
-                title="Add peer review"
-                developerId={developer?.id}
-              />
-            )}
-          </div>
-        ))}
+                <span className="text-sm text-gray-500 ml-2 dark:text-gray-400">
+                  {status === 'pending'
+                    ? 'Pending'
+                    : status === 'approved'
+                    ? 'Approved'
+                    : 'Rejected'}
+                </span>
+              </p>
+              {isAdminOrArchitect ? (
+                <>
+                  {['pending', 'rejected'].includes(
+                    status as string,
+                  ) ? (
+                    <Button
+                      disabled={isLoadingReviewers}
+                      gradientMonochrome="info"
+                      type="submit"
+                      isProcessing={isLoadingReviewers}
+                      onClick={() => {
+                        dispatch(approveReviewer(item));
+                      }}
+                    >
+                      Approve
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled={isLoadingReviewers}
+                      gradientMonochrome="error"
+                      type="submit"
+                      isProcessing={isLoadingReviewers}
+                      onClick={() => {
+                        dispatch(rejectReviewer(item));
+                      }}
+                    >
+                      Revoke
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <SelfReview
+                  title="Add peer review"
+                  developerId={developer?.id}
+                />
+              )}
+            </div>
+          );
+        })}
       </DataLayout>
     </>
   );

@@ -2,12 +2,25 @@ import { Link } from 'react-router-dom';
 
 import { IProject } from '@/interfaces/project.interface';
 import { formatDate } from '@/helpers/format';
+import { getStatusClassesByColor } from '@/helpers/style';
 
 const RecentProjectList = ({
   projects,
 }: {
   projects: IProject[];
 }) => {
+  const getProjectColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'yellow';
+      case 'completed':
+        return 'green';
+      case 'cancelled':
+        return 'red';
+      default:
+        return 'orange';
+    }
+  };
   return (
     <div className="overflow-x-auto rounded-lg">
       <div className="inline-block min-w-full align-middle">
@@ -20,6 +33,12 @@ const RecentProjectList = ({
                   className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
                 >
                   Name
+                </th>
+                <th
+                  scope="col"
+                  className="p-4 text-xs whitespace-nowrap font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white"
+                >
+                  Status
                 </th>
                 <th
                   scope="col"
@@ -58,6 +77,15 @@ const RecentProjectList = ({
                     >
                       {project.name}
                     </Link>
+                  </td>
+                  <td className="p-4 whitespace-nowrap">
+                    <span
+                      className={`${getStatusClassesByColor(
+                        getProjectColor(project.status),
+                      )} text-xs font-medium px-2 py-1 rounded-md border capitalize`}
+                    >
+                      {project.status}
+                    </span>
                   </td>
                   <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                     {formatDate(project.startDate)}

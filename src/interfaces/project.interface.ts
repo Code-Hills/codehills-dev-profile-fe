@@ -4,4 +4,5 @@ export interface IProject {
   endDate: string;
   name: string;
   description: string;
+  status: 'pending' | 'in-progress' | 'completed' | 'canceled';
 }

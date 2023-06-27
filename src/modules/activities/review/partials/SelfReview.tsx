@@ -2,21 +2,61 @@
 import { Button, Modal, Select, Textarea } from 'flowbite-react';
 import React, { useState } from 'react';
 
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/modules/_partials/hooks/useRedux';
+import { createReview } from '@/api/review.api';
+
 const SelfReview = ({
   title = 'Self Review',
   className = 'px-3 py-1.5 text-xs font-medium',
+  developerId,
+}: {
+  title?: string;
+  className?: string;
+  developerId?: string;
 }) => {
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(state => state.review);
+  const { tokenData } = useAppSelector(state => state.profile);
+  const { activeCycle } = useAppSelector(state => state.cycle);
   const [show, setShow] = useState(false);
-  const [writtenReview, setWrittenReview] = useState('');
-  const [performanceRating, setPerformanceRating] = useState(3);
+  const writtenReviewRef = React.useRef<HTMLTextAreaElement>(null);
+  const ratingRef = React.useRef<HTMLSelectElement>(null);
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    // submit form data to backend
+    const userId = tokenData?.id;
+
+    if (activeCycle) {
+      const description = writtenReviewRef?.current?.value;
+      const ratings = Number(ratingRef?.current?.value);
+
+      if (!description || !ratings) {
+        return;
+      }
+      const { payload } = await dispatch(
+        createReview({
+          description,
+          ratings,
+          reviewCycleId: activeCycle.id,
+          revieweeId: developerId || userId,
+        }),
+      );
+
+      if (payload) {
+        setShow(false);
+        writtenReviewRef.current.value = '';
+        ratingRef.current!.value = '1';
+      }
+    }
   };
 
   const onClose = () => {
-    setShow(false);
+    if (!loading) {
+      setShow(false);
+    }
   };
 
   return (
@@ -34,13 +74,18 @@ const SelfReview = ({
           <h2 className="text-lg font-medium mb-2">{title}</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 dark:text-gray-400 font-medium mb-2">
+              <label
+                id="self-review"
+                htmlFor="self-review"
+                className="block text-gray-700 dark:text-gray-400 font-medium mb-2"
+              >
                 Written review
               </label>
               <Textarea
-                className="w-full h-24 px-3 py-2"
-                // value={writtenReview}
-                // onChange={e => setWrittenReview(e.target.value)}
+                id="self-review"
+                className="w-full h-24 px-3 py-2 resize-none"
+                placeholder="Write self review here..."
+                ref={writtenReviewRef}
                 required
               />
             </div>
@@ -51,10 +96,7 @@ const SelfReview = ({
               <div className="flex items-center">
                 <Select
                   className="flex-grow mr-4"
-                  value={performanceRating}
-                  onChange={e =>
-                    setPerformanceRating(parseInt(e.target.value, 10))
-                  }
+                  ref={ratingRef}
                   required
                 >
                   <option value="1">Delivered too poorly</option>
@@ -67,12 +109,17 @@ const SelfReview = ({
                   <option value="5">Went beyond expectations</option>
                 </Select>
                 <span className="text-gray-700 dark:text-gray-400 whitespace-nowrap">
-                  ({performanceRating} out of 5)
+                  ({ratingRef.current?.value} out of 5)
                 </span>
               </div>
             </div>
             <div className="flex justify-end">
-              <Button gradientMonochrome="info" type="submit">
+              <Button
+                disabled={loading}
+                gradientMonochrome="info"
+                type="submit"
+                isProcessing={loading}
+              >
                 Submit
               </Button>
             </div>

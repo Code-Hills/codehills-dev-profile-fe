@@ -4,6 +4,8 @@ import { IStateWithReviewers } from '@/interfaces/review.interface';
 import {
   getDeveloperReviewers,
   addReviewer,
+  approveReviewer,
+  rejectReviewer,
 } from '@/api/reviewer.api';
 
 const initialState: IStateWithReviewers = {
@@ -43,6 +45,40 @@ const reviewerSlice = createSlice({
         state.reviewers = [...state.reviewers, action.payload];
       })
       .addCase(addReviewer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message as string;
+      })
+      .addCase(approveReviewer.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(approveReviewer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviewers = state.reviewers.map(reviewer => {
+          if (reviewer.id === action.payload.id) {
+            return action.payload;
+          }
+          return reviewer;
+        });
+      })
+      .addCase(approveReviewer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message as string;
+      })
+      .addCase(rejectReviewer.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(rejectReviewer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviewers = state.reviewers.map(reviewer => {
+          if (reviewer.id === action.payload.id) {
+            return action.payload;
+          }
+          return reviewer;
+        });
+      })
+      .addCase(rejectReviewer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message as string;
       });

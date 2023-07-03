@@ -208,7 +208,7 @@ const UsersActivity = () => {
     }
   };
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
 
   const handleCurrentPage = (pg: number): void => {
     setChoosenPage(pg);

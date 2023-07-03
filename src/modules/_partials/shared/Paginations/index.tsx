@@ -49,7 +49,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav aria-label="Page navigation example">
-      <div className="flex items-center justify-center -space-x-px w-full">
+      <div className="flex items-center justify-center -space-x-px w-full mt-4">
         <button
           type="button"
           onClick={() => handleClick(currentPage - 1)}

@@ -36,7 +36,7 @@ const LoginActivity = () => {
   }, [base64encoded]);
   return (
     <section className="h-screen grid md:grid-cols-2">
-      <div className="loginLeft hidden md:block bg-center bg-no-repeat bg-cover relative">
+      <div className="loginLeft hidden md:block bg-center bg-no-repeat bg-cover relative dark:bg-gray-200">
         <div className="flex items-center text-center justify-center flex-col mt-16">
           <h2 className="font-medium text-2xl leading-10 text-gray-700 uppercase pb-8">
             You will never regret to join Codehills
@@ -57,14 +57,14 @@ const LoginActivity = () => {
             />
           </div>
           <div className="loginwelcome">
-            <h2 className="uppercase text-center mt-8 mb-8 text-gray-600 leading-40 text-2xl font-semibold">
+            <h2 className="uppercase text-center mt-8 mb-8 text-gray-600 leading-40 text-2xl font-semibold dark:text-gray-700">
               Welcome
             </h2>
           </div>
           <div>
             <button
               type="button"
-              className="microsoftBtn flex bg-gray-50 rounded-lg px-4 py-2 text-base"
+              className="microsoftBtn flex bg-gray-50 rounded-lg px-4 py-2 text-base dark:text-gray-700"
               onClick={handleClick}
             >
               <img src={mslogo} alt="Microsoft Logo" />

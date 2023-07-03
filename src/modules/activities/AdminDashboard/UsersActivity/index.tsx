@@ -58,6 +58,7 @@ const UsersActivity = () => {
   const [currenProject, setCurrentProject] = useState<string>('');
   const [getusersByProject, setUserByProject] = useState<User[]>([]);
   const [userswithProject, setUsersWithProject] = useState(null);
+  const [choosenPage, setChoosenPage] = useState(1);
   const [isThisProjectclicked, setIsThisProjectClicked] =
     useState(false);
   const [selectedFields, setSelectedFields] = useState<string[]>([
@@ -207,6 +208,11 @@ const UsersActivity = () => {
     }
   };
 
+  const itemsPerPage = 4;
+
+  const handleCurrentPage = (pg: number): void => {
+    setChoosenPage(pg);
+  };
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -378,124 +384,131 @@ const UsersActivity = () => {
             {!isThisProjectclicked &&
               filteredUsers.length !== 0 &&
               filteredUsers?.map((item: User, index: number) => {
-                return (
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-y-auto">
-                    {selectedFields.includes('ID') && (
-                      <td className="px-6 py-4">{index + 1}</td>
-                    )}
+                const startIndex = (choosenPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const isVisible =
+                  index >= startIndex && index < endIndex;
+                if (isVisible) {
+                  return (
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-y-auto">
+                      {selectedFields.includes('ID') && (
+                        <td className="px-6 py-4">{index + 1}</td>
+                      )}
 
-                    {selectedFields.includes('Full Name') && (
-                      <th
-                        scope="row"
-                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        <img
-                          className="w-10 h-10 rounded-full"
-                          src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
-                          alt="Jese"
-                        />
-                        <div className="pl-3">
-                          <div className="text-base font-semibold dark:text-gray-400">
-                            {String(item.displayName)}
-                          </div>
-                        </div>
-                      </th>
-                    )}
-                    {selectedFields.includes('Position') && (
-                      <td className="px-6 py-4">{item.role}</td>
-                    )}
-                    {selectedFields.includes('Email') && (
-                      <td className="px-6 py-4">{item.email}</td>
-                    )}
-                    {selectedFields.includes('Status') && (
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          {item.isActivated ? (
-                            <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full dark:bg-gray-600">
-                              Activated
-                            </span>
-                          ) : (
-                            <span className="bg-red-700 hover:bg-red-700 text-white text-sm py-1 px-2 rounded-full">
-                              Deactivated
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    )}
-
-                    {selectedFields.includes('Action') && (
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => handleUserClick(item)}
-                          className="inline-flex items-center p-2 font-medium text-center text- gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                          type="button"
+                      {selectedFields.includes('Full Name') && (
+                        <th
+                          scope="row"
+                          className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                          <svg
-                            className="w-6 h-6"
-                            aria-hidden="true"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
-                        </button>
-
-                        {clickedUserId === item.id && (
-                          <div
-                            className={`z-10 ${
-                              showMenuIcon ? '' : 'hidden'
-                            } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}
-                          >
-                            <ul
-                              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                              aria-labelledby="dropdownMenuIconHorizontalButton"
-                            >
-                              <li>
-                                <Link
-                                  to="/activate"
-                                  onClick={e =>
-                                    handleCurrentUser(e, item)
-                                  }
-                                  className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                >
-                                  {isActivated ? (
-                                    <span className="text-red-500">
-                                      {isDeactivating
-                                        ? 'Deactivating ...'
-                                        : 'Deactivate'}
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      {' '}
-                                      {isActivating
-                                        ? 'Activating ...'
-                                        : 'Activate'}
-                                    </span>
-                                  )}
-                                </Link>
-                              </li>
-                              <li>
-                                <Link
-                                  to="/role"
-                                  onClick={e => {
-                                    e.preventDefault();
-                                    setSelectedUser(item);
-                                    setRole(item.role);
-                                    setIsOpen(true);
-                                  }}
-                                  className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                >
-                                  Change Role
-                                </Link>
-                              </li>
-                            </ul>
+                          <img
+                            className="w-10 h-10 rounded-full"
+                            src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+                            alt="Jese"
+                          />
+                          <div className="pl-3">
+                            <div className="text-base font-semibold dark:text-gray-400">
+                              {String(item.displayName)}
+                            </div>
                           </div>
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                );
+                        </th>
+                      )}
+                      {selectedFields.includes('Position') && (
+                        <td className="px-6 py-4">{item.role}</td>
+                      )}
+                      {selectedFields.includes('Email') && (
+                        <td className="px-6 py-4">{item.email}</td>
+                      )}
+                      {selectedFields.includes('Status') && (
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            {item.isActivated ? (
+                              <span className="bg-blue-100 hover:bg-blue-300 py-1 px-2 rounded-full dark:bg-gray-600">
+                                Activated
+                              </span>
+                            ) : (
+                              <span className="bg-red-700 hover:bg-red-700 text-white text-sm py-1 px-2 rounded-full">
+                                Deactivated
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      )}
+
+                      {selectedFields.includes('Action') && (
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleUserClick(item)}
+                            className="inline-flex items-center p-2 font-medium text-center text- gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                            type="button"
+                          >
+                            <svg
+                              className="w-6 h-6"
+                              aria-hidden="true"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                            </svg>
+                          </button>
+
+                          {clickedUserId === item.id && (
+                            <div
+                              className={`z-10 ${
+                                showMenuIcon ? '' : 'hidden'
+                              } absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 right-0`}
+                            >
+                              <ul
+                                className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownMenuIconHorizontalButton"
+                              >
+                                <li>
+                                  <Link
+                                    to="/activate"
+                                    onClick={e =>
+                                      handleCurrentUser(e, item)
+                                    }
+                                    className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                  >
+                                    {isActivated ? (
+                                      <span className="text-red-500">
+                                        {isDeactivating
+                                          ? 'Deactivating ...'
+                                          : 'Deactivate'}
+                                      </span>
+                                    ) : (
+                                      <span>
+                                        {' '}
+                                        {isActivating
+                                          ? 'Activating ...'
+                                          : 'Activate'}
+                                      </span>
+                                    )}
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    to="/role"
+                                    onClick={e => {
+                                      e.preventDefault();
+                                      setSelectedUser(item);
+                                      setRole(item.role);
+                                      setIsOpen(true);
+                                    }}
+                                    className=" text-blue-600 block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                  >
+                                    Change Role
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </td>
+                      )}
+                    </tr>
+                  );
+                }
+                return [];
               })}
             {!isThisProjectclicked &&
               !isLoading &&
@@ -705,7 +718,11 @@ const UsersActivity = () => {
           )}
         </table>
       </div>
-
+      <Pagination
+        users={users}
+        itemsPerPage={itemsPerPage}
+        clickedPage={handleCurrentPage}
+      />
       <Modal
         size="2xl"
         show={isOpen}

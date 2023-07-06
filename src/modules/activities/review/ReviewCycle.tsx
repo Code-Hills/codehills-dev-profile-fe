@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import PeerReviewer from './partials/PeerReviewer';
 import SelfReview from './partials/SelfReview';
 import AddReviewCycle from './partials/AddReviewCyle';
+import ManagerReview from './partials/ManagerReview';
 
 import {
   useAppDispatch,
@@ -293,42 +294,50 @@ const ReviewCycle = () => {
                 </span>
                 {getStatusBadge(status as string)}
               </p>
-              {isAdminOrArchitect ? (
-                <>
-                  {['pending', 'rejected'].includes(
-                    status as string,
-                  ) ? (
-                    <Button
-                      gradientMonochrome="info"
-                      type="submit"
-                      isProcessing={decision === item.id}
-                      onClick={() => onDecision(item, 'approve')}
-                      className={`${
-                        tokenData?.role === 'admin' ? 'hidden' : ''
-                      }`}
-                    >
-                      Approve
-                    </Button>
-                  ) : (
-                    <Button
-                      gradientMonochrome="failure"
-                      type="submit"
-                      isProcessing={decision === item.id}
-                      onClick={() => onDecision(item, 'reject')}
-                      className={`${
-                        tokenData?.role === 'admin' ? 'hidden' : ''
-                      }`}
-                    >
-                      Revoke
-                    </Button>
-                  )}
-                </>
-              ) : (
-                <SelfReview
-                  title="Add peer review"
-                  developerId={developer?.id}
-                />
-              )}
+              <div className="flex items-center space-x-2">
+                {isAdminOrArchitect ? (
+                  <>
+                    {['pending', 'rejected'].includes(
+                      status as string,
+                    ) ? (
+                      <Button
+                        gradientMonochrome="info"
+                        type="submit"
+                        size="xs"
+                        isProcessing={decision === item.id}
+                        onClick={() => onDecision(item, 'approve')}
+                        className={`${
+                          tokenData?.role === 'admin' ? 'hidden' : ''
+                        }`}
+                      >
+                        Approve Reviewer
+                      </Button>
+                    ) : (
+                      <Button
+                        gradientMonochrome="failure"
+                        type="submit"
+                        size="xs"
+                        isProcessing={decision === item.id}
+                        onClick={() => onDecision(item, 'reject')}
+                        className={`${
+                          tokenData?.role === 'admin' ? 'hidden' : ''
+                        }`}
+                      >
+                        Revoke Reviewer
+                      </Button>
+                    )}
+                    <ManagerReview
+                      developerId={item.developer?.id}
+                      title={`Add Manager Review to ${developer?.firstName}`}
+                    />
+                  </>
+                ) : (
+                  <SelfReview
+                    title="Add peer review"
+                    developerId={developer?.id}
+                  />
+                )}
+              </div>
             </div>
           );
         })}

@@ -9,16 +9,16 @@ export const getDeveloperReviewers = createAsyncThunk(
   'reviewers/getDeveloperReviewers',
   async ({
     developerId,
-    reviewCyleId,
+    reviewCycleId,
     status,
   }: {
     developerId?: string | null;
-    reviewCyleId: string;
+    reviewCycleId: string;
     status?: string | null;
   }) => {
     try {
       const { data } = await API.get(
-        `/users/reviewers/${reviewCyleId}?${
+        `/users/reviewers/${reviewCycleId}?${
           !developerId
             ? ''
             : `developerId=${developerId} ${
@@ -26,7 +26,10 @@ export const getDeveloperReviewers = createAsyncThunk(
               }`
         }}`,
       );
-      return data.reviewers;
+      return data.reviewers.map((reviewer: IReviewer) => ({
+        ...reviewer,
+        reviewCycleId,
+      }));
     } catch (error: any) {
       const message = error?.response?.data?.message || error.message;
       throw new Error(message);

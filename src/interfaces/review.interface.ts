@@ -34,4 +34,5 @@ export interface IReviewer {
 
 export interface IStateWithReviewers extends IState {
   reviewers: IReviewer[];
+  isMadeSelfReview: boolean;
 }

@@ -6,6 +6,7 @@ import {
   HiDocumentReport,
   HiChartBar,
   HiCheckCircle,
+  HiViewGrid,
 } from 'react-icons/hi';
 import { GiStarFormation } from 'react-icons/gi';
 
@@ -37,6 +38,12 @@ export const sidebarNavLinks: INavigationLink[] = [
     name: 'Goals',
     href: '/dashboard/goals',
     icon: HiCheckCircle,
+  },
+  {
+    name: 'Projects',
+    href: '/projects',
+    icon: HiViewGrid,
+    allowedRoles: ['admin'],
   },
   {
     name: 'Payroll',

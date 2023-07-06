@@ -96,3 +96,20 @@ export const rejectReviewer = createAsyncThunk(
     }
   },
 );
+
+export const deleteMyReviewer = createAsyncThunk(
+  'reviewers/deleteReviewer',
+  async (reviewer: IReviewer): Promise<IReviewer> => {
+    try {
+      const { data } = await API.delete(
+        `/users/reviewers/${reviewer.reviewerId}`,
+      );
+      toast.success(data.message || 'Reviewer deleted successfully');
+      return reviewer;
+    } catch (error: any) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(message || 'Something went wrong');
+      throw new Error(message);
+    }
+  },
+);

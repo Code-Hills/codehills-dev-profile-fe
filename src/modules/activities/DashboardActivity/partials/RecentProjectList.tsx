@@ -58,7 +58,7 @@ const RecentProjectList = ({
               {!projects.length ? (
                 <tr>
                   <td
-                    colSpan={3}
+                    colSpan={4}
                     className="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     No projects found

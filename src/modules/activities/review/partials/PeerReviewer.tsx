@@ -19,7 +19,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { addReviewer } from '@/api/reviewer.api';
+import { addReviewer, deleteMyReviewer } from '@/api/reviewer.api';
 import { searchUsers } from '@/api/search.api';
 
 const PeerReviewer = () => {
@@ -41,13 +41,18 @@ const PeerReviewer = () => {
 
   const addAddReviewer = async (reviewerId: string) => {
     if (loading) return;
-    if (!reviewers.find(item => item.reviewerId === reviewerId)) {
+    const reviewer = reviewers.find(
+      item => item.reviewerId === reviewerId,
+    );
+    if (!reviewer) {
       await dispatch(
         addReviewer({
           reviewCycleId: activeCycle?.id as string,
           reviewerId,
         }),
       );
+    } else {
+      await dispatch(deleteMyReviewer(reviewer));
     }
   };
 

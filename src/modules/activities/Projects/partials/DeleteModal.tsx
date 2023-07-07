@@ -24,9 +24,9 @@ const DeleteModal = ({
     state => state.projects,
   );
 
-  const handleDelete = (evt: any) => {
+  const handleDelete = async (evt: any) => {
     evt.preventDefault();
-    dispatch(deleteProjects(selected));
+    await dispatch(deleteProjects(selected));
     setSelected('');
     setOpenDelete(false);
   };

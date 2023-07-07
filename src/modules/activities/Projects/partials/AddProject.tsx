@@ -11,15 +11,17 @@ import {
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
 import { createProject } from '@/redux/features/projects/projectsSlice';
+import { IProject } from '@/interfaces/project.interface';
 
 const AddProject = () => {
   const [fillError, setFillError] = useState('');
-  const [project, setProject] = useState({
+  const [project, setProject] = useState<IProject>({
     name: '',
     description: '',
     startDate: '',
     endDate: '',
     id: '',
+    status: 'pending',
   });
   const dispatch = useAppDispatch();
   const { isCreating } = useAppSelector(state => state.projects);
@@ -37,7 +39,7 @@ const AddProject = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       Object.values({ ...project, id: null }).includes('') ||
       !projectLead ||
@@ -62,13 +64,16 @@ const AddProject = () => {
       setFillError('*Due date should be valid!');
     } else {
       setFillError('');
-      dispatch(createProject({ project, projectLead, assignees }));
+      await dispatch(
+        createProject({ project, projectLead, assignees }),
+      );
       setProject({
         name: '',
         description: '',
         startDate: '',
         endDate: '',
         id: '',
+        status: 'pending',
       });
       setProjectLead(undefined);
       setAssignees([]);

@@ -8,7 +8,6 @@ type Project = {
   projectLeadId: string;
   projectLead: Record<string, any> | null;
   projectUsers: any[];
-  status: string | undefined;
 } & IProject;
 
 export const getAllProjects = createAsyncThunk(
@@ -49,7 +48,6 @@ export const getSingleProject = createAsyncThunk(
       } = await API.get(`/projects/${data.project.id}/users`);
       data.project.projectUsers = users;
     }
-
     return data;
   },
 );

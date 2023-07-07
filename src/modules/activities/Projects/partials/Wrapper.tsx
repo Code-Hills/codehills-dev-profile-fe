@@ -21,12 +21,11 @@ const Wrapper = ({ projects, isLoading, error }: WrapperProps) => {
     setSelected('');
     const filters = ['all', 'in-progress', 'pending', 'completed'];
     if (filter && filters.includes(filter)) {
-      const newProjects = projects.filter(
-        (prj: any) => prj.status === filter,
-      );
-      return filter === 'all'
-        ? setFilteredProjects(projects)
-        : setFilteredProjects(newProjects);
+      const newProjects =
+        filter === 'all'
+          ? projects
+          : projects.filter((prj: any) => prj.status === filter);
+      return setFilteredProjects(newProjects);
     }
     return setFilteredProjects(
       projects.filter((proj: any) =>

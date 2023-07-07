@@ -39,14 +39,17 @@ export const getSingleProject = createAsyncThunk(
   'projects/singleProject/get',
   async (projId: string | undefined) => {
     const { data } = await API.get(`/projects/${projId}`);
-    const {
-      data: { user: projectLead },
-    } = await API.get(`/users/${data.project.projectLeadId}`);
-    const {
-      data: { users: projectUsers },
-    } = await API.get(`/projects/${data.project.id}/users`);
-    data.project.projectLead = projectLead;
-    data.project.projectUsers = projectUsers;
+    if (data.project.projectLeadId) {
+      const {
+        data: { user },
+      } = await API.get(`/users/${data.project.projectLeadId}`);
+      data.project.projectLead = user;
+      const {
+        data: { users },
+      } = await API.get(`/projects/${data.project.id}/users`);
+      data.project.projectUsers = users;
+    }
+
     return data;
   },
 );

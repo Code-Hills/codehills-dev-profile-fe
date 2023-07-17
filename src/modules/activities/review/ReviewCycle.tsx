@@ -131,6 +131,11 @@ const ReviewCycle = () => {
       <DataLayout
         isLoading={loading && !activeCycle && !restCycles.length}
       >
+        {tokenData?.role === 'admin' ? (
+          <AddReviewCycle>
+            <Button className="ml-auto mb-4">Add Cycle</Button>
+          </AddReviewCycle>
+        ) : null}
         <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800 w-full items-start flex flex-wrap gap-3 justify-between">
           <div className="flex flex-col items-start">
             {activeCycle ? (
@@ -201,9 +206,6 @@ const ReviewCycle = () => {
                 >
                   End Cycle
                 </Button>
-                <AddReviewCycle>
-                  <Button>Add Cycle</Button>
-                </AddReviewCycle>
               </>
             ) : null}
           </div>

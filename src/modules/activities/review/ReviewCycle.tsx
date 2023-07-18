@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable sonarjs/no-all-duplicated-branches */
-import { Avatar, Button } from 'flowbite-react';
+import { Avatar, Button, Badge } from 'flowbite-react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import PeerReviewer from './partials/PeerReviewer';
 import SelfReview from './partials/SelfReview';
@@ -22,8 +22,26 @@ import {
 } from '@/api/reviewer.api';
 import DataLayout from '@/modules/_partials/layouts/DataLayout';
 import DataLoader from '@/modules/_partials/shared/DataLoader';
+import { IReviewer } from '@/interfaces/review.interface';
+import { setMadeSelfReview } from '@/redux/slices/reviewerSlice';
+
+const getStatusBadge = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return <Badge color="warning">Pending</Badge>;
+    case 'approved':
+      return <Badge color="success">Approved</Badge>;
+    case 'rejected':
+      return <Badge color="failure">Rejected</Badge>;
+    default:
+      return <Badge color="warning">Pending</Badge>;
+  }
+};
 
 const ReviewCycle = () => {
+  const [decision, setDecision] = useState<
+    'approve' | 'reject' | null
+  >(null);
   const { tokenData } = useAppSelector(state => state.profile);
   const isAdminOrArchitect = ['admin', 'architect'].includes(
     tokenData?.role,
@@ -31,9 +49,11 @@ const ReviewCycle = () => {
   const { activeCycle, loading } = useAppSelector(
     state => state.cycle,
   );
-  const { reviewers, loading: isLoadingReviewers } = useAppSelector(
-    state => state.reviewer,
-  );
+  const {
+    isMadeSelfReview,
+    reviewers,
+    loading: isLoadingReviewers,
+  } = useAppSelector(state => state.reviewer);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -45,8 +65,7 @@ const ReviewCycle = () => {
     if (activeCycle?.id && tokenData?.id) {
       dispatch(
         getDeveloperReviewers({
-          reviewCyleId: activeCycle.id,
-          developerId: isAdminOrArchitect ? null : tokenData.id,
+          reviewCycleId: activeCycle.id,
           status: isAdminOrArchitect ? null : 'approved',
         }),
       );
@@ -56,6 +75,31 @@ const ReviewCycle = () => {
   const reviewRequests = !isAdminOrArchitect
     ? reviewers.filter(item => item.reviewerId === tokenData?.id)
     : reviewers;
+
+  const onDecision = async (
+    item: IReviewer,
+    userDecision: 'approve' | 'reject',
+  ) => {
+    setDecision(userDecision);
+    switch (userDecision) {
+      case 'approve':
+        await dispatch(approveReviewer(item));
+        break;
+      case 'reject':
+        await dispatch(rejectReviewer(item));
+        break;
+      default:
+        break;
+    }
+    setDecision(null);
+  };
+
+  useEffect(() => {
+    const isSelfReview = reviewers.some(
+      item => item.reviewerId === tokenData?.id,
+    );
+    dispatch(setMadeSelfReview(isSelfReview));
+  }, [reviewers, tokenData?.id]);
 
   return (
     <>
@@ -94,10 +138,12 @@ const ReviewCycle = () => {
           {activeCycle && !isAdminOrArchitect ? (
             <div className="flex items-center space-x-3">
               <PeerReviewer />
-              <SelfReview
-                title="Self Review"
-                className="py-3 px-4 text-sm font-medium"
-              />
+              {!isMadeSelfReview && (
+                <SelfReview
+                  title="Self Review"
+                  className="py-3 px-4 text-sm font-medium"
+                />
+              )}
             </div>
           ) : null}
         </div>
@@ -126,21 +172,17 @@ const ReviewCycle = () => {
               <div className="shrink-0">
                 <Avatar size="sm" img={developer?.avatar} rounded />
               </div>
-              <p className="flex-grow">
+              <p className="flex-grow flex flex-wrap items-center gap-x-1 leading-relaxed">
                 <span className="text-lg font-medium">
                   {developer?.firstName} {developer?.lastName}
-                </span>{' '}
-                {isAdminOrArchitect
-                  ? `added ${reviewer?.email} as a reviewer for the review cycle`
-                  : `requested your review as a peer reviewer for the review
-              cycle.`}
-                <span className="text-sm text-gray-500 ml-2 dark:text-gray-400">
-                  {status === 'pending'
-                    ? 'Pending'
-                    : status === 'approved'
-                    ? 'Approved'
-                    : 'Rejected'}
                 </span>
+                <span>
+                  {isAdminOrArchitect
+                    ? `added ${reviewer?.email} as a reviewer for the review cycle`
+                    : `requested your review as a peer reviewer for the review
+              cycle.`}
+                </span>
+                {getStatusBadge(status as string)}
               </p>
               {isAdminOrArchitect ? (
                 <>
@@ -148,25 +190,25 @@ const ReviewCycle = () => {
                     status as string,
                   ) ? (
                     <Button
-                      disabled={isLoadingReviewers}
                       gradientMonochrome="info"
                       type="submit"
-                      isProcessing={isLoadingReviewers}
-                      onClick={() => {
-                        dispatch(approveReviewer(item));
-                      }}
+                      isProcessing={decision === 'approve'}
+                      onClick={() => onDecision(item, 'approve')}
+                      className={`${
+                        tokenData?.role === 'admin' ? 'hidden' : ''
+                      }`}
                     >
                       Approve
                     </Button>
                   ) : (
                     <Button
-                      disabled={isLoadingReviewers}
                       gradientMonochrome="failure"
                       type="submit"
-                      isProcessing={isLoadingReviewers}
-                      onClick={() => {
-                        dispatch(rejectReviewer(item));
-                      }}
+                      isProcessing={decision === 'reject'}
+                      onClick={() => onDecision(item, 'reject')}
+                      className={`${
+                        tokenData?.role === 'admin' ? 'hidden' : ''
+                      }`}
                     >
                       Revoke
                     </Button>

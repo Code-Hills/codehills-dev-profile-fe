@@ -6,12 +6,14 @@ import {
   addReviewer,
   approveReviewer,
   rejectReviewer,
+  deleteMyReviewer,
 } from '@/api/reviewer.api';
 
 const initialState: IStateWithReviewers = {
   reviewers: [],
   loading: false,
   error: null,
+  isMadeSelfReview: false,
 };
 
 const reviewerSlice = createSlice({
@@ -20,6 +22,9 @@ const reviewerSlice = createSlice({
   reducers: {
     getReviewersSuccess(state) {
       state.loading = false;
+    },
+    setMadeSelfReview(state, { payload }: { payload: boolean }) {
+      state.isMadeSelfReview = payload;
     },
   },
   extraReducers(builder) {
@@ -81,10 +86,25 @@ const reviewerSlice = createSlice({
       .addCase(rejectReviewer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message as string;
+      })
+      .addCase(deleteMyReviewer.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMyReviewer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviewers = state.reviewers.filter(
+          reviewer => reviewer.id !== action.payload.id,
+        );
+      })
+      .addCase(deleteMyReviewer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message as string;
       });
   },
 });
 
-export const { getReviewersSuccess } = reviewerSlice.actions;
+export const { getReviewersSuccess, setMadeSelfReview } =
+  reviewerSlice.actions;
 
 export default reviewerSlice.reducer;

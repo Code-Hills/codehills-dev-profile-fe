@@ -2,6 +2,7 @@
 
 import { Dropdown, Modal } from 'flowbite-react';
 import { useState, useEffect } from 'react';
+import Helmet from 'react-helmet';
 
 import { getAllCyles } from '@/api/cyle.api';
 import { Cycle } from '@/interfaces/cycle.interface';
@@ -60,6 +61,9 @@ const ReceivedReviews = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Received Reviews - Codehills</title>
+      </Helmet>
       <DataLayout isLoading={isLoadingCycles && !cycles.length}>
         <div className="flex gap-3 justify-between flex-wrap mb-3">
           <h1 className="text-2xl font-medium">Received Reviews</h1>

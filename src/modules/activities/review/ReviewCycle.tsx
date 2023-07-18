@@ -6,6 +6,7 @@ import { Avatar, Button, Badge } from 'flowbite-react';
 import { HiOutlineArrowRight, HiPencil } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Helmet from 'react-helmet';
 
 import PeerReviewer from './partials/PeerReviewer';
 import SelfReview from './partials/SelfReview';
@@ -128,6 +129,10 @@ const ReviewCycle = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Review Cycle</title>
+        <meta name="description" content="Review Cycle" />
+      </Helmet>
       <DataLayout
         isLoading={loading && !activeCycle && !restCycles.length}
       >

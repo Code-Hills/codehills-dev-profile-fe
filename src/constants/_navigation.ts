@@ -33,32 +33,33 @@ export const sidebarNavLinks: INavigationLink[] = [
     name: 'Performance',
     href: '/performance',
     icon: HiChartBar,
+    allowedRoles: ['architect', 'developer'],
   },
-  {
-    name: 'Goals',
-    href: '/dashboard/goals',
-    icon: HiCheckCircle,
-  },
+  // {
+  //   name: 'Goals',
+  //   href: '/dashboard/goals',
+  //   icon: HiCheckCircle,
+  // },
   {
     name: 'Projects',
     href: '/projects',
     icon: HiViewGrid,
-    allowedRoles: ['admin'],
+    // allowedRoles: ['admin'],
   },
-  {
-    name: 'Payroll',
-    href: '/dashboard/payroll',
-    icon: HiCurrencyDollar,
-  },
-  {
-    name: 'Time tracker',
-    href: '/dashboard/time-tracker',
-    icon: HiClock,
-  },
-  {
-    name: 'Reports',
-    href: '/reports',
-    icon: HiDocumentReport,
-    allowedRoles: ['admin'],
-  },
+  // {
+  //   name: 'Payroll',
+  //   href: '/dashboard/payroll',
+  //   icon: HiCurrencyDollar,
+  // },
+  // {
+  //   name: 'Time tracker',
+  //   href: '/dashboard/time-tracker',
+  //   icon: HiClock,
+  // },
+  // {
+  //   name: 'Reports',
+  //   href: '/reports',
+  //   icon: HiDocumentReport,
+  //   allowedRoles: ['admin'],
+  // },
 ];

@@ -10,6 +10,7 @@ import notFoundRoute from './routes/notFound';
 import projectsRoute from './routes/projects';
 import addProjectRoute from './routes/addProject';
 import singleProjectRoute from './routes/singleProject';
+import performanceRoute from './routes/performance';
 
 const privateRoutes = [
   dashboardRoute,
@@ -24,6 +25,7 @@ const privateRoutes = [
   projectsRoute,
   singleProjectRoute,
   addProjectRoute,
+  performanceRoute,
 ];
 
 export default privateRoutes;

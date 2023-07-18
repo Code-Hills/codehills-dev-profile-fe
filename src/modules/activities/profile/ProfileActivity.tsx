@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Helmet from 'react-helmet';
 
 import ProfileWrapper from './partials/ProfileWrapper';
 
@@ -27,12 +28,19 @@ const ProfileActivity = () => {
     }
   }, [user]);
   return (
-    <ProfileWrapper
-      isLoading={isLoading}
-      error={error}
-      profile={user || {}}
-      projects={projects}
-    />
+    <>
+      <Helmet>
+        <title>
+          {`${user?.firstName} ${user?.lastName}`} - Codehills
+        </title>
+      </Helmet>
+      <ProfileWrapper
+        isLoading={isLoading}
+        error={error}
+        profile={user || {}}
+        projects={projects}
+      />
+    </>
   );
 };
 

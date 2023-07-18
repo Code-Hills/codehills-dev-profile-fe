@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { HiCheck, HiX } from 'react-icons/hi';
 import axios from 'axios';
+import Helmet from 'react-helmet';
 
 import Secure from '@/utils/secureLs';
 import { logoutFromMicrosoft } from '@/redux/features/auth/loginSlice';
@@ -215,6 +216,7 @@ const UsersActivity = () => {
   };
   return (
     <>
+      <Helmet title="Users - Codehills" />
       <div className="flex justify-between mb-4">
         <h2 className="text-2xl flex items-center">
           <FiUsers />

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Helmet from 'react-helmet';
 
 import ProjectsWrapper from './partials/Wrapper';
 
@@ -28,11 +29,16 @@ const Projects = () => {
   }, [isAdmin, tokenData?.id]);
 
   return (
-    <ProjectsWrapper
-      projects={isAdmin ? projects : userProjects}
-      isLoading={isLoading}
-      error={error}
-    />
+    <>
+      <Helmet>
+        <title>Projects - Codehills</title>
+      </Helmet>
+      <ProjectsWrapper
+        projects={isAdmin ? projects : userProjects}
+        isLoading={isLoading}
+        error={error}
+      />
+    </>
   );
 };
 

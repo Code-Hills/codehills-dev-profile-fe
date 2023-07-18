@@ -2,8 +2,11 @@
 import React from 'react';
 
 const Searchbar = () => {
+  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
   return (
-    <form className="flex items-center flex-grow">
+    <form onSubmit={onSearch} className="flex items-center flex-grow">
       <label htmlFor="simple-search" className="sr-only">
         Search
       </label>

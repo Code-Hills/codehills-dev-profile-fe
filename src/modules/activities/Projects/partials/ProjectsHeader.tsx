@@ -24,8 +24,9 @@ const ProjectHeader = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const authUser = isAuth();
+  const isAdmin = authUser.role === 'admin';
   return (
-    <div className={`${authUser.role !== 'admin' && 'hidden'}`}>
+    <>
       <div className="my-2 flex items-center px-8">
         <h1 className="font-semibold text-center md:text-left text-2xl md:text-3xl dark:text-white flex-1">
           Projects{' '}
@@ -33,38 +34,43 @@ const ProjectHeader = ({
             {filteredProjects?.length} Result(s)
           </span>
         </h1>
-        <div className="fixed z-40 bottom-3 right-3 md:static flex flex-col-reverse md:flex-row gap-y-2 gap-x-6">
-          <Button
-            gradientDuoTone="cyanToBlue"
-            type="submit"
-            onClick={() => navigate('new')}
-            className={`${
-              selected.length === 0 ? 'block' : 'hidden'
-            } md:block`}
-          >
-            <MdAdd className="w-6 h-6 md:-ml-3" fill="currentColor" />
-            <span className="hidden md:inline">Add</span>
-          </Button>
-          {selected.length > 0 && (
+        {isAdmin ? (
+          <div className="fixed z-40 bottom-3 right-3 md:static flex flex-col-reverse md:flex-row gap-y-2 gap-x-6">
             <Button
-              gradientMonochrome="failure"
+              gradientDuoTone="cyanToBlue"
               type="submit"
-              onClick={() => setOpenDelete(true)}
+              onClick={() => navigate('new')}
+              className={`${
+                selected.length === 0 ? 'block' : 'hidden'
+              } md:block`}
             >
-              <RiDeleteBin6Fill
-                className="w-6 h-6 mr-1.5 md:-ml-1"
+              <MdAdd
+                className="w-6 h-6 md:-ml-3"
                 fill="currentColor"
               />
-              <span className="hidden md:inline">Delete</span>
+              <span className="hidden md:inline">Add</span>
             </Button>
-          )}
-          <DeleteModal
-            openDelete={openDelete}
-            setOpenDelete={setOpenDelete}
-            selected={selected}
-            setSelected={setSelected}
-          />
-        </div>
+            {selected.length > 0 && (
+              <Button
+                gradientMonochrome="failure"
+                type="submit"
+                onClick={() => setOpenDelete(true)}
+              >
+                <RiDeleteBin6Fill
+                  className="w-6 h-6 mr-1.5 md:-ml-1"
+                  fill="currentColor"
+                />
+                <span className="hidden md:inline">Delete</span>
+              </Button>
+            )}
+            <DeleteModal
+              openDelete={openDelete}
+              setOpenDelete={setOpenDelete}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </div>
+        ) : null}
       </div>
       <div className="sticky top-0 z-30 dark:bg-gray-900 bg-[#e8eafb] shadow-md">
         <div className="py-2 px-8">
@@ -87,7 +93,7 @@ const ProjectHeader = ({
         {/* Filtering */}
         <Filters setFilteredProjects={setFilteredProjects} />
       </div>
-    </div>
+    </>
   );
 };
 

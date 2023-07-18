@@ -24,7 +24,7 @@ export const getDeveloperReviewers = createAsyncThunk(
             : `developerId=${developerId} ${
                 status ? `&status=${status}` : ``
               }`
-        }}`,
+        }`,
       );
       return data.reviewers.map((reviewer: IReviewer) => ({
         ...reviewer,

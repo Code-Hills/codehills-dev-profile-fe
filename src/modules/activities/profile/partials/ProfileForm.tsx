@@ -50,6 +50,7 @@ const ProfileForm = () => {
   });
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
+
   const onClose = () => {
     if (isUpdating) return;
     setIsOpen(false);
@@ -94,10 +95,6 @@ const ProfileForm = () => {
   };
 
   const submitHandler = handleSubmit(data => {
-    if (step < 3) {
-      setStep(step + 1);
-    }
-
     switch (step) {
       case 1:
         setProfileData({
@@ -131,6 +128,10 @@ const ProfileForm = () => {
       default:
         break;
     }
+
+    if (step < 3) {
+      setStep(step + 1);
+    }
   });
 
   const handleBack = () => {
@@ -159,8 +160,7 @@ const ProfileForm = () => {
       default:
         break;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step]);
+  }, [step, profileData, reset]);
 
   return (
     <>

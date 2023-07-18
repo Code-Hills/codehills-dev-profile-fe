@@ -10,7 +10,8 @@ const personal = joi
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const bank = joi
   .object({
@@ -23,7 +24,8 @@ const bank = joi
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const address = joi
   .object({
@@ -33,7 +35,8 @@ const address = joi
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const profileSchema = {
   personal,

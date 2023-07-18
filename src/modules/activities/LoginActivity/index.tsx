@@ -4,6 +4,8 @@ import './LoginActivity.css';
 
 import logo from '../../../img/logo.png';
 import mslogo from '../../../img/mslogo.svg';
+import codeHillLog from '../../../img/codehills_logo-white.svg'
+import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg'
 
 import Secure from '@/utils/secureLs';
 import Keys from '@/utils/keys';
@@ -49,10 +51,10 @@ const LoginActivity = () => {
       </div>
       <div className="loginRight flex justify-center pt-20 bg-no-repeat bg-center relative">
         <div className="righDdata flex flex-col items-center">
-          <div className="h-40 w-40">
+          <div className="h-40 w-80  flex justify-center items-center">
             <img
-              src={logo}
-              className="rounded-full filter opacity-50 drop-shadow-gray-200"
+              src={codeHillLog2}
+              className="filter opacity-50 drop-shadow-gray-200"
               alt="Logo"
             />
           </div>

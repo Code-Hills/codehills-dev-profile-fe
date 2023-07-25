@@ -31,7 +31,9 @@ const DashboardActivity = () => {
   const userRole: Role = tokenData?.role;
 
   useEffect(() => {
-    dispatch(getDashboard());
+    if (!dashboard.recentProjects.length) {
+      dispatch(getDashboard());
+    }
   }, []);
 
   return (
@@ -112,7 +114,9 @@ const DashboardActivity = () => {
               View All
             </Link>
           </div>
-          <RecentProjectList projects={dashboard.recentProjects} />
+          <RecentProjectList
+            projects={dashboard.recentProjects.slice(0, 5)}
+          />
         </div>
       </DataLayout>
     </>

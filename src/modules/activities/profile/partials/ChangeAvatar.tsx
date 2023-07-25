@@ -62,9 +62,6 @@ const ChangeAvatar = () => {
     await dispatch(updateProfile(formData));
     if (!updateError) {
       onClose();
-      toast('Avatar updated successfully');
-    } else {
-      toast.error(updateError || 'Avatar update failed');
     }
   };
 
@@ -88,6 +85,8 @@ const ChangeAvatar = () => {
                 alt={profile.firstName}
                 rounded
                 size="xl"
+                bordered
+                color="cyan"
               />
             ) : (
               <Avatar rounded size="xl" />

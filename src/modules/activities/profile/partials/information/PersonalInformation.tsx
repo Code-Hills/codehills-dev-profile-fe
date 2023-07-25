@@ -1,21 +1,34 @@
 import { Label, Select, TextInput } from 'flowbite-react';
-import {
-  UseFormRegister,
-  FieldValues,
-  FieldErrors,
-} from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
 import { formatJoiErorr } from '@/helpers/format';
+import profileSchema from '@/api/schema/profile';
 
-const PersonalInformation = ({
-  register,
-  errors,
-}: {
-  register: UseFormRegister<FieldValues>;
-  errors: FieldErrors<FieldValues>;
-}) => {
+interface Props {
+  onSubmit: (query: Record<string, any>) => void;
+  data?: Record<string, any>;
+  children?: React.ReactNode;
+}
+
+const PersonalInformation = ({ onSubmit, data, children }: Props) => {
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: joiResolver(profileSchema.personal),
+  });
+
+  useEffect(() => {
+    if (data) {
+      reset(data);
+    }
+  }, []);
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h2 className="text-xl font-semibold">Personal Information</h2>
       <div className="inline-grid md:grid-cols-2 gap-x-10 gap-y-4 mt-6 w-full">
         <div className="flex flex-col space-y-2">
@@ -103,7 +116,8 @@ const PersonalInformation = ({
           )}
         </div>
       </div>
-    </>
+      {children}
+    </form>
   );
 };
 

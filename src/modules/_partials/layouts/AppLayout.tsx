@@ -113,6 +113,8 @@ const AppLayout = () => {
                       alt={firstName}
                       size="md"
                       className="shrink-0"
+                      bordered
+                      color="gray"
                     />
                   ) : (
                     <Avatar rounded />

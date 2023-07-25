@@ -32,7 +32,7 @@ import { Cycle } from '@/interfaces/cycle.interface';
 import { calculateActiveCycle } from '@/redux/slices/cycleSlice';
 
 const getStatusBadge = (status: string) => {
-  switch (status.toLowerCase()) {
+  switch (status?.toLowerCase()) {
     case 'pending':
       return <Badge color="warning">Pending</Badge>;
     case 'approved':
@@ -47,6 +47,7 @@ const getStatusBadge = (status: string) => {
 const ReviewCycle = () => {
   const [decision, setDecision] = useState<string | null>(null);
   const { tokenData } = useAppSelector(state => state.profile);
+  const isAdmin = tokenData?.role === 'admin';
   const isAdminOrArchitect = ['admin', 'architect'].includes(
     tokenData?.role,
   );
@@ -66,11 +67,7 @@ const ReviewCycle = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      activeCycle?.id &&
-      tokenData?.id &&
-      tokenData?.role !== 'admin'
-    ) {
+    if (activeCycle?.id && tokenData?.id && !isAdmin) {
       dispatch(
         getDeveloperReviewers({
           reviewCycleId: activeCycle.id,
@@ -136,7 +133,7 @@ const ReviewCycle = () => {
       <DataLayout
         isLoading={loading && !activeCycle && !restCycles.length}
       >
-        {tokenData?.role === 'admin' ? (
+        {isAdmin ? (
           <AddReviewCycle>
             <Button className="ml-auto mb-4">Add Cycle</Button>
           </AddReviewCycle>
@@ -151,7 +148,7 @@ const ReviewCycle = () => {
                   <Badge color="success" className="ml-1">
                     Active
                   </Badge>
-                  {tokenData?.role === 'admin' ? (
+                  {isAdmin ? (
                     <AddReviewCycle
                       title="Edit Review Cycle"
                       cycle={activeCycle}
@@ -171,7 +168,7 @@ const ReviewCycle = () => {
                 No active review cycle
               </p>
             )}
-            {!isAdminOrArchitect ? (
+            {!isAdmin ? (
               <Button
                 size="xs"
                 outline
@@ -186,7 +183,7 @@ const ReviewCycle = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            {activeCycle && !isAdminOrArchitect ? (
+            {activeCycle && !isAdmin ? (
               <>
                 <PeerReviewer />
                 {!isMadeSelfReview && (
@@ -197,7 +194,7 @@ const ReviewCycle = () => {
                 )}
               </>
             ) : null}
-            {tokenData?.role === 'admin' ? (
+            {isAdmin ? (
               <>
                 <Button
                   color="failure"
@@ -215,7 +212,7 @@ const ReviewCycle = () => {
             ) : null}
           </div>
         </div>
-        {tokenData?.role === 'admin' &&
+        {isAdmin &&
           restCycles.length &&
           restCycles.map(item => (
             <div
@@ -272,7 +269,7 @@ const ReviewCycle = () => {
         }
         loader={<DataLoader count={3} />}
       >
-        {!reviewRequests.length && tokenData?.role !== 'admin' ? (
+        {!reviewRequests.length && !isAdmin ? (
           <div className="flex flex-col mt-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 p-4 sm:p-6 dark:bg-gray-800">
             <p className="text-lg font-medium text-gray-500 mt-2 dark:text-gray-400">
               No review requests
@@ -313,9 +310,7 @@ const ReviewCycle = () => {
                         size="xs"
                         isProcessing={decision === item.id}
                         onClick={() => onDecision(item, 'approve')}
-                        className={`${
-                          tokenData?.role === 'admin' ? 'hidden' : ''
-                        }`}
+                        className={`${isAdmin ? 'hidden' : ''}`}
                       >
                         Approve Reviewer
                       </Button>
@@ -326,9 +321,7 @@ const ReviewCycle = () => {
                         size="xs"
                         isProcessing={decision === item.id}
                         onClick={() => onDecision(item, 'reject')}
-                        className={`${
-                          tokenData?.role === 'admin' ? 'hidden' : ''
-                        }`}
+                        className={`${isAdmin ? 'hidden' : ''}`}
                       >
                         Revoke Reviewer
                       </Button>

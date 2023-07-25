@@ -7,26 +7,21 @@ import {
   useAppSelector,
   useAppDispatch,
 } from '@/modules/_partials/hooks/useRedux';
-import { getAllProjects } from '@/redux/features/projects/projectsSlice';
-import { getMyProjects } from '@/redux/features/profile/profileSlice';
+import { getDashboard } from '@/api/dashboard.api';
 
 const Projects = () => {
-  const { tokenData, projects: userProjects } = useAppSelector(
-    state => state.profile,
-  );
-  const isAdmin = tokenData?.role === 'admin';
+  const {
+    dashboard: { recentProjects },
+    loading: isLoading,
+    error,
+  } = useAppSelector(state => state.dashboard);
   const dispatch = useAppDispatch();
-  const { isLoading, error, projects } = useAppSelector(
-    state => state.projects,
-  );
 
   useEffect(() => {
-    if (!isAdmin) {
-      dispatch(getMyProjects(tokenData?.id as string));
-    } else {
-      dispatch(getAllProjects());
+    if (!recentProjects.length) {
+      dispatch(getDashboard());
     }
-  }, [isAdmin, tokenData?.id]);
+  }, []);
 
   return (
     <>
@@ -34,7 +29,7 @@ const Projects = () => {
         <title>Projects - Codehills</title>
       </Helmet>
       <ProjectsWrapper
-        projects={isAdmin ? projects : userProjects}
+        projects={recentProjects}
         isLoading={isLoading}
         error={error}
       />

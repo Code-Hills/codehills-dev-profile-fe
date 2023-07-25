@@ -1,8 +1,5 @@
-/* eslint-disable security/detect-object-injection */
 import { Button, Modal, Spinner } from 'flowbite-react';
-import { useForm } from 'react-hook-form';
-import { joiResolver } from '@hookform/resolvers/joi';
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   HiPencil,
   HiChevronRight,
@@ -16,7 +13,6 @@ import PersonalInformation from './information/PersonalInformation';
 import AddressInformation from './information/AddressInformation';
 import BankInformation from './information/BankInformation';
 
-import profileSchema from '@/api/schema/profile';
 import {
   useAppDispatch,
   useAppSelector,
@@ -29,24 +25,13 @@ const ProfileForm = () => {
     state => state.profile,
   );
 
-  const profile = user || {};
-
-  const [schema, setSchema] = useState(profileSchema.personal);
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: joiResolver(schema),
-  });
   const [profileData, setProfileData] = useState({
-    displayName: profile.displayName,
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    gender: profile.gender,
-    address: profile.address || {},
-    bank: profile.bank || {},
+    displayName: '',
+    firstName: '',
+    lastName: '',
+    gender: '',
+    address: {},
+    bank: {},
   });
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
@@ -59,41 +44,28 @@ const ProfileForm = () => {
     setIsOpen(!isOpen);
   };
 
-  const renderSteps = () => {
-    switch (step) {
-      case 1:
-        return <PersonalInformation {...{ register, errors }} />;
-      case 2:
-        return <AddressInformation {...{ register, errors }} />;
-      case 3:
-        return <BankInformation {...{ register, errors }} />;
-      default:
-        return null;
-    }
-  };
-
   const updateUserProfile = async (payload: any) => {
     const formData = new FormData();
     Object.keys(payload).forEach(key => {
       if (typeof payload[key] === 'object') {
-        Object.keys(payload[key]).forEach(subKey => {
-          formData.append(`${key}.${subKey}`, payload[key][subKey]);
-        });
+        formData.append(key, JSON.stringify(payload[key]));
+        // Object.keys(payload[key]).forEach(subKey => {
+        //   formData.append(`${key}.${subKey}`, payload[key][subKey]);
+        // });
       } else {
         formData.append(key, payload[key]);
       }
     });
-    await dispatch(updateProfile(formData));
-    if (!updateError) {
+    const { payload: result } = await dispatch(
+      updateProfile(formData),
+    );
+    if (result) {
       onClose();
-      toast('Profile updated successfully');
       setStep(1);
-    } else {
-      toast.error(updateError || 'Profile update failed');
     }
   };
 
-  const submitHandler = handleSubmit(data => {
+  const submitHandler = (data: any) => {
     if (step < 3) {
       setStep(step + 1);
     }
@@ -131,7 +103,7 @@ const ProfileForm = () => {
       default:
         break;
     }
-  });
+  };
 
   const handleBack = () => {
     if (step > 1) {
@@ -141,26 +113,45 @@ const ProfileForm = () => {
     }
   };
 
-  useEffect(() => {
+  const FormComponent = useMemo(() => {
+    switch (step) {
+      case 1:
+        return PersonalInformation;
+      case 2:
+        return AddressInformation;
+      case 3:
+        return BankInformation;
+      default:
+        return PersonalInformation;
+    }
+  }, [step]);
+
+  const getFormData = () => {
     const { address, bank, ...others } = profileData;
     switch (step) {
       case 1:
-        setSchema(profileSchema.personal);
-        reset(others);
-        break;
+        return others;
       case 2:
-        setSchema(profileSchema.address);
-        reset(address);
-        break;
+        return address;
       case 3:
-        setSchema(profileSchema.bank);
-        reset(bank);
-        break;
+        return bank;
       default:
-        break;
+        return others;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step]);
+  };
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        displayName: user.displayName || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        gender: user.gender,
+        address: user.address || {},
+        bank: user.bank || {},
+      });
+    }
+  }, [user]);
 
   return (
     <>
@@ -175,49 +166,53 @@ const ProfileForm = () => {
         onClose={onClose}
       >
         <Modal.Header>Edit Profile</Modal.Header>
-        <form onSubmit={submitHandler}>
-          <Modal.Body>{renderSteps()}</Modal.Body>
-          <Modal.Footer className="justify-end">
-            <Button color="gray" type="button" onClick={handleBack}>
-              {!(step > 1) ? (
-                <>
-                  <HiX className="mr-2 h-5 w-5" />
-                  Cancel
-                </>
-              ) : (
-                <>
-                  <HiChevronLeft className="mr-2 h-5 w-5" />
-                  Back
-                </>
-              )}
-            </Button>
-            <Button
-              gradientDuoTone="cyanToBlue"
-              type="submit"
-              disabled={isUpdating}
-            >
-              {step === 3 ? (
-                <>
-                  Save
-                  {isUpdating ? (
-                    <Spinner
-                      color="success"
-                      size="sm"
-                      className="ml-2"
-                    />
-                  ) : (
-                    <HiCheck className="ml-2 h-5 w-5" />
-                  )}
-                </>
-              ) : (
-                <>
-                  Next
-                  <HiChevronRight className="ml-2 h-5 w-5" />
-                </>
-              )}
-            </Button>
-          </Modal.Footer>
-        </form>
+        <Modal.Body>
+          <FormComponent
+            onSubmit={submitHandler}
+            data={getFormData()}
+          >
+            <Modal.Footer className="justify-end mt-4">
+              <Button color="gray" type="button" onClick={handleBack}>
+                {!(step > 1) ? (
+                  <>
+                    <HiX className="mr-2 h-5 w-5" />
+                    Cancel
+                  </>
+                ) : (
+                  <>
+                    <HiChevronLeft className="mr-2 h-5 w-5" />
+                    Back
+                  </>
+                )}
+              </Button>
+              <Button
+                gradientDuoTone="cyanToBlue"
+                type="submit"
+                disabled={isUpdating}
+              >
+                {step === 3 ? (
+                  <>
+                    Save
+                    {isUpdating ? (
+                      <Spinner
+                        color="success"
+                        size="sm"
+                        className="ml-2"
+                      />
+                    ) : (
+                      <HiCheck className="ml-2 h-5 w-5" />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    Next
+                    <HiChevronRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
+              </Button>
+            </Modal.Footer>
+          </FormComponent>
+        </Modal.Body>
       </Modal>
     </>
   );

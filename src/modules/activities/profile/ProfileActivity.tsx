@@ -11,13 +11,24 @@ import {
   getMyProfile,
   getMyProjects,
 } from '@/redux/features/profile/profileSlice';
+import { getDashboard } from '@/api/dashboard.api';
 
 const ProfileActivity = () => {
+  const {
+    dashboard: { recentProjects },
+    loading,
+  } = useAppSelector(state => state.dashboard);
   const dispatch = useAppDispatch();
-  const { user, isLoading, error, projects } = useAppSelector(
+  const { user, isLoading, error } = useAppSelector(
     state => state.profile,
   );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!recentProjects.length) {
+      dispatch(getDashboard());
+    }
+  }, []);
+
   useEffect(() => {
     dispatch(getMyProfile());
   }, []);
@@ -31,14 +42,14 @@ const ProfileActivity = () => {
     <>
       <Helmet>
         <title>
-          {`${user?.firstName} ${user?.lastName}`} - Codehills
+          {`${user?.displayName || 'My Profile'}`} - Codehills
         </title>
       </Helmet>
       <ProfileWrapper
-        isLoading={isLoading}
+        isLoading={(isLoading || loading) && !recentProjects.length}
         error={error}
         profile={user || {}}
-        projects={projects}
+        projects={recentProjects}
       />
     </>
   );

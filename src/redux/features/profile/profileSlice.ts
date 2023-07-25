@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 import API from '@/api/api';
 import isAuth from '@/helpers/isAuth';
@@ -15,12 +16,22 @@ export const getMyProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   'profile/update',
   async (data: Record<string, any>) => {
-    const { data: updatedData } = await API.put('/profile', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return updatedData;
+    try {
+      const { data: updatedData } = await API.put('/profile', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success(
+        updatedData.data?.message || 'Profile updated successfully',
+      );
+      return updatedData;
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || 'Something went wrong',
+      );
+      throw error?.response?.data || error;
+    }
   },
 );
 

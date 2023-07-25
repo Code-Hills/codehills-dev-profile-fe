@@ -10,6 +10,11 @@ const ProfileProjects = ({ projects }: { projects: IProject[] }) => {
   return (
     <div className="mt-6 md:mt-10 flex flex-col  bg-white dark:bg-gray-800 rounded-[30px] p-4 md:p-8">
       <h2 className="text-xl font-semibold mb-4">Projects</h2>
+      {!projects.length && (
+        <p className="text-gray-400 dark:text-gray-200">
+          No projects yet
+        </p>
+      )}
       <Timeline>
         {projects.map(
           ({ id, name, description, endDate, startDate }) => (

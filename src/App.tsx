@@ -14,14 +14,12 @@ import LoginActivity from './modules/activities/LoginActivity';
 import AppLayout from './modules/_partials/layouts/AppLayout';
 import 'react-toastify/dist/ReactToastify.css';
 
-const user = isAuth();
-
 const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginActivity />,
     loader() {
-      if (user) {
+      if (isAuth()) {
         throw redirect('/');
       }
       return <div>Loading...</div>;
@@ -31,20 +29,17 @@ const router = createBrowserRouter([
     path: '/',
     errorElement: <ErrorPage errorCode={500} />,
     element: <AppLayout />,
-    loader() {
-      if (!user) {
-        throw redirect('/login');
-      }
-      return <div>Loading</div>;
-    },
     children: privateRoutes.map(route => ({
       path: route.path,
       element: <route.component />,
       loader() {
+        if (!isAuth()) {
+          throw redirect('/login');
+        }
         const { allowedRoles = [] } = route;
         if (
           allowedRoles.length &&
-          !allowedRoles?.includes(user.role)
+          !allowedRoles?.includes(isAuth().role)
         ) {
           throw redirect('/forbidden');
         }

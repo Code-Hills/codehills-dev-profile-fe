@@ -16,6 +16,7 @@ import reviewerSlice from '../slices/reviewerSlice';
 import searchSlice from '../slices/searchSlice';
 import dashboardSlice from '../slices/dashboardSlice';
 import projectsSlice from '../features/projects/projectsSlice';
+import notificationsSlice from '../features/notifications/notificationsSlice';
 
 export function makeStore() {
   return configureStore({
@@ -32,6 +33,7 @@ export function makeStore() {
       search: searchSlice,
       dashboard: dashboardSlice,
       projects: projectsSlice,
+      notifications: notificationsSlice,
     },
   });
 }

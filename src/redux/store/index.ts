@@ -1,23 +1,24 @@
 import {
+  Action,
   configureStore,
   ThunkAction,
-  Action,
 } from '@reduxjs/toolkit';
 
+import activateUserReducer from '../features/admin/activateUserAcountSlice';
+import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
 import authReducer from '../features/auth/loginSlice';
+import notificationsSlice from '../features/notifications/notificationsSlice';
 import profileSlice from '../features/profile/profileSlice';
+import projectsSlice from '../features/projects/projectsSlice';
 import themeSlice from '../features/theme/themeSlice';
 import userSlice from '../features/users/userSlice';
-import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
-import activateUserReducer from '../features/admin/activateUserAcountSlice';
 import cycleSlice from '../slices/cycleSlice';
+import dashboardSlice from '../slices/dashboardSlice';
+import ratingFieldSlice from '../slices/ratingFieldSlice';
+import ratingSlice from '../slices/ratingSlice';
 import reviewSlice from '../slices/reviewSlice';
 import reviewerSlice from '../slices/reviewerSlice';
 import searchSlice from '../slices/searchSlice';
-import dashboardSlice from '../slices/dashboardSlice';
-import projectsSlice from '../features/projects/projectsSlice';
-import ratingSlice from '../slices/ratingSlice';
-import ratingFieldSlice from '../slices/ratingFieldSlice';
 
 export function makeStore() {
   return configureStore({
@@ -36,6 +37,7 @@ export function makeStore() {
       search: searchSlice,
       dashboard: dashboardSlice,
       projects: projectsSlice,
+      notifications: notificationsSlice,
     },
   });
 }

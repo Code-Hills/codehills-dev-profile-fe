@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown } from 'flowbite-react';
 
@@ -15,13 +16,19 @@ const AppLayout = () => {
   const sidebar = React.useRef<HTMLDivElement>(null);
   const trigger = React.useRef<HTMLButtonElement>(null);
   const [toggleSidebar, setToggleSidebar] = React.useState(false);
-  const { tokenData, user } = useAppSelector(state => state.profile);
+  const { tokenData, user } = useAppSelector((state: { profile: any; }) => state.profile);
+  const [notification, setNotification] = useState(4);
+
   const { avatar, firstName, email, displayName } =
     user || tokenData || {};
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { theme } = useAppSelector(state => state.theme);
+  const { theme } = useAppSelector((state: { theme: any; }) => state.theme);
+
+  const handleNotificationClick = () => {
+    setNotification(0);
+  };
 
   React.useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -98,7 +105,12 @@ const AppLayout = () => {
               <Dropdown
                 arrowIcon={false}
                 inline
-                label={<NotificationIcon />}
+                label={
+                  <NotificationIcon
+                    counter={notification}
+                    onClick={handleNotificationClick}
+                  />
+                }
               >
                 <Notifications />
               </Dropdown>
@@ -220,7 +232,6 @@ const AppLayout = () => {
           </ul>
         </div>
       </aside>
-
       <div className="p-4 sm:ml-64 py-20 flex flex-col">
         <Outlet />
       </div>

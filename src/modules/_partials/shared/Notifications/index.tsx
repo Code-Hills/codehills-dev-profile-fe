@@ -25,6 +25,7 @@ const Notifications = () => {
     dispatch(getAllnotifications({ page, limit }));
     socket.on('notification', data => {
       dispatch(getAllnotifications(data));
+      alert('working...............');
     });
     return () => {
       socket.off('notification');
@@ -33,11 +34,13 @@ const Notifications = () => {
 
   const loadMoreNotifications = () => {
     setPage(prevPage => prevPage + notifications?.totalPages);
-    if (notifications.totalItems <= page * limit + notifications?.totalPages) {
+    if (
+      notifications.totalItems <=
+      page * limit + notifications?.totalPages
+    ) {
       setShowViewMore(false);
     }
   };
-
 
   if (!notifications || notifications?.rows?.length === 0) {
     return (
@@ -49,7 +52,6 @@ const Notifications = () => {
     );
   }
   const totalItems = notifications.totalItems;
-
 
   return (
     <div
@@ -137,7 +139,7 @@ const Notifications = () => {
             </div>
           ),
         )}
-  {showViewMore && (
+      {showViewMore && (
         <div className="flex justify-center py-4">
           <div
             onClick={loadMoreNotifications}

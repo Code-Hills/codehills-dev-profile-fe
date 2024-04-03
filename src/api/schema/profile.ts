@@ -16,11 +16,9 @@ const personal = joi
 const bank = joi
   .object({
     BankName: joi.string().required().label('Bank Name'),
-    // accountNumber: joi.string().required().label('Account Number'),
     accountName: joi.string().required().label('Account Name'),
     Currency: joi.string().required(),
     SwiftCode: joi.string().required().label('Swift Code'),
-    // balance: joi.string().required(),
   })
   .messages({
     'string.empty': requiredErrorMessage,

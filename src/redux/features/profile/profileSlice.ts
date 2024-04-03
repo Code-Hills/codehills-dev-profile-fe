@@ -38,7 +38,7 @@ interface InitialState {
   isLoading: boolean;
   error: string | null;
 
-  // update
+  // updates
   isUpdating: boolean;
   updateError: string | null;
 

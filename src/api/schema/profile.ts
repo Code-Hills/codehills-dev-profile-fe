@@ -10,20 +10,20 @@ const personal = joi
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const bank = joi
   .object({
     BankName: joi.string().required().label('Bank Name'),
-    // accountNumber: joi.string().required().label('Account Number'),
     accountName: joi.string().required().label('Account Name'),
     Currency: joi.string().required(),
     SwiftCode: joi.string().required().label('Swift Code'),
-    // balance: joi.string().required(),
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const address = joi
   .object({
@@ -33,7 +33,8 @@ const address = joi
   })
   .messages({
     'string.empty': requiredErrorMessage,
-  });
+  })
+  .options({ allowUnknown: true });
 
 const profileSchema = {
   personal,

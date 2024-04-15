@@ -13,7 +13,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { updateProfile } from '@/redux/features/profile/profileSlice';
+import {
+  getMyProfile,
+  updateProfile,
+} from '@/redux/features/profile/profileSlice';
 
 const ChangeAvatar = () => {
   const dispatch = useAppDispatch();
@@ -60,6 +63,7 @@ const ChangeAvatar = () => {
       return;
     }
     await dispatch(updateProfile(formData));
+    dispatch(getMyProfile());
     if (!updateError) {
       onClose();
       toast('Avatar updated successfully');

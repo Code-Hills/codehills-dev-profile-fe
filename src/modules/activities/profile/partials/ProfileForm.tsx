@@ -21,7 +21,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/modules/_partials/hooks/useRedux';
-import { updateProfile } from '@/redux/features/profile/profileSlice';
+import {
+  getMyProfile,
+  updateProfile,
+} from '@/redux/features/profile/profileSlice';
 
 const ProfileForm = () => {
   const dispatch = useAppDispatch();
@@ -84,6 +87,7 @@ const ProfileForm = () => {
       }
     });
     await dispatch(updateProfile(formData));
+    dispatch(getMyProfile());
     if (!updateError) {
       onClose();
       toast('Profile updated successfully');
@@ -92,7 +96,6 @@ const ProfileForm = () => {
       toast.error(updateError || 'Profile update failed');
     }
   };
-
   const submitHandler = handleSubmit(data => {
     if (step < 3) {
       setStep(step + 1);

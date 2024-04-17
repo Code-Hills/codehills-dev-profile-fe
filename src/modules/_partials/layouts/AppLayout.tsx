@@ -6,12 +6,12 @@ import SearchPopupModal from '../shared/SearchPopupModal';
 import NotificationIcon from '../shared/Notifications/NotificationIcon';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import Notifications from '../shared/Notifications';
+import codeHillLog from '../../../img/codehills_logo-white.svg';
+import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg';
 
 import Constants from '@/constants';
 import logo from '@/assets/images/logos/orginal.png';
 import { toggleTheme } from '@/redux/features/theme/themeSlice';
-import codeHillLog from '../../../img/codehills_logo-white.svg'
-import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg'
 
 const AppLayout = () => {
   const sidebar = React.useRef<HTMLDivElement>(null);

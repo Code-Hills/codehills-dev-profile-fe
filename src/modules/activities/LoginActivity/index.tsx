@@ -4,8 +4,8 @@ import './LoginActivity.css';
 
 import logo from '../../../img/logo.png';
 import mslogo from '../../../img/mslogo.svg';
-import codeHillLog from '../../../img/codehills_logo-white.svg'
-import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg'
+import codeHillLog from '../../../img/codehills_logo-white.svg';
+import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg';
 
 import Secure from '@/utils/secureLs';
 import Keys from '@/utils/keys';

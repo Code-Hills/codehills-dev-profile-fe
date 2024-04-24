@@ -1,45 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { Skeleton } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import SkeletonElement from '../SkeletonElement';
 
 import jese from '@/assets/images/users/bonnie-green.png';
-import { getAllnotifications } from '@/redux/features/notifications/notificationsSlice';
-import ProjectSkeleton from '@/modules/activities/Projects/partials/LoadingSkeleton';
+import {
+  addNotifications,
+  fetchNotifications,
+} from '@/redux/features/notifications/notificationsSlice';
 
-const socket = io(import.meta.env.VITE_PUBLIC_DEFAULT_API);
+import ProjectSkeleton from '@/modules/activities/Projects/partials/LoadingSkeleton';
+import { toast } from 'react-toastify';
 
 const Notifications = () => {
   const dispatch = useAppDispatch();
-  const { notifications } = useAppSelector(
-    state => state.notifications,
-  );
-  const [showViewMore, setShowViewMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const limit = 5;
-  useEffect(() => {
-    dispatch(getAllnotifications({ page, limit }));
-    socket.on('notification', data => {
-      dispatch(getAllnotifications(data));
-      alert('working...............');
-    });
-    return () => {
-      socket.off('notification');
-    };
-  }, [dispatch, page, limit]);
+  const {
+    notifications,
+    isLoading: isLoadingMore,
+    pagination,
+  } = useAppSelector(state => state.notifications);
+  const { user } = useAppSelector(state => state.profile);
 
-  const loadMoreNotifications = () => {
-    setPage(prevPage => prevPage + notifications?.totalPages);
-    if (
-      notifications.totalItems <=
-      page * limit + notifications?.totalPages
-    ) {
-      setShowViewMore(false);
+  const socket = io(import.meta.env.VITE_PUBLIC_DEFAULT_API);
+  const userId = user?.id;
+
+  useEffect(() => {
+    dispatch(fetchNotifications({ page: 1, limit: 5 }));
+    socket.on(`notification.${userId}`, data => {
+      dispatch(addNotifications(data));
+      toast.info(`${data.message}`);
+    });
+
+    return () => {
+      socket.off(`notification.${userId}`);
+    };
+  }, []);
+
+  const [showViewMore, setShowViewMore] = useState(true);
+  // useEffect(() => {
+  //   dispatch(getAllnotifications({ page, limit }));
+  //   socket.on('notification', data => {
+  //     dispatch(getAllnotifications(data));
+  //     alert('working...............');
+  //   });
+  //   return () => {
+  //     socket.off('notification');
+  //   };
+  // }, [dispatch, page, limit]);
+
+  const handleLoadMore = async () => {
+    const currentPage = pagination.currentPage;
+    if (currentPage === pagination.totalPages) {
+      return false;
     }
+    dispatch(
+      fetchNotifications({ page: currentPage + 1, append: true }),
+    );
   };
 
   if (!notifications || notifications?.rows?.length === 0) {

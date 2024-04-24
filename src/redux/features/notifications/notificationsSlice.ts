@@ -6,11 +6,27 @@ import {
 } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
-
 interface FetchNotificationsArg {
   page?: number;
   limit?: number;
   append?: boolean; // Include 'append' as an optional property
+}
+
+interface Notification {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  userId: string;
+  read: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Pagination {
+  totalPages: number;
+  currentPage: number | string;
+  totalItems: number;
 }
 
 export const fetchNotifications = createAsyncThunk(
@@ -31,22 +47,22 @@ export const fetchNotifications = createAsyncThunk(
 );
 
 interface InitialState {
-  notifications: any[];
-  pagination: {
-    totalPages: number;
-    currentPage: number;
-    totalItems: number;
+  notifications: {
+    rows: Notification[];
+    pagination: Pagination;
   };
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: InitialState = {
-  notifications: [],
-  pagination: {
-    totalPages: 1,
-    currentPage: 1,
-    totalItems: 0,
+  notifications: {
+    rows: [],
+    pagination: {
+      totalPages: 1,
+      currentPage: 1,
+      totalItems: 0,
+    },
   },
   isLoading: false,
   error: null,
@@ -57,7 +73,10 @@ const notificationsSlice = createSlice({
   initialState,
   reducers: {
     addNotifications(state, action) {
-      state.notifications = [action.payload, ...state.notifications];
+      state.notifications.rows = [
+        action.payload,
+        ...state.notifications.rows,
+      ];
     },
   },
   extraReducers: builder => {
@@ -67,11 +86,11 @@ const notificationsSlice = createSlice({
     });
     builder.addCase(fetchNotifications.fulfilled, (state, action) => {
       const append = action?.meta?.arg?.append || false;
-      state.notifications = append
-        ? [...state.notifications, ...action.payload.rows]
+      state.notifications.rows = append
+        ? [...state.notifications.rows, ...action.payload.rows]
         : action.payload.rows;
 
-      state.pagination = {
+      state.notifications.pagination = {
         totalPages: action.payload.totalPages,
         currentPage: action.payload.currentPage,
         totalItems: action.payload.totalItems,

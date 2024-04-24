@@ -10,7 +10,7 @@ import Notifications from '../shared/Notifications';
 import Constants from '@/constants';
 import logo from '@/assets/images/logos/orginal.png';
 import { toggleTheme } from '@/redux/features/theme/themeSlice';
-import { getAllnotifications } from '@/redux/features/notifications/notificationsSlice';
+import { fetchNotifications } from '@/redux/features/notifications/notificationsSlice';
 
 const AppLayout = () => {
   const sidebar = React.useRef<HTMLDivElement>(null);
@@ -26,7 +26,7 @@ const AppLayout = () => {
   );
 
   const [notificationCounter, setNotificationCounter] = useState(
-    notifications?.row?.length > 0 ? notifications?.row?.length : 0,
+    notifications?.rows?.length > 0 ? notifications?.rows?.length : 0,
   );
 
   const { avatar, firstName, email, displayName } =
@@ -43,7 +43,7 @@ const AppLayout = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllnotifications({ page, limit }));
+    dispatch(fetchNotifications({ page, limit }));
   }, [dispatch, page, limit]);
 
   React.useEffect(() => {

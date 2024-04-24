@@ -18,21 +18,24 @@ import { toast } from 'react-toastify';
 
 const Notifications = () => {
   const dispatch = useAppDispatch();
-  const {
-    notifications,
-    isLoading: isLoadingMore,
-    pagination,
-  } = useAppSelector(state => state.notifications);
-  const { user } = useAppSelector(state => state.profile);
+  const { notifications, isLoading: isLoadingMore } = useAppSelector(
+    state => state.notifications,
+  );
+  const { tokenData } = useAppSelector(
+    (state: { profile: any }) => state.profile,
+  );
 
   const socket = io(import.meta.env.VITE_PUBLIC_DEFAULT_API);
-  const userId = user?.id;
+  const userId = tokenData?.id;
+
+  // console.log('user+++', tokenData);
 
   useEffect(() => {
     dispatch(fetchNotifications({ page: 1, limit: 5 }));
     socket.on(`notification.${userId}`, data => {
+      console.log('data++++', data);
       dispatch(addNotifications(data));
-      toast.info(`${data.message}`);
+      toast.info(`${data.description}`);
     });
 
     return () => {
@@ -41,26 +44,18 @@ const Notifications = () => {
   }, []);
 
   const [showViewMore, setShowViewMore] = useState(true);
-  // useEffect(() => {
-  //   dispatch(getAllnotifications({ page, limit }));
-  //   socket.on('notification', data => {
-  //     dispatch(getAllnotifications(data));
-  //     alert('working...............');
-  //   });
-  //   return () => {
-  //     socket.off('notification');
-  //   };
-  // }, [dispatch, page, limit]);
 
   const handleLoadMore = async () => {
-    const currentPage = pagination.currentPage;
-    if (currentPage === pagination.totalPages) {
+    const currentPage = notifications.pagination.currentPage;
+    if (currentPage === notifications.pagination.totalPages) {
       return false;
     }
     dispatch(
-      fetchNotifications({ page: currentPage + 1, append: true }),
+      fetchNotifications({ page: +currentPage + 1, append: true }),
     );
   };
+
+  console.log('Noti++++', notifications);
 
   if (!notifications || notifications?.rows?.length === 0) {
     return (
@@ -71,7 +66,8 @@ const Notifications = () => {
       </div>
     );
   }
-  const totalItems = notifications.totalItems;
+  const totalItems = notifications.pagination.totalItems;
+  console.log('totalItems++', totalItems);
 
   return (
     <div
@@ -82,7 +78,7 @@ const Notifications = () => {
         Notifications
       </div>
 
-      {notifications &&
+      {/* {notifications &&
         notifications?.rows?.map(
           (notification: {
             id: React.Key | null | undefined;
@@ -158,11 +154,11 @@ const Notifications = () => {
               </NavLink>
             </div>
           ),
-        )}
+        )} */}
       {showViewMore && (
         <div className="flex justify-center py-4">
           <div
-            onClick={loadMoreNotifications}
+            onClick={handleLoadMore}
             className="text-primary-600 dark:text-primary-400 hover:underline focus:outline-none cursor-pointer"
           >
             View More

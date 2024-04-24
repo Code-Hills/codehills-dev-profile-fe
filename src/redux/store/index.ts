@@ -7,6 +7,7 @@ import {
 import activateUserReducer from '../features/admin/activateUserAcountSlice';
 import deactivateReducer from '../features/admin/deactivateUserAcountSlice';
 import authReducer from '../features/auth/loginSlice';
+import markOneNotificationDefaultSlice from '../features/notifications/markOneNotificationSlice';
 import notificationsSlice from '../features/notifications/notificationsSlice';
 import profileSlice from '../features/profile/profileSlice';
 import projectsSlice from '../features/projects/projectsSlice';
@@ -38,6 +39,7 @@ export function makeStore() {
       dashboard: dashboardSlice,
       projects: projectsSlice,
       notifications: notificationsSlice,
+      markOneNotification: markOneNotificationDefaultSlice,
     },
   });
 }

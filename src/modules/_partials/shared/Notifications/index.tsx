@@ -1,20 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { notification as antdNotification } from 'antd';
 import { formatDistanceToNow, parseISO } from 'date-fns';
+import React, { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
-import { Skeleton } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import SkeletonElement from '../SkeletonElement';
 
 import jese from '@/assets/images/users/bonnie-green.png';
+import { markOneNotification } from '@/redux/features/notifications/markOneNotificationSlice';
 import {
   addNotifications,
   fetchNotifications,
+  markAsRead,
 } from '@/redux/features/notifications/notificationsSlice';
 
-import ProjectSkeleton from '@/modules/activities/Projects/partials/LoadingSkeleton';
-import { toast } from 'react-toastify';
+interface User {
+  displayName:
+    | string
+    | number
+    | boolean
+    | React.ReactElement<
+        any,
+        string | React.JSXElementConstructor<any>
+      >
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | null
+    | undefined;
+}
+
+interface Notification {
+  id: React.Key | null | undefined;
+  user: User;
+  description:
+    | string
+    | number
+    | boolean
+    | React.ReactElement<
+        any,
+        string | React.JSXElementConstructor<any>
+      >
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | null
+    | undefined;
+  createdAt: string;
+  url: string;
+}
 
 const Notifications = () => {
   const dispatch = useAppDispatch();
@@ -24,38 +57,53 @@ const Notifications = () => {
   const { tokenData } = useAppSelector(
     (state: { profile: any }) => state.profile,
   );
+  const [api, contextHolder] = antdNotification.useNotification();
 
   const socket = io(import.meta.env.VITE_PUBLIC_DEFAULT_API);
   const userId = tokenData?.id;
 
-  // console.log('user+++', tokenData);
-
   useEffect(() => {
     dispatch(fetchNotifications({ page: 1, limit: 5 }));
     socket.on(`notification.${userId}`, data => {
-      console.log('data++++', data);
       dispatch(addNotifications(data));
-      toast.info(`${data.description}`);
+
+      if (data) {
+        api.info({
+          message: data.title,
+          description: data.description,
+          placement: 'topRight',
+        });
+      }
     });
 
     return () => {
       socket.off(`notification.${userId}`);
     };
-  }, []);
-
-  const [showViewMore, setShowViewMore] = useState(true);
+  }, [dispatch, userId]);
 
   const handleLoadMore = async () => {
-    const currentPage = notifications.pagination.currentPage;
-    if (currentPage === notifications.pagination.totalPages) {
+    const { currentPage, totalPages } = notifications.pagination;
+
+    if (+currentPage === notifications.pagination.totalPages) {
       return false;
     }
     dispatch(
       fetchNotifications({ page: +currentPage + 1, append: true }),
     );
+    return null;
   };
 
-  console.log('Noti++++', notifications);
+  const handleMarkOne = async (notificationId: string) => {
+    try {
+      const response = await dispatch(
+        markOneNotification(notificationId),
+      ).unwrap();
+      toast.success(response?.message);
+      dispatch(markAsRead(notificationId));
+    } catch (error: any) {
+      toast.error(error?.data.message);
+    }
+  };
 
   if (!notifications || notifications?.rows?.length === 0) {
     return (
@@ -66,57 +114,28 @@ const Notifications = () => {
       </div>
     );
   }
-  const totalItems = notifications.pagination.totalItems;
-  console.log('totalItems++', totalItems);
+  const { totalItems } = notifications.pagination;
 
   return (
-    <div
-      className="max-w-sm  overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
-      id="notification-dropdown"
-    >
-      <div className="block px-4 py-2 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-        Notifications
-      </div>
+    <>
+      {contextHolder}
+      <div
+        className="max-w-sm  overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700 max-h-[30rem] overflow-y-auto"
+        id="notification-dropdown"
+      >
+        <div className="block px-4 py-2 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          Notifications
+        </div>
 
-      {/* {notifications &&
-        notifications?.rows?.map(
-          (notification: {
-            id: React.Key | null | undefined;
-            user: {
-              displayName:
-                | string
-                | number
-                | boolean
-                | React.ReactElement<
-                    any,
-                    string | React.JSXElementConstructor<any>
-                  >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | null
-                | undefined;
-            };
-            description:
-              | string
-              | number
-              | boolean
-              | React.ReactElement<
-                  any,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | React.ReactPortal
-              | null
-              | undefined;
-            createdAt: string;
-          }) => (
-            <div
-              key={notification?.id}
-              className="overflow-y-auto h-auto"
-            >
+        {notifications &&
+          notifications?.rows?.map((notification: Notification) => (
+            <div key={notification?.id} className="">
               <NavLink
-                to="#"
+                to={notification.url}
                 className="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+                onClick={() => {
+                  handleMarkOne(notification.id as string);
+                }}
               >
                 <div className="flex-shrink-0">
                   <img
@@ -124,7 +143,7 @@ const Notifications = () => {
                     src={jese}
                     alt="Jese"
                   />
-                  <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700">
+                  <div className="relative flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700">
                     <svg
                       className="w-3 h-3 text-white"
                       fill="currentColor"
@@ -136,7 +155,7 @@ const Notifications = () => {
                     </svg>
                   </div>
                 </div>
-                <div className="w-full pl-3">
+                <div className="relative w-full pl-3">
                   <div className="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">
                     New message from{' '}
                     <span className="font-semibold text-gray-900 dark:text-white">
@@ -146,26 +165,27 @@ const Notifications = () => {
                   </div>
                   <div className="text-xs font-medium text-primary-700 dark:text-primary-400">
                     {formatDistanceToNow(
-                      parseISO(notification?.createdAt),
+                      parseISO(notification.createdAt),
                     )}{' '}
                     ago
                   </div>
                 </div>
               </NavLink>
             </div>
-          ),
-        )} */}
-      {showViewMore && (
-        <div className="flex justify-center py-4">
-          <div
-            onClick={handleLoadMore}
-            className="text-primary-600 dark:text-primary-400 hover:underline focus:outline-none cursor-pointer"
-          >
-            View More
+          ))}
+        {notifications?.rows.length < totalItems && (
+          <div className="flex justify-center py-4">
+            <button
+              type="button"
+              className="text-primary-600 dark:text-primary-400 hover:underline focus:outline-none cursor-pointer"
+              onClick={handleLoadMore}
+            >
+              View More
+            </button>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

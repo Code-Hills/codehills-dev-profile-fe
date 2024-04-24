@@ -6,10 +6,18 @@ import {
 } from '@reduxjs/toolkit';
 
 import API from '@/api/api';
+
 interface FetchNotificationsArg {
   page?: number;
   limit?: number;
   append?: boolean; // Include 'append' as an optional property
+}
+interface User {
+  id: string;
+  email: string;
+  displayName: string;
+  role: string;
+  createdAt: string;
 }
 
 interface Notification {
@@ -21,11 +29,12 @@ interface Notification {
   read: boolean;
   createdAt: string;
   updatedAt: string;
+  user: User;
 }
 
 interface Pagination {
   totalPages: number;
-  currentPage: number | string;
+  currentPage: string;
   totalItems: number;
 }
 
@@ -51,6 +60,7 @@ interface InitialState {
     rows: Notification[];
     pagination: Pagination;
   };
+  unreadCount: number;
   isLoading: boolean;
   error: string | null;
 }
@@ -60,10 +70,11 @@ const initialState: InitialState = {
     rows: [],
     pagination: {
       totalPages: 1,
-      currentPage: 1,
+      currentPage: '1',
       totalItems: 0,
     },
   },
+  unreadCount: 0,
   isLoading: false,
   error: null,
 };
@@ -77,9 +88,23 @@ const notificationsSlice = createSlice({
         action.payload,
         ...state.notifications.rows,
       ];
+      state.unreadCount = state.notifications.rows.filter(
+        n => !n.read,
+      ).length;
+    },
+    markAsRead(state, action) {
+      const notification = state.notifications.rows.find(
+        n => n.id === action.payload,
+      );
+      if (notification) {
+        notification.read = true;
+      }
+      state.unreadCount = state.notifications.rows.filter(
+        n => !n.read,
+      ).length;
     },
   },
-  extraReducers: builder => {
+  extraReducers(builder) {
     builder.addCase(fetchNotifications.pending, state => {
       state.isLoading = true;
       state.error = null;
@@ -95,6 +120,9 @@ const notificationsSlice = createSlice({
         currentPage: action.payload.currentPage,
         totalItems: action.payload.totalItems,
       };
+      state.unreadCount = state.notifications.rows.filter(
+        n => !n.read,
+      ).length;
       state.isLoading = false;
       state.error = null;
     });
@@ -106,6 +134,7 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { addNotifications } = notificationsSlice.actions;
+export const { addNotifications, markAsRead } =
+  notificationsSlice.actions;
 
 export default notificationsSlice.reducer;

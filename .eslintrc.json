@@ -29,6 +29,10 @@
   "rules": {
     "import/extensions": "off",
     "import/no-unresolved": "off",
+    "react/no-array-index-key": "off",
+    "label-has-associated-control": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "consistent-return": "off",
     "prettier/prettier": [
       "error",
       {

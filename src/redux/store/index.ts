@@ -16,6 +16,8 @@ import reviewerSlice from '../slices/reviewerSlice';
 import searchSlice from '../slices/searchSlice';
 import dashboardSlice from '../slices/dashboardSlice';
 import projectsSlice from '../features/projects/projectsSlice';
+import ratingSlice from '../slices/ratingSlice';
+import ratingFieldSlice from '../slices/ratingFieldSlice';
 
 export function makeStore() {
   return configureStore({
@@ -27,6 +29,8 @@ export function makeStore() {
       deactivate: deactivateReducer,
       activate: activateUserReducer,
       cycle: cycleSlice,
+      ratings: ratingSlice,
+      ratingField: ratingFieldSlice,
       review: reviewSlice,
       reviewer: reviewerSlice,
       search: searchSlice,

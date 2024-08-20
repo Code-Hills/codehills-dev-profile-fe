@@ -9,6 +9,7 @@ import {
   HiViewGrid,
 } from 'react-icons/hi';
 import { GiStarFormation } from 'react-icons/gi';
+import { MdGeneratingTokens } from 'react-icons/md';
 
 import { INavigationLink } from '@/interfaces/navigation.interface';
 
@@ -28,6 +29,12 @@ export const sidebarNavLinks: INavigationLink[] = [
     name: 'Reviews',
     href: '/reviews',
     icon: GiStarFormation,
+  },
+  {
+    name: 'Ratings',
+    href: '/ratings',
+    icon: MdGeneratingTokens,
+    allowedRoles: ['admin'],
   },
   {
     name: 'Performance',

@@ -6,6 +6,8 @@ import SearchPopupModal from '../shared/SearchPopupModal';
 import NotificationIcon from '../shared/Notifications/NotificationIcon';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import Notifications from '../shared/Notifications';
+import codeHillLog from '../../../img/codehills_logo-white.svg';
+import codeHillLog2 from '../../../img/codeHills_logo_dark (1).svg';
 
 import Constants from '@/constants';
 import logo from '@/assets/images/logos/orginal.png';
@@ -82,15 +84,20 @@ const AppLayout = () => {
                   />
                 </svg>
               </button>
-              <Link to="/" className="flex ml-2 md:mr-24">
-                <img
-                  src={logo}
-                  className="h-8 mr-3"
-                  alt="FlowBite Logo"
-                />
-                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                  CodeHills
-                </span>
+              <Link to="/" className="flex ml-2 md:mr-24 w-[140px]">
+                {theme !== 'dark' ? (
+                  <img
+                    src={codeHillLog2}
+                    className="h-8 mr-3"
+                    alt="FlowBite Logo"
+                  />
+                ) : (
+                  <img
+                    src={codeHillLog}
+                    className="h-8 mr-3"
+                    alt="FlowBite Logo"
+                  />
+                )}
               </Link>
             </div>
             <div className="flex md:order-2 space-x-2 md:space-x-4 items-center">

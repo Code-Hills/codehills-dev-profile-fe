@@ -8,16 +8,16 @@ import { IProject } from '@/interfaces/project.interface';
 export const getAllUsers = createAsyncThunk(
   'users/fetch',
   async () => {
-    // eslint-disable-next-line no-useless-catch
     try{
       const { data } = await API.get('/users');
       return data;
     }catch(error: any){
       throw error?.response?.data;
     }
-   
   },
 );
+
+
 
 export const getAllProjects = createAsyncThunk(
   'All/projects',

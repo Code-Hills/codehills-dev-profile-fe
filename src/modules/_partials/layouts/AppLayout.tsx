@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown } from 'flowbite-react';
 
@@ -10,18 +10,41 @@ import Notifications from '../shared/Notifications';
 import Constants from '@/constants';
 import logo from '@/assets/images/logos/orginal.png';
 import { toggleTheme } from '@/redux/features/theme/themeSlice';
+import { fetchNotifications } from '@/redux/features/notifications/notificationsSlice';
 
 const AppLayout = () => {
   const sidebar = React.useRef<HTMLDivElement>(null);
   const trigger = React.useRef<HTMLButtonElement>(null);
   const [toggleSidebar, setToggleSidebar] = React.useState(false);
-  const { tokenData, user } = useAppSelector(state => state.profile);
+  const [page, setPage] = React.useState(1);
+  const [limit, setLimit] = React.useState(5);
+  const { tokenData, user } = useAppSelector(
+    (state: { profile: any }) => state.profile,
+  );
+  const { notifications } = useAppSelector(
+    state => state.notifications,
+  );
+
+  const [notificationCounter, setNotificationCounter] = useState(
+    notifications?.rows?.length > 0 ? notifications?.rows?.length : 0,
+  );
+
   const { avatar, firstName, email, displayName } =
     user || tokenData || {};
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { theme } = useAppSelector(state => state.theme);
+  const { theme } = useAppSelector(
+    (state: { theme: any }) => state.theme,
+  );
+
+  const handleNotificationClick = () => {
+    setNotificationCounter(0);
+  };
+
+  useEffect(() => {
+    dispatch(fetchNotifications({ page, limit }));
+  }, [dispatch, page, limit]);
 
   React.useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -98,7 +121,12 @@ const AppLayout = () => {
               <Dropdown
                 arrowIcon={false}
                 inline
-                label={<NotificationIcon />}
+                label={
+                  <NotificationIcon
+                    counter={notificationCounter}
+                    onClick={handleNotificationClick}
+                  />
+                }
               >
                 <Notifications />
               </Dropdown>
@@ -220,7 +248,6 @@ const AppLayout = () => {
           </ul>
         </div>
       </aside>
-
       <div className="p-4 sm:ml-64 py-20 flex flex-col">
         <Outlet />
       </div>

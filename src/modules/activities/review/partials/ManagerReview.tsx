@@ -26,7 +26,8 @@ const ManagerReview = ({
   const [show, setShow] = useState(false);
   const writtenReviewRef = React.useRef<HTMLTextAreaElement>(null);
   const ratingRef = React.useRef<HTMLSelectElement>(null);
-  const [selectedCategoryField, setSelectedCategoryField] = useState<any>('');
+  const [selectedCategoryField, setSelectedCategoryField] =
+    useState<any>('');
   const [selectedCategory, setSelectedCategory] = useState<any>({});
 
   const handleSubmit = async (event: any) => {
@@ -68,13 +69,19 @@ const ManagerReview = ({
     dispatch(getAllRatings());
   }, [dispatch]);
 
-  const handleSelectCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCat = name?.find((item: { name: string }) => item?.name === event.target.value)
+  const handleSelectCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const selectedCat = name?.find(
+      (item: { name: string }) => item?.name === event.target.value,
+    );
     setSelectedCategory(selectedCat);
   };
 
-  const handleSelectFieldChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategoryField(event.target.value)
+  const handleSelectFieldChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setSelectedCategoryField(event.target.value);
   };
 
   return (
@@ -127,9 +134,11 @@ const ManagerReview = ({
                   <option value="" disabled selected hidden>
                     Select a field
                   </option>
-                  {selectedCategory?.ratingFields?.map((item: any) => (
-                    <option value={item.name}>{item.name}</option>
-                  ))}
+                  {selectedCategory?.ratingFields?.map(
+                    (item: any) => (
+                      <option value={item.name}>{item.name}</option>
+                    ),
+                  )}
                 </Select>
               </div>
             </div>

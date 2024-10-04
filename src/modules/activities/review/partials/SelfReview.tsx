@@ -1,5 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Button, Modal, Select, Textarea, TextInput } from 'flowbite-react';
+import {
+  Button,
+  Modal,
+  Select,
+  Textarea,
+  TextInput,
+} from 'flowbite-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 import {
@@ -52,51 +58,55 @@ const SelfReview = ({
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const userId = tokenData?.id;
-    
+
     if (activeCycle) {
       const data = {
         comment: writtenReviewRef?.current?.value || '',
         fieldReviews: categoryFields,
         reviewCycleId: activeCycle.id,
         revieweeId: developerId || userId,
-      }
+      };
 
-      const { payload } = await dispatch(
-        createReview(data),
-      );
+      const { payload } = await dispatch(createReview(data));
 
       if (payload) {
         setShow(false);
         writtenReviewRef!.current!.value = '';
-        ratingRef!.current!.value = '1'
+        ratingRef!.current!.value = '1';
         setCurrentFieldIndex(0);
         setCurrentIndex(0);
+        setIsSubmit(false);
       }
     }
   };
 
   const handleNext = async () => {
-    if (currentFieldIndex < (currentCategory?.ratingFields?.length - 1)) {
+    if (
+      currentFieldIndex <
+      currentCategory!.ratingFields!.length - 1
+    ) {
       const data = {
-        ratingFieldId: currentCategory?.ratingFields[currentFieldIndex]?.id,
-        ratings: Number(ratingRef?.current?.value)
-      }
+        ratingFieldId:
+          currentCategory?.ratingFields[currentFieldIndex]?.id,
+        ratings: Number(ratingRef?.current?.value),
+      };
       setCategoryFields((prevFields: any) => [...prevFields, data]);
       setCurrentFieldIndex(currentFieldIndex + 1);
-      ratingRef.current!.value = '1'
+      ratingRef.current!.value = '1';
     } else {
       const data = {
-        ratingFieldId: currentCategory?.ratingFields[currentFieldIndex]?.id,
-        ratings: Number(ratingRef?.current?.value)
-      }
+        ratingFieldId:
+          currentCategory?.ratingFields[currentFieldIndex]?.id,
+        ratings: Number(ratingRef?.current?.value),
+      };
       setCategoryFields((prevFields: any) => [...prevFields, data]);
       setCurrentIndex(currentIndex + 1);
       if (currentIndex + 1 !== name.length) {
-        setCurrentFieldIndex(0)
-        ratingRef.current!.value = '1'
+        setCurrentFieldIndex(0);
+        ratingRef.current!.value = '1';
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (currentIndex < name.length) {
@@ -104,7 +114,7 @@ const SelfReview = ({
     } else {
       setIsSubmit(true);
     }
-  }, [currentIndex])
+  }, [currentIndex]);
 
   const onClose = () => {
     if (!loading) {
@@ -171,7 +181,13 @@ const SelfReview = ({
                   className="w-full z-50"
                   placeholder="Enter rating field name"
                   name="name"
-                  value={currentCategory?.ratingFields ? currentCategory?.ratingFields[currentFieldIndex]?.name : ''}
+                  value={
+                    currentCategory?.ratingFields
+                      ? currentCategory?.ratingFields[
+                          currentFieldIndex
+                        ]?.name
+                      : ''
+                  }
                   ref={inputRef}
                 />
               </div>
@@ -197,7 +213,7 @@ const SelfReview = ({
                   <option value="5">Went beyond expectations</option>
                 </Select>
                 <span className="text-gray-700 dark:text-gray-400 whitespace-nowrap">
-                  ({ratingRef.current?.value || "N/A"} out of 5)
+                  ({ratingRef.current?.value || 'N/A'} out of 5)
                 </span>
               </div>
             </div>

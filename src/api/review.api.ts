@@ -23,7 +23,7 @@ export const createReview = createAsyncThunk(
   async (
     review: Pick<
       Review,
-      'description' | 'ratings' | 'revieweeId' | 'reviewCycleId'
+      'comment' | 'fieldReviews' | 'revieweeId' | 'reviewCycleId'
     >,
   ) => {
     try {

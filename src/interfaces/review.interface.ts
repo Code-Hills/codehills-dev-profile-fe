@@ -11,8 +11,8 @@ export interface Review {
   updatedAt: string;
   revieweeId: string;
   reviewCycleId: string;
-  description: string;
-  ratings: number;
+  comment: string;
+  fieldReviews: any[];
   reviewee?: Partial<User>;
   reviewer?: Partial<User>;
   type?: ReviewType;
